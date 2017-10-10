@@ -54,6 +54,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Research\Convertor.cs" />
+    <Compile Include="Research\ParameterBullet.cs" />
+    <Compile Include="Research\ZenMethod.cs" />
+    <Compile Include="Rule\IRule.cs" />
+    <Compile Include="Rule\RuleDemo.cs" />
+    <Compile Include="Tcp\CommonDataDefine.cs" />
+    <Compile Include="Tcp\TcpServer.cs" />
+    <Compile Include="Tcp\TcpDataHandler.cs" />
+    <Page Include="Board\Board.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,12 +74,30 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Board\Board.xaml.cs">
+      <DependentUpon>Board.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Board\BoardState.cs" />
+    <Compile Include="Board\Enums.cs" />
+    <Compile Include="Common\ClientLog.cs" />
+    <Compile Include="Common\CommandBase.cs" />
+    <Compile Include="Common\DllImport.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PartnerMode\PartnerModeConfigDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PartnerMode\PartnerModeCalculator.cs" />
+    <Compile Include="PartnerMode\PartnerModeConfigDialog.xaml.cs">
+      <DependentUpon>PartnerModeConfigDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowVM.cs" />
+    <Compile Include="PartnerMode\PlayerSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -92,6 +122,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\board-default.bmp" />
+    <Resource Include="Images\green.png" />
+    <Resource Include="Images\lastmove.png" />
+    <Resource Include="Images\piece_b.png" />
+    <Resource Include="Images\piece_w.png" />
+    <Resource Include="Images\red.png" />
+    <Resource Include="Images\star.png" />
+    <Resource Include="Tcp设计.txt" />
+    <Content Include="Zen.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
