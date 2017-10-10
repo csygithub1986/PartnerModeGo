@@ -96,14 +96,37 @@ namespace PartnerModeGo
         //打开服务
         private void Menu_OpenServerClick(object sender, RoutedEventArgs e)
         {
-            TcpServer tcpServer = new TcpServer();
-            tcpServer.OnDataArrivedEvent += TcpServer_OnDataArrivedEvent;
-            tcpServer.Start();
+            TcpServer.Instance.OnDataArrived += TcpDataHandler.Instance.AnalysePhoneData;
+            TcpServer.Instance.OnPhoneConnected += OnPhoneConnected;
+            //    public event Action<int, int, int[]> ReceivePhoneStepData;
+            //public event Action<byte[], bool, int[]> ReceivePhonePreviewData;
+
+            TcpDataHandler.Instance.ReceivePhoneStepData += ReceivePhoneStepData;
+            TcpDataHandler.Instance.ReceivePhonePreviewData += ReceivePhonePreviewData;
+            TcpServer.Instance.Start();
         }
 
-        private void TcpServer_OnDataArrivedEvent(byte[] obj)
+        private void OnPhoneConnected(string obj)
         {
-            Console.WriteLine("Tcp到来 " + obj.Length);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                Title = "已连接";
+            }));
+        }
+
+        private void ReceivePhoneStepData(int x, int y, int[] boardState)
+        {
+
+        }
+
+        private void ReceivePhonePreviewData(byte[] imageBytes, bool isOk, int[] boardState)
+        {
+
+        }
+
+        private void Menu_SendStartTestClick(object sender, RoutedEventArgs e)
+        {
+            TcpDataHandler.Instance.SendGameStart(CommonDataDefine.FileName + "=abc.sgf;" + CommonDataDefine.BlackPlayerName + "=BBB;" + CommonDataDefine.WhitePlayerName + "=WWW;");
         }
     }
 }

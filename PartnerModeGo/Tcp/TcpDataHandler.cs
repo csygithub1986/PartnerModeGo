@@ -8,7 +8,16 @@ namespace PartnerModeGo.Tcp
 {
     public class TcpDataHandler
     {
-        TcpServer m_server;
+        #region 单例
+        private TcpDataHandler() { }
+        static TcpDataHandler()
+        {
+            Instance = new TcpDataHandler();
+        }
+        public static TcpDataHandler Instance;
+        #endregion
+
+
 
         public event Action<int, int, int[]> ReceivePhoneStepData;
         public event Action<byte[], bool, int[]> ReceivePhonePreviewData;
@@ -26,7 +35,7 @@ namespace PartnerModeGo.Tcp
             int len = gameInfo.Length;
             data.AddRange(BitConverter.GetBytes(len));
             data.AddRange(Encoding.UTF8.GetBytes(gameInfo));
-            m_server.SendData(data.ToArray());
+            TcpServer.Instance.SendData(data.ToArray());
         }
 
         /// <summary>
@@ -37,7 +46,7 @@ namespace PartnerModeGo.Tcp
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.GameOver));
             data.AddRange(BitConverter.GetBytes(0));
-            m_server.SendData(data.ToArray());
+            TcpServer.Instance.SendData(data.ToArray());
         }
 
         /// <summary>
@@ -56,7 +65,7 @@ namespace PartnerModeGo.Tcp
             data.Add((byte)y);
             data.AddRange(BitConverter.GetBytes(boardState.Length));
             data.AddRange(boardState.Select(p => (byte)p).ToArray());
-            m_server.SendData(data.ToArray());
+            TcpServer.Instance.SendData(data.ToArray());
         }
 
         public void SendScan()
@@ -64,7 +73,7 @@ namespace PartnerModeGo.Tcp
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.Scan));
             data.AddRange(BitConverter.GetBytes(0));
-            m_server.SendData(data.ToArray());
+            TcpServer.Instance.SendData(data.ToArray());
         }
 
         public void SendPreview(bool isPreview)
@@ -73,7 +82,7 @@ namespace PartnerModeGo.Tcp
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.SendPreview));
             data.AddRange(BitConverter.GetBytes(1));
             data.AddRange(BitConverter.GetBytes(isPreview));
-            m_server.SendData(data.ToArray());
+            TcpServer.Instance.SendData(data.ToArray());
         }
         #endregion
 

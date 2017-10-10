@@ -15,16 +15,23 @@ namespace PartnerModeGo.Tcp
     /// </summary>
     public class TcpServer
     {
-        //TcpListener
+        private TcpServer() { }
+        static TcpServer()
+        {
+            Instance = new TcpServer();
+        }
+        public static TcpServer Instance;
+
         /// <summary>
         /// 接受数据事件
         /// </summary>
-        public event Action<byte[]> OnDataArrivedEvent;
+        public event Action<byte[]> OnDataArrived;
+        public event Action<string> OnPhoneConnected;
 
         private TcpClient client;
 
         /// <summary>
-        /// 发送数据
+        /// 发送数据 TODO：发送之前检查网络状态
         /// </summary>
         /// <param name="data"></param>
         public void SendData(byte[] data)
@@ -32,7 +39,7 @@ namespace PartnerModeGo.Tcp
             NetworkStream nStream = client.GetStream();
             using (BinaryWriter bw = new BinaryWriter(nStream))
             {
-                bw.Write(data.Length);
+                //bw.Write(data.Length);
                 bw.Write(data);
                 bw.Flush();
             }
@@ -46,12 +53,14 @@ namespace PartnerModeGo.Tcp
 
         public void Listen()
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 12121);
+            TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.1.100"), 12121);
             tcpListener.Start();
-
             client = tcpListener.AcceptTcpClient();
+
+            OnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
+
             Thread thread = new Thread(ReceiveMessage);
-            thread.Start(client);
+            thread.Start();
         }
 
         /// <summary>
@@ -96,7 +105,7 @@ namespace PartnerModeGo.Tcp
                     if (actualLen == dataLen)
                     {
                         //添加消息至消息处理类
-                        OnDataArrivedEvent?.Invoke(data);
+                        OnDataArrived?.Invoke(data);
                     }
                     else
                     {

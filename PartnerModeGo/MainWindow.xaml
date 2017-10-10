@@ -18,12 +18,13 @@
                     </MenuItem>
                     <MenuItem Header="打开服务">
                         <MenuItem Header="打开服务" Click="Menu_OpenServerClick"/>
+                        <MenuItem Header="SendStart测试" Click="Menu_SendStartTestClick"/>
                     </MenuItem>
                 </Menu>
             </ToolBar>
         </ToolBarPanel>
 
-        <Grid Name="grid">
+        <Grid Name="grid" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="80"/>
