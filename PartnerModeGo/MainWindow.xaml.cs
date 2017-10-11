@@ -1,4 +1,5 @@
-﻿using PartnerModeGo.Tcp;
+﻿using PartnerModeGo.Common;
+using PartnerModeGo.Tcp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,8 +122,14 @@ namespace PartnerModeGo
 
         private void ReceivePhonePreviewData(byte[] imageBytes, bool isOk, int[] boardState)
         {
-
+            Dispatcher.Invoke(new Action(() =>
+            {
+                m_Image.Source = ImageHelper.ByteArrayToBitmapImage(imageBytes);
+                Console.Write("isOk: " + isOk);
+                Console.WriteLine("boardState len: " + boardState.Count());
+            }));
         }
+
 
         private void Menu_SendStartTestClick(object sender, RoutedEventArgs e)
         {

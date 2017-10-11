@@ -91,7 +91,7 @@ namespace PartnerModeGo.Tcp
         {
             int index = 0;
             int head = BitConverter.ToInt32(data, index); index += 4;
-            int len = BitConverter.ToInt32(data, index); index += 4;
+            //int len = BitConverter.ToInt32(data, index); index += 4;
             if (head == CommonDataDefine.PhoneStepData)
             {
                 int x = data[index]; index++;
@@ -106,6 +106,8 @@ namespace PartnerModeGo.Tcp
             }
             else if (head == CommonDataDefine.PreviewData)
             {
+                //识别成功与否
+                bool isOk = data[index] == 1;
                 //图像
                 int imagelen = BitConverter.ToInt32(data, index); index += 4;
                 byte[] image = new byte[imagelen];
@@ -113,8 +115,6 @@ namespace PartnerModeGo.Tcp
                 {
                     image[i] = data[index]; index++;
                 }
-                //识别成功与否
-                bool isOk = data[index] == 1;
                 //解析的棋盘数据
                 int boardLen = BitConverter.ToInt32(data, index); index += 4;
                 int[] boardState = new int[boardLen];

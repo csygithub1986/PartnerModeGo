@@ -29,6 +29,7 @@ namespace PartnerModeGo.Tcp
         public event Action<string> OnPhoneConnected;
 
         private TcpClient client;
+        private BinaryWriter bw;
 
         /// <summary>
         /// 发送数据 TODO：发送之前检查网络状态
@@ -36,13 +37,9 @@ namespace PartnerModeGo.Tcp
         /// <param name="data"></param>
         public void SendData(byte[] data)
         {
-            NetworkStream nStream = client.GetStream();
-            using (BinaryWriter bw = new BinaryWriter(nStream))
-            {
-                //bw.Write(data.Length);
-                bw.Write(data);
-                bw.Flush();
-            }
+            //bw.Write(data.Length);
+            bw.Write(data);
+            bw.Flush();
         }
 
         public void Start()
@@ -53,18 +50,22 @@ namespace PartnerModeGo.Tcp
 
         public void Listen()
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.1.100"), 12121);
+            TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.1.111"), 12121);
             tcpListener.Start();
             client = tcpListener.AcceptTcpClient();
 
             OnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
+
+            NetworkStream nStream = client.GetStream();
+            bw = new BinaryWriter(nStream);
 
             Thread thread = new Thread(ReceiveMessage);
             thread.Start();
         }
 
         /// <summary>
-        /// 接受消息 TODO：未考虑粘包
+        /// 接受消息  
+        /// 先读数据长度，然后全部截取
         /// </summary>
         /// <param name="tcpClient"></param>
         private void ReceiveMessage()
@@ -73,52 +74,59 @@ namespace PartnerModeGo.Tcp
             //TcpClient client = tcpClient as TcpClient;
             string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
             NetworkStream nStream = client.GetStream();
-            BinaryReader br = new BinaryReader(nStream);
 
-            //读取消息  
-            int dataLen = 0;//总共的消息长度
-            int restByteCount = 0;//剩余的字节数
-            byte[] data = null;
-
-            while (true)
+            using (BinaryReader br = new BinaryReader(nStream))
             {
-                try
+                //读取消息  
+                int dataLen = 0;//总共的消息长度
+                int restByteCount = 0;//剩余的字节数
+                byte[] data = null;
+
+                while (true)
                 {
-                    if (restByteCount != 0)
+                    try
                     {
-                        int actualLen2 = br.Read(data, dataLen - restByteCount, restByteCount);
-                        if (actualLen2 == restByteCount)
+                        if (restByteCount != 0)
                         {
-                            restByteCount = 0;
+                            int actualLen2 = br.Read(data, dataLen - restByteCount, restByteCount);
+                            if (actualLen2 == restByteCount)
+                            {
+                                restByteCount = 0;
+                                //添加消息至消息处理类
+                                OnDataArrived?.Invoke(data);
+                            }
+                            else
+                            {
+                                restByteCount = restByteCount - actualLen2;
+                                //Console.WriteLine("dataLen:  " + restByteCount);
+                            }
+                            continue;
+                        }
+
+                        dataLen = br.ReadInt32();//长度
+                        Console.WriteLine("dataLen:  " + dataLen);
+                        data = new byte[dataLen];
+                        int actualLen = br.Read(data, 0, data.Length);
+                        if (actualLen == dataLen)
+                        {
+                            //添加消息至消息处理类
+                            OnDataArrived?.Invoke(data);
                         }
                         else
                         {
-                            restByteCount = restByteCount - actualLen2;
+                            restByteCount = dataLen - actualLen;
                         }
-                        continue;
                     }
-
-
-                    dataLen = br.ReadInt32();//长度
-                    data = new byte[dataLen];
-                    int actualLen = br.Read(data, 0, data.Length);
-                    if (actualLen == dataLen)
+                    catch (Exception)
                     {
-                        //添加消息至消息处理类
-                        OnDataArrived?.Invoke(data);
+                        //网络异常，通知系统删除本socket数据
+                        client.Close();
+                        return;
                     }
-                    else
-                    {
-                        restByteCount = dataLen - actualLen;
-                    }
-                }
-                catch (Exception)
-                {
-                    //网络异常，通知系统删除本socket数据
-                    client.Close();
-                    return;
                 }
             }
+
+
         }
     }
 }

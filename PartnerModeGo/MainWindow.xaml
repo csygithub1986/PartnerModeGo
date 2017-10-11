@@ -24,7 +24,7 @@
             </ToolBar>
         </ToolBarPanel>
 
-        <Grid Name="grid" Visibility="Hidden">
+        <Grid Name="grid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="80"/>
@@ -35,12 +35,13 @@
             </Grid.ColumnDefinitions>
 
             <!--<b:Board StoneSize="20"></b:Board>-->
-            <Viewbox>
+            <Viewbox Visibility="Hidden">
                 <local:Board x:Name="m_Board" BoardSize="19" BoardMode="Playing"></local:Board>
             </Viewbox>
-            <Viewbox Grid.Column="1">
+            <Viewbox Grid.Column="1" Visibility="Hidden">
                 <local:Board x:Name="m_BoardAnalyse" BoardSize="19" BoardMode="Analyse"></local:Board>
             </Viewbox>
+            <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="200" Height="200"></Image>
 
             <Grid Grid.Column="1" Grid.Row="1" Background="Gray">
                 <Grid Height="30" Name="rateGrid">
