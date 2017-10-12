@@ -9,7 +9,10 @@ namespace PartnerModeGo.Tcp
     public class TcpDataHandler
     {
         #region 单例
-        private TcpDataHandler() { }
+        private TcpDataHandler()
+        {
+            TcpServer.Instance.HandlerOnDataArrived += AnalysePhoneData;
+        }
         static TcpDataHandler()
         {
             Instance = new TcpDataHandler();
@@ -18,9 +21,8 @@ namespace PartnerModeGo.Tcp
         #endregion
 
 
-
-        public event Action<int, int, int[]> ReceivePhoneStepData;
-        public event Action<byte[], bool, int[]> ReceivePhonePreviewData;
+        public event Action<int, int, int, int[]> WindowReceivePhoneStepData;
+        public event Action<byte[], bool, int[]> WindowReceivePhonePreviewData;
 
         #region PC->Phone
         /// <summary>
@@ -91,25 +93,26 @@ namespace PartnerModeGo.Tcp
         {
             int index = 0;
             int head = BitConverter.ToInt32(data, index); index += 4;
-            //int len = BitConverter.ToInt32(data, index); index += 4;
             if (head == CommonDataDefine.PhoneStepData)
             {
                 int x = data[index]; index++;
                 int y = data[index]; index++;
+                int color = data[index]; index++;
                 int boardLen = BitConverter.ToInt32(data, index); index += 4;
                 int[] boardState = new int[boardLen];
                 for (int i = 0; i < boardState.Length; i++)
                 {
                     boardState[i] = data[index]; index++;
                 }
-                ReceivePhoneStepData?.Invoke(x, y, boardState);
+                WindowReceivePhoneStepData?.Invoke(x, y, color, boardState);
             }
             else if (head == CommonDataDefine.PreviewData)
             {
                 //识别成功与否
-                bool isOk = data[index] == 1;
+                bool isOk = data[index] == 1; index += 1;
                 //图像
                 int imagelen = BitConverter.ToInt32(data, index); index += 4;
+                Console.WriteLine("图像大小: " + imagelen);
                 byte[] image = new byte[imagelen];
                 for (int i = 0; i < image.Length; i++)
                 {
@@ -122,7 +125,7 @@ namespace PartnerModeGo.Tcp
                 {
                     boardState[i] = data[index]; index++;
                 }
-                ReceivePhonePreviewData?.Invoke(image, isOk, boardState);
+                WindowReceivePhonePreviewData?.Invoke(image, isOk, boardState);
             }
         }
 

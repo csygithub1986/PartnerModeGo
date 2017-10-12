@@ -3,6 +3,7 @@ using PartnerModeGo.Tcp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -75,7 +76,6 @@ namespace PartnerModeGo
         private void GameOver(int stepNum, int x, int y, bool isPass, bool isResign)
         {
             MessageBox.Show("Over");
-
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -97,13 +97,10 @@ namespace PartnerModeGo
         //打开服务
         private void Menu_OpenServerClick(object sender, RoutedEventArgs e)
         {
-            TcpServer.Instance.OnDataArrived += TcpDataHandler.Instance.AnalysePhoneData;
-            TcpServer.Instance.OnPhoneConnected += OnPhoneConnected;
-            //    public event Action<int, int, int[]> ReceivePhoneStepData;
-            //public event Action<byte[], bool, int[]> ReceivePhonePreviewData;
+            TcpServer.Instance.WindowOnPhoneConnected += OnPhoneConnected;
 
-            TcpDataHandler.Instance.ReceivePhoneStepData += ReceivePhoneStepData;
-            TcpDataHandler.Instance.ReceivePhonePreviewData += ReceivePhonePreviewData;
+            TcpDataHandler.Instance.WindowReceivePhoneStepData += ReceivePhoneStepData;
+            TcpDataHandler.Instance.WindowReceivePhonePreviewData += ReceivePhonePreviewData;
             TcpServer.Instance.Start();
         }
 
@@ -115,9 +112,12 @@ namespace PartnerModeGo
             }));
         }
 
-        private void ReceivePhoneStepData(int x, int y, int[] boardState)
+        private void ReceivePhoneStepData(int x, int y, int color, int[] boardState)
         {
-
+            Dispatcher.Invoke(new Action(() =>
+            {
+                m_Board.Play(x, y, color);
+            }));
         }
 
         private void ReceivePhonePreviewData(byte[] imageBytes, bool isOk, int[] boardState)
@@ -125,8 +125,19 @@ namespace PartnerModeGo
             Dispatcher.Invoke(new Action(() =>
             {
                 m_Image.Source = ImageHelper.ByteArrayToBitmapImage(imageBytes);
-                Console.Write("isOk: " + isOk);
-                Console.WriteLine("boardState len: " + boardState.Count());
+
+                if (isOk)
+                {
+                    m_Board.Visibility = Visibility.Visible;
+                    m_Board.InitGame();
+                    m_Board.SetStones(boardState);
+                }
+                else
+                {
+                    m_Board.Visibility = Visibility.Hidden;
+                }
+
+                Console.WriteLine("   boardState len: " + boardState.Count());
             }));
         }
 

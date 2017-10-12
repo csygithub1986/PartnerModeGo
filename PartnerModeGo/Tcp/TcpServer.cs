@@ -25,8 +25,8 @@ namespace PartnerModeGo.Tcp
         /// <summary>
         /// 接受数据事件
         /// </summary>
-        public event Action<byte[]> OnDataArrived;
-        public event Action<string> OnPhoneConnected;
+        public event Action<byte[]> HandlerOnDataArrived;
+        public event Action<string> WindowOnPhoneConnected;
 
         private TcpClient client;
         private BinaryWriter bw;
@@ -54,7 +54,7 @@ namespace PartnerModeGo.Tcp
             tcpListener.Start();
             client = tcpListener.AcceptTcpClient();
 
-            OnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
+            WindowOnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
 
             NetworkStream nStream = client.GetStream();
             bw = new BinaryWriter(nStream);
@@ -93,7 +93,7 @@ namespace PartnerModeGo.Tcp
                             {
                                 restByteCount = 0;
                                 //添加消息至消息处理类
-                                OnDataArrived?.Invoke(data);
+                                HandlerOnDataArrived?.Invoke(data);
                             }
                             else
                             {
@@ -110,7 +110,7 @@ namespace PartnerModeGo.Tcp
                         if (actualLen == dataLen)
                         {
                             //添加消息至消息处理类
-                            OnDataArrived?.Invoke(data);
+                            HandlerOnDataArrived?.Invoke(data);
                         }
                         else
                         {

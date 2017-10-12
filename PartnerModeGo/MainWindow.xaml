@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartnerModeGo" Closed="Window_Closed"
         mc:Ignorable="d"
-        Title="自测" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="自测" Height="540" Width="900" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowVM/>
     </Window.DataContext>
@@ -35,13 +35,13 @@
             </Grid.ColumnDefinitions>
 
             <!--<b:Board StoneSize="20"></b:Board>-->
-            <Viewbox Visibility="Hidden">
-                <local:Board x:Name="m_Board" BoardSize="19" BoardMode="Playing"></local:Board>
+            <Viewbox >
+                <local:Board x:Name="m_Board" Visibility="Hidden" BoardSize="19" BoardMode="Playing"></local:Board>
             </Viewbox>
-            <Viewbox Grid.Column="1" Visibility="Hidden">
-                <local:Board x:Name="m_BoardAnalyse" BoardSize="19" BoardMode="Analyse"></local:Board>
+            <Viewbox Grid.Column="1">
+                <local:Board x:Name="m_BoardAnalyse" Visibility="Hidden" BoardSize="19" BoardMode="Analyse"></local:Board>
             </Viewbox>
-            <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="200" Height="200"></Image>
+            <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="360" Height="360"></Image>
 
             <Grid Grid.Column="1" Grid.Row="1" Background="Gray">
                 <Grid Height="30" Name="rateGrid">

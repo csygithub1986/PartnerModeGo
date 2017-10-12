@@ -89,6 +89,20 @@ namespace PartnerModeGo
         #endregion
 
         #region 公用方法
+
+        public void SetStones(int[] state)
+        {
+            for (int x = 0; x < BoardSize; x++)
+            {
+                for (int y = 0; y < BoardSize; y++)
+                {
+                    m_Stones[x, y].Visibility = state[x * BoardSize + y] == 0 ? Visibility.Hidden : Visibility.Visible;
+                    m_Stones[x, y].Fill = m_BoardState.Turn == 2 ? Brushes.Black : Brushes.White;
+                }
+            }
+
+        }
+
         /// <summary>
         /// 添加棋子
         /// </summary>

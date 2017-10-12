@@ -134,6 +134,7 @@ namespace PartnerModeGo.Common
             using (var ms = new System.IO.MemoryStream(array))
             {
                 var image = new BitmapImage();
+                //image.Format = ImageFormat.Png;
                 image.BeginInit();
                 image.CacheOption = BitmapCacheOption.OnLoad; // here
                 image.StreamSource = ms;
@@ -152,6 +153,7 @@ namespace PartnerModeGo.Common
                 {
                     MemoryStream ms = new MemoryStream(bytes);
                     img = new Bitmap(ms);
+                   
                 }
             }
             catch (Exception ex)
@@ -159,6 +161,37 @@ namespace PartnerModeGo.Common
                 Console.WriteLine(ex);
             }
             return img;
+        }
+
+        //public static RenderTargetBitmap BytesToRenderTargetBitmap(byte[] data,int width,int height)
+        //{
+        //    //dpi可以自己设定   // 获取dpi方法：PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice
+        //    RenderTargetBitmap bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Bgr555);
+        //    bitmap.CopyPixels(data, 0, 0);
+        //    return bitmap;
+        //}
+
+
+        public static void Fun()
+        {
+            Bitmap b = new Bitmap(1080,1080,0, System.Drawing.Imaging.PixelFormat.Format8bppIndexed,IntPtr.Zero);
+            //BitmapData bData = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            //unsafe
+            //{
+            //    Pixel* p = null;
+            //    for (int x = 0; x < b.Width; x++)
+            //    {
+            //        p = (Pixel*)bData.Scan0 + x * b.Height;
+            //        for (int y = 0; y < b.Height; y++)
+            //        {
+            //            int R = p->R;
+            //            int G = p->G;
+            //            int B = p->B;
+            //            //这里获取颜色分量的各个值，同样在这里还可以对其进行赋值
+            //        }
+            //    }
+            //}
+            //b.UnlockBits(bData);
         }
     }
 }
