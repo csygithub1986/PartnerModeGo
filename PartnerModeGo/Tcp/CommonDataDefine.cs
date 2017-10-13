@@ -13,7 +13,7 @@ namespace PartnerModeGo.Tcp
         public const int GameOver = 0x1002;
         public const int ServerStepData = 0x1003;
         public const int Scan = 0x1004;
-        public const int SendPreview = 0x1005;
+        public const int SendPreviewCommand = 0x1005;
 
         //Phone->PC数据头
         public const int PhoneStepData = 0x2001;

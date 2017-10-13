@@ -37,6 +37,8 @@ namespace PartnerModeGo.Tcp
             int len = gameInfo.Length;
             data.AddRange(BitConverter.GetBytes(len));
             data.AddRange(Encoding.UTF8.GetBytes(gameInfo));
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
             TcpServer.Instance.SendData(data.ToArray());
         }
 
@@ -48,6 +50,8 @@ namespace PartnerModeGo.Tcp
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.GameOver));
             data.AddRange(BitConverter.GetBytes(0));
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
             TcpServer.Instance.SendData(data.ToArray());
         }
 
@@ -57,16 +61,17 @@ namespace PartnerModeGo.Tcp
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="boardState"></param>
-        public void SendStepData(int x, int y, int[] boardState)
+        public void SendStepData(int x, int y, int color, int[] boardState)
         {
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.ServerStepData));
-            data.AddRange(BitConverter.GetBytes(boardState.Length + 4 + 2));//坐标和状态的总长度
-
             data.Add((byte)x);
             data.Add((byte)y);
+            data.Add((byte)color);
             data.AddRange(BitConverter.GetBytes(boardState.Length));
             data.AddRange(boardState.Select(p => (byte)p).ToArray());
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
             TcpServer.Instance.SendData(data.ToArray());
         }
 
@@ -75,15 +80,18 @@ namespace PartnerModeGo.Tcp
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(CommonDataDefine.Scan));
             data.AddRange(BitConverter.GetBytes(0));
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
             TcpServer.Instance.SendData(data.ToArray());
         }
 
-        public void SendPreview(bool isPreview)
+        public void SendPreviewCommand(bool isPreview)
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.SendPreview));
-            data.AddRange(BitConverter.GetBytes(1));
+            data.AddRange(BitConverter.GetBytes(CommonDataDefine.SendPreviewCommand));
             data.AddRange(BitConverter.GetBytes(isPreview));
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
             TcpServer.Instance.SendData(data.ToArray());
         }
         #endregion
