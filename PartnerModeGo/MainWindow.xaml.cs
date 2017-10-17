@@ -1,4 +1,5 @@
 ﻿using PartnerModeGo.Common;
+using PartnerModeGo.Game;
 using PartnerModeGo.Tcp;
 using System;
 using System.Collections.Generic;
@@ -24,24 +25,38 @@ namespace PartnerModeGo
         public MainWindow()
         {
             InitializeComponent();
+            //settingGrid.Visibility = Visibility.Hidden;
+            //gameGrid.Visibility = Visibility.Hidden;
+
+            //settingPage.OkAction = SettingOk;
+            //settingPage.CancelAction = SettingCancel;
         }
+
+        //private void SettingCancel()
+        //{
+        //    settingGrid.Visibility = Visibility.Hidden;
+        //}
+
+        //private void SettingOk()
+        //{
+
+        //}
 
         private void Menu_VsSelfClick(object sender, RoutedEventArgs e)
         {
             m_Board.BoardMode = BoardMode.AutoPlaying;
-            PartnerModeConfigDialog w = new PartnerModeConfigDialog();
+            GameSettingDialog w = new GameSettingDialog();
             w.DataContext = this.DataContext;
             w.Owner = this;
             w.ShowDialog();
             if (w.DialogResult == true)
             {
-                PartnerModeCalculator cal = new PartnerModeCalculator((DataContext as MainWindowVM).PlayerSettings, (DataContext as MainWindowVM).GameLoopTimes, 19);
+                GameCalculator cal = new GameCalculator((DataContext as MainWindowVM).BlackPlayers.ToArray(), (DataContext as MainWindowVM).WhitePlayers.ToArray(), (DataContext as MainWindowVM).GameLoopTimes, 19);
                 cal.GameOverCallback = GameOver;
                 cal.UICallback = Play;
                 cal.TerritoryCallback = ShowTerritory;
                 cal.WinRateCallback = ShowWinRate;
                 cal.Start();
-
             }
         }
 

@@ -56,6 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\ImageHelper.cs" />
+    <Compile Include="Game\Converters.cs" />
+    <Compile Include="Game\Enums.cs" />
     <Compile Include="Rule\IRule.cs" />
     <Compile Include="Rule\RuleDemo.cs" />
     <Compile Include="Tcp\CommonDataDefine.cs" />
@@ -85,18 +87,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PartnerMode\PartnerModeConfigDialog.xaml">
+    <Page Include="Game\GameSettingDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PartnerMode\PartnerModeCalculator.cs" />
-    <Compile Include="PartnerMode\PartnerModeConfigDialog.xaml.cs">
-      <DependentUpon>PartnerModeConfigDialog.xaml</DependentUpon>
+    <Compile Include="Game\GameCalculator.cs" />
+    <Compile Include="Game\GameSettingDialog.xaml.cs">
+      <DependentUpon>GameSettingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="PartnerMode\PlayerSetting.cs" />
+    <Compile Include="Game\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

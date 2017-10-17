@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartnerModeGo" Closed="Window_Closed"
+        xmlns:gameSetting="clr-namespace:PartnerModeGo.Game"
         mc:Ignorable="d"
         Title="自测" Height="540" Width="900" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
@@ -24,7 +25,11 @@
             </ToolBar>
         </ToolBarPanel>
 
-        <Grid Name="grid">
+        <!--<Grid x:Name="settingGrid">
+            <gameSetting:GameSettingPage x:Name="settingPage"></gameSetting:GameSettingPage>
+        </Grid>-->
+
+        <Grid Name="gameGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="80"/>
@@ -34,12 +39,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!--<b:Board StoneSize="20"></b:Board>-->
             <Viewbox >
-                <local:Board x:Name="m_Board" Visibility="Hidden" BoardSize="19" BoardMode="Playing"></local:Board>
+                <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
             </Viewbox>
             <Viewbox Grid.Column="1">
-                <local:Board x:Name="m_BoardAnalyse" Visibility="Hidden" BoardSize="19" BoardMode="Analyse"></local:Board>
+                <local:Board x:Name="m_BoardAnalyse" Visibility="Visible" BoardSize="19" BoardMode="Analyse"></local:Board>
             </Viewbox>
             <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="360" Height="360"></Image>
 

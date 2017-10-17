@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartnerModeGo.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PartnerModeGo
+namespace PartnerModeGo.Game
 {
-    public class PartnerModeCalculator
+    public class GameCalculator
     {
         private int m_TotalGameLoopTimes;
         private int m_CurrentGameTimes;
-        private PlayerSetting[] aiSettings;
+        //private Player[] aiSettings;
+        private Player[] m_BlackPlayers;
+        private Player[] m_WhitePlayers;
         private int m_BoardSize;
 
         public Action StartCallback;
@@ -28,9 +31,10 @@ namespace PartnerModeGo
         /// </summary>
         private List<Tuple<int, int, bool, bool>> m_History;
 
-        public PartnerModeCalculator(PlayerSetting[] settings, int totalGameLoopTimes, int boardSize)
+        public GameCalculator(Player[] blackPlayers, Player[] whitePlayers, int totalGameLoopTimes, int boardSize)
         {
-            aiSettings = settings;
+            m_BlackPlayers = blackPlayers;
+            m_WhitePlayers = whitePlayers;
             m_BoardSize = boardSize;
             m_TotalGameLoopTimes = totalGameLoopTimes;
             m_CurrentGameTimes = 1;
@@ -49,7 +53,7 @@ namespace PartnerModeGo
         {
             InitGame();
             StartCallback?.Invoke();
-            if (aiSettings[0].IsZen)
+            if (m_BlackPlayers[0].Type == PlayerType.AI)
             {
                 GetZenMove(0);
             }
@@ -60,6 +64,18 @@ namespace PartnerModeGo
         }
 
         /// <summary>
+        /// 根据stepNum计算该谁落子
+        /// </summary>
+        /// <param name="stepNum">从0开始的步数</param>
+        /// <returns></returns>
+        private Player GetPlayerByStep(int stepNum)
+        {
+            int turnColor = stepNum % 2;//0是黑，1是白
+            var players = turnColor == 0 ? m_BlackPlayers : m_WhitePlayers;
+            return players[stepNum / 2 % players.Length];
+        }
+
+        /// <summary>
         /// Zen走棋（线程）
         /// </summary>
         /// <param name="stepNum"></param>
@@ -67,10 +83,10 @@ namespace PartnerModeGo
         {
             Task task = Task.Factory.StartNew(() =>
             {
-                int turn = stepNum % 4;
-                DllImport.SetNumberOfSimulations(aiSettings[turn].Layout);
-                DllImport.StartThinking(aiSettings[turn].Color);
-                Thread.Sleep(aiSettings[turn].TimePerMove * 1000);
+                Player player = GetPlayerByStep(stepNum);
+                DllImport.SetNumberOfSimulations(player.Layout);
+                DllImport.StartThinking(player.Color);
+                Thread.Sleep(player.TimePerMove * 1000);
                 DllImport.StopThinking();
                 //Thread.Sleep(500);
                 int x = 0, y = 0;
@@ -146,8 +162,9 @@ namespace PartnerModeGo
 
 
             stepNum++;
+            Player player = GetPlayerByStep(stepNum);
             int turn = stepNum % 4;
-            if (aiSettings[turn].IsZen)
+            if (player.Type == PlayerType.AI)
             {
                 //如果下一步还是Zen
                 GetZenMove(stepNum);
@@ -226,8 +243,8 @@ namespace PartnerModeGo
 
 
             stepNum++;
-            int turn = stepNum % 4;
-            if (aiSettings[turn].IsZen)
+            Player player = GetPlayerByStep(stepNum);
+            if (player.Type == PlayerType.AI)
             {
                 //如果下一步还是Zen
                 GetZenMove(stepNum);
