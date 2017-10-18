@@ -8,10 +8,6 @@ namespace PartnerModeGo.Game
 {
     public enum PlayerType
     {
-        ///// <summary>
-        ///// 表示还未指定
-        ///// </summary>
-        //None,
         /// <summary>
         /// AI
         /// </summary>
@@ -24,13 +20,13 @@ namespace PartnerModeGo.Game
         /// 真实棋盘，来自局域网Phone
         /// </summary>
         RealBoard,
-        /// <summary>
-        /// 局域网
-        /// </summary>
-        LAN,
-        /// <summary>
-        /// 互联网
-        /// </summary>
-        Internet
+        ///// <summary>
+        ///// 局域网
+        ///// </summary>
+        //LAN,
+        ///// <summary>
+        ///// 互联网
+        ///// </summary>
+        //Internet
     }
 }

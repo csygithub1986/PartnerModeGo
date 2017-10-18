@@ -48,6 +48,7 @@ namespace PartnerModeGo
             GameSettingDialog w = new GameSettingDialog();
             w.DataContext = this.DataContext;
             w.Owner = this;
+            w.WaitingConnect = WaitingConnect;
             w.ShowDialog();
             if (w.DialogResult == true)
             {
@@ -58,6 +59,11 @@ namespace PartnerModeGo
                 cal.WinRateCallback = ShowWinRate;
                 cal.Start();
             }
+        }
+
+        private void WaitingConnect()
+        {
+            throw new NotImplementedException();
         }
 
         private void ShowTerritory(int[] territory)

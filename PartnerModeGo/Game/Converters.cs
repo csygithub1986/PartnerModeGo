@@ -14,10 +14,10 @@ namespace PartnerModeGo.Game
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter.ToString()== "AIDetail")
+            if (parameter.ToString() == "AIDetail")
             {
-                var type =(PlayerType) value ;
-                if (type==PlayerType.AI)
+                var type = (PlayerType)value;
+                if (type == PlayerType.AI)
                 {
                     return Visibility.Visible;
                 }
@@ -26,10 +26,22 @@ namespace PartnerModeGo.Game
                     return Visibility.Collapsed;
                 }
             }
-            if (parameter.ToString()== "Color")
+            if (parameter.ToString() == "RealBoardDetail")
+            {
+                var type = (PlayerType)value;
+                if (type == PlayerType.RealBoard)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+            if (parameter.ToString() == "Color")
             {
                 int color = (int)value;
-                if (color==2)
+                if (color == 2)
                 {
                     return Brushes.Black;
                 }
@@ -37,6 +49,10 @@ namespace PartnerModeGo.Game
                 {
                     return Brushes.White;
                 }
+            }
+            if (parameter.ToString() == "IsConnected" || parameter.ToString() == "IsBoardRecognized")
+            {
+                return (bool)value ? Brushes.Green : Brushes.Red;
             }
             return value;
         }

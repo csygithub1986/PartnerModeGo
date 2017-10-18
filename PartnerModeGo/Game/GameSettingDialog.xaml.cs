@@ -33,7 +33,7 @@ namespace PartnerModeGo.Game
         }
 
         int m_step = 1;//1是配置完成，2是开始游戏
-        public Action SettingDoneAction { get; set; }
+        public Action WaitingConnect { get; set; }
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
@@ -43,8 +43,20 @@ namespace PartnerModeGo.Game
             if (m_step == 1 && (blackHasNet || whiteHasNet))//而且有网络的玩家
             {
                 m_step = 2;
-                SettingDoneAction?.Invoke();
+                WaitingConnect?.Invoke();
                 btnOk.Content = "等待连接...";
+                btnOk.IsEnabled = false;
+
+
+                //让连接和识别后，界面改变
+                foreach (Player player in (DataContext as MainWindowVM).BlackPlayers)
+                {
+                    player.ConnectChanged += Player_RecognizeChangedOrConnectChanged;
+                }
+                foreach (Player player in (DataContext as MainWindowVM).WhitePlayers)
+                {
+                    player.ConnectChanged += Player_RecognizeChangedOrConnectChanged;
+                }
             }
             else
             {
@@ -52,6 +64,27 @@ namespace PartnerModeGo.Game
                 DialogResult = true;
             }
         }
+
+        //使能或禁用确定按钮
+        private void Player_RecognizeChangedOrConnectChanged(Player player, bool value)
+        {
+            foreach (Player p in (DataContext as MainWindowVM).WhitePlayers)
+            {
+                //目前只有真实棋盘，以后做局域网和互联网
+                if (p.Type == PlayerType.RealBoard)
+                {
+                    if (!p.IsConnected || !p.IsBoardRecognized)
+                    {
+                        btnOk.Content = "等待连接...";
+                        btnOk.IsEnabled = false;
+                        return;
+                    }
+                }
+                btnOk.Content = "开始游戏";
+                btnOk.IsEnabled = true;
+            }
+        }
+
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {

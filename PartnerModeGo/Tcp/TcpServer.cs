@@ -53,7 +53,7 @@ namespace PartnerModeGo.Tcp
             TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.1.111"), 12121);
             tcpListener.Start();
             client = tcpListener.AcceptTcpClient();
-
+           
             WindowOnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
 
             NetworkStream nStream = client.GetStream();

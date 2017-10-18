@@ -16,6 +16,8 @@ namespace PartnerModeGo.Game
     public class Player : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event Action<Player, bool> ConnectChanged;
+        public event Action<Player, bool> RecognizeChanged;
 
         public Player()
         {
@@ -72,6 +74,28 @@ namespace PartnerModeGo.Game
         }
         private string _PlayerName;
 
+
+        #region 网络共同属性
+        /// <summary>
+        /// 是否连接
+        /// </summary>
+        public bool IsConnected
+        {
+            get { return _IsConnected; }
+            set
+            {
+                if (_IsConnected != value)
+                {
+                    _IsConnected = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConnected"));
+                    ConnectChanged?.Invoke(this, value);
+                }
+            }
+        }
+        private bool _IsConnected;
+        #endregion
+
+
         #region AI属性
         /// <summary>
         /// 电脑一步设定的时间，如果未配置则无用，单位s
@@ -106,6 +130,27 @@ namespace PartnerModeGo.Game
             }
         }
         private int _Layout = 50000;
+
+        #endregion
+        /// <summary>
+        /// 是否被识别了
+        /// </summary>
+        public bool IsBoardRecognized
+        {
+            get { return _IsBoardRecognized; }
+            set
+            {
+                if (_IsBoardRecognized != value)
+                {
+                    _IsBoardRecognized = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsBoardRecognized"));
+                    RecognizeChanged?.Invoke(this, value);
+                }
+            }
+        }
+        private bool _IsBoardRecognized;
+        #region 真是棋盘属性
+
         #endregion
 
         #region Lan、RealBoard共同属性

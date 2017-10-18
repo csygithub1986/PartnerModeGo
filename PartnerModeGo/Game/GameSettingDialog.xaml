@@ -37,9 +37,24 @@
                             <TextBlock Text="最大时间/秒" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
                             <TextBlock Text="搜索数" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
                         </StackPanel>
-                        <StackPanel IsEnabled="{Binding IsZen}" Grid.Column="1">
+                        <StackPanel Grid.Column="1">
                             <TextBox VerticalContentAlignment="Center" Text="{Binding TimePerMove}" HorizontalAlignment="Stretch" Height="23" Margin="10,10,10,0" VerticalAlignment="Top" />
                             <TextBox VerticalContentAlignment="Center" Text="{Binding Layout}" HorizontalAlignment="Stretch" Height="23" Margin="10,10,10,10" VerticalAlignment="Top" IsEnabled="False"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1" x:Name="realBoardDetail" Visibility="{Binding Type,Converter={StaticResource SettingConverter},ConverterParameter=RealBoardDetail}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel  >
+                            <TextBlock Text="连接状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
+                            <TextBlock Text="识别状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <Rectangle Fill="{Binding IsConnected,Converter={StaticResource SettingConverter},ConverterParameter=IsConnected}" HorizontalAlignment="Stretch" Height="23" Width="23" Margin="10,10,10,0" VerticalAlignment="Top" />
+                            <Rectangle Fill="{Binding IsBoardRecognized,Converter={StaticResource SettingConverter},ConverterParameter=IsBoardRecognized}" HorizontalAlignment="Stretch" Height="23" Width="23" Margin="10,10,10,0" VerticalAlignment="Top" />
                         </StackPanel>
                     </Grid>
 
