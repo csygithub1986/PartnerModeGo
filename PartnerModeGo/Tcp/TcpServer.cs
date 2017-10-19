@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PartnerModeGo.Tcp
 {
     /// <summary>
-    /// 目前未加入UDP搜索
+    /// 只用于接收来自Phone的连接，只有一个连接，单例。目前未加入UDP搜索
     /// </summary>
     public class TcpServer
     {
@@ -26,6 +26,10 @@ namespace PartnerModeGo.Tcp
         /// 接受数据事件
         /// </summary>
         public event Action<byte[]> HandlerOnDataArrived;
+
+        /// <summary>
+        /// 连接成功
+        /// </summary>
         public event Action<string> WindowOnPhoneConnected;
 
         private TcpClient client;

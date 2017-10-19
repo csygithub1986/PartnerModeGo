@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -53,6 +54,16 @@ namespace PartnerModeGo.Game
             if (parameter.ToString() == "IsConnected" || parameter.ToString() == "IsBoardRecognized")
             {
                 return (bool)value ? Brushes.Green : Brushes.Red;
+            }
+            if (parameter.ToString() == "BlackPlayerVisibility")
+            {
+                Collection<Player> players = value as Collection<Player>;
+                return players.Where(p => p.Color == 2);
+            }
+            if (parameter.ToString() == "WhitePlayerVisibility")
+            {
+                Collection<Player> players = value as Collection<Player>;
+                return players.Where(p => p.Color == 1);
             }
             return value;
         }

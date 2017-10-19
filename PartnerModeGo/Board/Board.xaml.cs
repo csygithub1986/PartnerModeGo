@@ -10,6 +10,7 @@ namespace PartnerModeGo
 {
     /// <summary>
     /// 棋盘控件
+    /// 自己维护StepNum
     /// </summary>
     public partial class Board : UserControl
     {
@@ -72,11 +73,10 @@ namespace PartnerModeGo
             //}
         }
 
-        //Image[,] pieceImages;
-        ////Image highlightImage;
-        //ImageSource bSource = new BitmapImage(new Uri("../Images/" + "green.png", UriKind.Relative));
-        //ImageSource wSource = new BitmapImage(new Uri("../Images/" + "red.png", UriKind.Relative));
+        #endregion
 
+        #region 事件
+        public event Action<int,int, int> MousePlayEvent;
         #endregion
 
         #region 属性
@@ -86,6 +86,7 @@ namespace PartnerModeGo
         public int BoardSize { get; set; }
 
         public BoardMode BoardMode { get; set; }
+        public bool IsHostTurn;   //BoardMode是Playing时，判断是否是鼠标的轮子
         #endregion
 
         #region 公用方法
@@ -102,6 +103,7 @@ namespace PartnerModeGo
             }
 
         }
+
 
         /// <summary>
         /// 添加棋子
@@ -144,6 +146,7 @@ namespace PartnerModeGo
                 m_BoardState.State[x, y] = m_BoardState.Turn;
                 m_BoardState.LastMove = new Position(x, y);
                 m_BoardState.LastEatCount = list == null ? 0 : list.Count;
+                m_BoardState.LastSetpNum++;
 
                 Canvas.SetLeft(m_LastPlayStone, m_Offset + x * m_GridSize - m_LastPlayStone.Width / 2);
                 Canvas.SetTop(m_LastPlayStone, m_Offset + y * m_GridSize - m_LastPlayStone.Height / 2);
@@ -166,6 +169,10 @@ namespace PartnerModeGo
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (BoardMode != BoardMode.Playing && BoardMode != BoardMode.Edit)
+            {
+                return;
+            }
+            if (BoardMode == BoardMode.Playing && IsHostTurn == false)
             {
                 return;
             }
@@ -196,6 +203,7 @@ namespace PartnerModeGo
                 m_BoardState.State[x, y] = m_BoardState.Turn;
                 m_BoardState.LastMove = new Position(x, y);
                 m_BoardState.LastEatCount = list == null ? 0 : list.Count;
+                m_BoardState.LastSetpNum++;
 
                 Canvas.SetLeft(m_LastPlayStone, m_Offset + x * m_GridSize - m_LastPlayStone.Width / 2);
                 Canvas.SetTop(m_LastPlayStone, m_Offset + y * m_GridSize - m_LastPlayStone.Height / 2);
@@ -210,6 +218,8 @@ namespace PartnerModeGo
                         m_BoardState.State[p.X, p.Y] = 0;
                         m_Stones[p.X, p.Y].Visibility = Visibility.Hidden;
                     }
+                    IsHostTurn = false;
+                    MousePlayEvent?.Invoke(m_BoardState.LastSetpNum,x, y);
                 }
 
             }

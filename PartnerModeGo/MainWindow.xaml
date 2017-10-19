@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PartnerModeGo" Closed="Window_Closed"
         xmlns:gameSetting="clr-namespace:PartnerModeGo.Game"
         mc:Ignorable="d"
-        Title="自测" Height="540" Width="900" WindowStartupLocation="CenterScreen">
+        Title="自测" Height="54" Width="90" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowVM/>
     </Window.DataContext>

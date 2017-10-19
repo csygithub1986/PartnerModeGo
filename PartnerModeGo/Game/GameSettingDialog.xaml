@@ -74,8 +74,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Name="blackListBox" ItemsSource="{Binding BlackPlayers}"></ListBox>
-            <ListBox Name="whiteListBox" Grid.Column="1" ItemsSource="{Binding WhitePlayers}"></ListBox>
+            <ListBox Name="blackListBox" ItemsSource="{Binding Players,Converter={StaticResource SettingConverter},ConverterParameter=BlackPlayerVisibility}"></ListBox>
+            <ListBox Name="whiteListBox" Grid.Column="1" ItemsSource="{Binding Players,Converter={StaticResource SettingConverter},ConverterParameter=WhitePlayerVisibility}"></ListBox>
         </Grid>
 
 
@@ -90,7 +90,7 @@
         <Grid Name="grid1" Grid.Row="3" Grid.ColumnSpan="2" Background="#F0F0F0">
             <!--确定设置  和  开始游戏-->
             <Button Name="btnOk" Width="100" Height="30" Content="确定设置" Margin="58,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="BtnOk_Click"/>
-            
+
             <!--无论是哪个状态取消，都退出对话框-->
             <Button Width="100" Height="30" Content="取消" Margin="0,0,58,0" VerticalAlignment="Center" HorizontalAlignment="Right" Click="BtnCancel_Click"/>
         </Grid>

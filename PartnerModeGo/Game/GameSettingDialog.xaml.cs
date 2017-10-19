@@ -37,10 +37,9 @@ namespace PartnerModeGo.Game
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
-            bool blackHasNet = (DataContext as MainWindowVM).BlackPlayers.Count(p => p.Type != PlayerType.AI && p.Type != PlayerType.Host) != 0;
-            bool whiteHasNet = (DataContext as MainWindowVM).WhitePlayers.Count(p => p.Type != PlayerType.AI && p.Type != PlayerType.Host) != 0;
+            bool hasNet = (DataContext as MainWindowVM).Players.Count(p => p.Type == PlayerType.RealBoard) != 0;
 
-            if (m_step == 1 && (blackHasNet || whiteHasNet))//而且有网络的玩家
+            if (m_step == 1 && hasNet)//而且有网络的玩家
             {
                 m_step = 2;
                 WaitingConnect?.Invoke();
@@ -49,11 +48,7 @@ namespace PartnerModeGo.Game
 
 
                 //让连接和识别后，界面改变
-                foreach (Player player in (DataContext as MainWindowVM).BlackPlayers)
-                {
-                    player.ConnectChanged += Player_RecognizeChangedOrConnectChanged;
-                }
-                foreach (Player player in (DataContext as MainWindowVM).WhitePlayers)
+                foreach (Player player in (DataContext as MainWindowVM).Players)
                 {
                     player.ConnectChanged += Player_RecognizeChangedOrConnectChanged;
                 }
@@ -68,7 +63,7 @@ namespace PartnerModeGo.Game
         //使能或禁用确定按钮
         private void Player_RecognizeChangedOrConnectChanged(Player player, bool value)
         {
-            foreach (Player p in (DataContext as MainWindowVM).WhitePlayers)
+            foreach (Player p in (DataContext as MainWindowVM).Players)
             {
                 //目前只有真实棋盘，以后做局域网和互联网
                 if (p.Type == PlayerType.RealBoard)

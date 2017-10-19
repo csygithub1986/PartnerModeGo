@@ -22,29 +22,25 @@ namespace PartnerModeGo
 {
     public partial class MainWindow : Window
     {
+        GameCalculator cal;
         public MainWindow()
         {
             InitializeComponent();
-            //settingGrid.Visibility = Visibility.Hidden;
-            //gameGrid.Visibility = Visibility.Hidden;
-
-            //settingPage.OkAction = SettingOk;
-            //settingPage.CancelAction = SettingCancel;
+            m_Board.MousePlayEvent += Board_MousePlayEvent;
         }
 
-        //private void SettingCancel()
-        //{
-        //    settingGrid.Visibility = Visibility.Hidden;
-        //}
+        private void Board_MousePlayEvent(int stepNum, int x, int y)
+        {
+            cal.OutsiderMoveArrived(stepNum, x, y, false, false);
+        }
 
-        //private void SettingOk()
-        //{
 
-        //}
+        public MainWindowVM ViewModel { get { return ((MainWindowVM)DataContext); } }
 
         private void Menu_VsSelfClick(object sender, RoutedEventArgs e)
         {
-            m_Board.BoardMode = BoardMode.AutoPlaying;
+            //m_Board.BoardMode = BoardMode.AutoPlaying;
+            m_Board.BoardMode = BoardMode.Playing;
             GameSettingDialog w = new GameSettingDialog();
             w.DataContext = this.DataContext;
             w.Owner = this;
@@ -52,12 +48,27 @@ namespace PartnerModeGo
             w.ShowDialog();
             if (w.DialogResult == true)
             {
-                GameCalculator cal = new GameCalculator((DataContext as MainWindowVM).BlackPlayers.ToArray(), (DataContext as MainWindowVM).WhitePlayers.ToArray(), (DataContext as MainWindowVM).GameLoopTimes, 19);
+                cal = new GameCalculator(ViewModel.Players.ToArray(), ViewModel.GameLoopTimes, 19);
                 cal.GameOverCallback = GameOver;
                 cal.UICallback = Play;
                 cal.TerritoryCallback = ShowTerritory;
                 cal.WinRateCallback = ShowWinRate;
+                cal.HandTurnCallback = HandTurnCallback;
                 cal.Start();
+            }
+        }
+
+        private void HandTurnCallback(int stepNum, Player player)
+        {
+            switch (player.Type)
+            {
+                case PlayerType.AI:
+                    break;
+                case PlayerType.Host:
+                    m_Board.IsHostTurn = true;
+                    break;
+                case PlayerType.RealBoard:
+                    break;
             }
         }
 
@@ -129,7 +140,13 @@ namespace PartnerModeGo
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                Title = "已连接";
+                foreach (var player in ViewModel.Players)
+                {
+                    if (player.Type == PlayerType.RealBoard)
+                    {
+                        player.IsConnected = true;
+                    }
+                }
             }));
         }
 
@@ -149,13 +166,21 @@ namespace PartnerModeGo
 
                 if (isOk)
                 {
-                    m_Board.Visibility = Visibility.Visible;
-                    m_Board.InitGame();
-                    m_Board.SetStones(boardState);
+                    foreach (var player in ViewModel.Players)
+                    {
+                        if (player.Type == PlayerType.RealBoard)
+                        {
+                            player.IsBoardRecognized = true;
+                        }
+                    }
+
+                    //m_Board.Visibility = Visibility.Visible;
+                    //m_Board.InitGame();
+                    //m_Board.SetStones(boardState);
                 }
                 else
                 {
-                    m_Board.Visibility = Visibility.Hidden;
+                    //m_Board.Visibility = Visibility.Hidden;
                 }
 
                 Console.WriteLine("   boardState len: " + boardState.Count());

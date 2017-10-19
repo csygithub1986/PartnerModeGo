@@ -16,47 +16,29 @@ namespace PartnerModeGo
         public MainWindowVM()
         {
             //默认分别初始2个玩家
-            _BlackPlayers = new ObservableCollection<Player>();
-            _WhitePlayers = new ObservableCollection<Player>();
+            _Players = new ObservableCollection<Player>();
             for (int i = 0; i < 2; i++)
             {
-                _BlackPlayers.Add(new Player() { Type = PlayerType.AI, Color = 2 });
-                _WhitePlayers.Add(new Player() { Type = PlayerType.AI, Color = 1 });
+                _Players.Add(new Player() { Type = PlayerType.AI, Color = 2 });
+                _Players.Add(new Player() { Type = PlayerType.AI, Color = 1 });
             }
             GameLoopTimes = 1;
         }
 
 
-        public ObservableCollection<Player> BlackPlayers
+        public ObservableCollection<Player> Players
         {
-            get { return _BlackPlayers; }
+            get { return _Players; }
             set
             {
-                if (_BlackPlayers != value)
+                if (_Players != value)
                 {
-                    _BlackPlayers = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BlackPlayers"));
+                    _Players = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Players"));
                 }
             }
         }
-        private ObservableCollection<Player> _BlackPlayers;
-
-        public ObservableCollection<Player> WhitePlayers
-        {
-            get { return _WhitePlayers; }
-            set
-            {
-                if (_WhitePlayers != value)
-                {
-                    _WhitePlayers = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WhitePlayers"));
-
-                }
-            }
-        }
-        private ObservableCollection<Player> _WhitePlayers;
-
-
+        private ObservableCollection<Player> _Players;
 
         /// <summary>
         /// 用于棋力自测或者和其他软件对测时，测试的盘数。（测试用，界面不显示）

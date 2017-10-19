@@ -15,6 +15,10 @@ namespace PartnerModeGo
         /// 2黑，1白
         /// </summary>
         public int Turn { get; set; }
+        /// <summary>
+        /// 最后一步的StepNum，没下时是-1
+        /// </summary>
+        public int LastSetpNum;
         public Position LastMove { get; set; }
         public int LastEatCount { get; set; }
         public int Size { get; set; }
@@ -24,6 +28,7 @@ namespace PartnerModeGo
             Size = size;
             State = new int[size, size];
             Turn = 2;
+            LastSetpNum = -1;
         }
 
     }

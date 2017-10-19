@@ -7,8 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartnerModeGo", "PartnerMod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{9F84C73F-8D64-4C1B-B0C3-8A4A28C2BD9A}"
 	ProjectSection(SolutionItems) = preProject
-		PartnerModeGo\功能设计.docx = PartnerModeGo\功能设计.docx
-		PartnerModeGo\技术设计.docx = PartnerModeGo\技术设计.docx
+		功能设计.docx = 功能设计.docx
+		开发日志.txt = 开发日志.txt
+		技术设计.docx = 技术设计.docx
 	EndProjectSection
 EndProject
 Global

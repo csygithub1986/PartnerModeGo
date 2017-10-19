@@ -14,9 +14,10 @@ namespace PartnerModeGo.Game
         private int m_TotalGameLoopTimes;
         private int m_CurrentGameTimes;
         //private Player[] aiSettings;
+        private Player[] m_Players;
+        private int m_BoardSize;
         private Player[] m_BlackPlayers;
         private Player[] m_WhitePlayers;
-        private int m_BoardSize;
 
         public Action StartCallback;
         public Action<int, int, int, bool, bool> UICallback;
@@ -24,20 +25,22 @@ namespace PartnerModeGo.Game
         public Action<int[]> TerritoryCallback;
         public Action<float> WinRateCallback;
 
-        public Action<int> HandTurnCallback;//移交顺序
+        public Action<int, Player> HandTurnCallback;//移交顺序
 
         /// <summary>
         /// 历史记录 分别记录 步数、x坐标、y坐标、ispass、isresign
         /// </summary>
         private List<Tuple<int, int, bool, bool>> m_History;
 
-        public GameCalculator(Player[] blackPlayers, Player[] whitePlayers, int totalGameLoopTimes, int boardSize)
+        public GameCalculator(Player[] players, int totalGameLoopTimes, int boardSize)
         {
-            m_BlackPlayers = blackPlayers;
-            m_WhitePlayers = whitePlayers;
+            m_Players = players;
             m_BoardSize = boardSize;
             m_TotalGameLoopTimes = totalGameLoopTimes;
             m_CurrentGameTimes = 1;
+
+            m_BlackPlayers = players.Where(p => p.Color == 2).ToArray();
+            m_WhitePlayers = players.Where(p => p.Color == 1).ToArray();
         }
 
         public void InitGame()
@@ -59,7 +62,7 @@ namespace PartnerModeGo.Game
             }
             else
             {
-                HandTurnCallback?.Invoke(0);
+                HandTurnCallback?.Invoke(0, m_BlackPlayers[0]);
             }
         }
 
@@ -172,7 +175,7 @@ namespace PartnerModeGo.Game
             else
             {
                 //如果不是zen，交出控制
-                HandTurnCallback?.Invoke(stepNum);
+                HandTurnCallback?.Invoke(stepNum, player);
             }
         }
 
@@ -252,7 +255,7 @@ namespace PartnerModeGo.Game
             else
             {
                 //如果不是zen，交出控制
-                HandTurnCallback?.Invoke(stepNum);
+                HandTurnCallback?.Invoke(stepNum, player);
             }
         }
 
