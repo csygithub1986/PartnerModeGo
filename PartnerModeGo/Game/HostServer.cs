@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace PartnerModeGo.Game
 {
-    public class GameCalculator
+    public class HostServer
     {
         private int m_TotalGameLoopTimes;
         private int m_CurrentGameTimes;
@@ -32,7 +32,7 @@ namespace PartnerModeGo.Game
         /// </summary>
         private List<Tuple<int, int, bool, bool>> m_History;
 
-        public GameCalculator(Player[] players, int totalGameLoopTimes, int boardSize)
+        public HostServer(Player[] players, int totalGameLoopTimes, int boardSize)
         {
             m_Players = players;
             m_BoardSize = boardSize;

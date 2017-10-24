@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PartnerModeGo" Closed="Window_Closed"
         xmlns:gameSetting="clr-namespace:PartnerModeGo.Game"
         mc:Ignorable="d"
-        Title="自测" Height="54" Width="90" WindowStartupLocation="CenterScreen">
+        Title="自测" Height="544" Width="900" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowVM/>
     </Window.DataContext>
@@ -40,10 +40,10 @@
             </Grid.ColumnDefinitions>
 
             <Viewbox >
-                <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
+                <local:Board x:Name="m_Board" Visibility="Hidden" BoardSize="19" BoardMode="Playing"></local:Board>
             </Viewbox>
             <Viewbox Grid.Column="1">
-                <local:Board x:Name="m_BoardAnalyse" Visibility="Visible" BoardSize="19" BoardMode="Analyse"></local:Board>
+                <local:Board x:Name="m_BoardAnalyse" Visibility="Hidden" BoardSize="19" BoardMode="Analyse"></local:Board>
             </Viewbox>
             <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="360" Height="360"></Image>
 

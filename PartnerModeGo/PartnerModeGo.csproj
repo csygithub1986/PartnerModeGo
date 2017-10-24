@@ -37,6 +37,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -56,16 +58,47 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\ImageHelper.cs" />
+    <Compile Include="Connected Services\WcfService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="PagesAndDialog\CreateGamePage.xaml.cs">
+      <DependentUpon>CreateGamePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Game\Converters.cs" />
     <Compile Include="Game\Enums.cs" />
+    <Compile Include="PagesAndDialog\HallPage.xaml.cs">
+      <DependentUpon>HallPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PagesAndDialog\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PagesAndDialog\PlayingPage.xaml.cs">
+      <DependentUpon>PlayingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Rule\IRule.cs" />
     <Compile Include="Rule\RuleDemo.cs" />
     <Compile Include="Tcp\CommonDataDefine.cs" />
     <Compile Include="Tcp\TcpServer.cs" />
     <Compile Include="Tcp\TcpDataHandler.cs" />
+    <Compile Include="Wcf\ServiceCallback.cs" />
+    <Compile Include="Wcf\ServiceProxy.cs" />
     <Page Include="Board\Board.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PagesAndDialog\CreateGamePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagesAndDialog\HallPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagesAndDialog\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -91,9 +124,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="PagesAndDialog\PlayingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game\GameCalculator.cs" />
+    <Compile Include="Game\HostServer.cs" />
     <Compile Include="Game\GameSettingDialog.xaml.cs">
       <DependentUpon>GameSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -116,6 +153,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\WcfService\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\WcfService\item1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\WcfService\item2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\WcfService\item3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\WcfService\WcfService.wsdl" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -132,9 +182,23 @@
     <Resource Include="Images\piece_w.png" />
     <Resource Include="Images\red.png" />
     <Resource Include="Images\star.png" />
+    <None Include="Connected Services\WcfService\item.disco" />
+    <None Include="Connected Services\WcfService\configuration91.svcinfo" />
+    <None Include="Connected Services\WcfService\configuration.svcinfo" />
+    <None Include="Connected Services\WcfService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="Zen.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\WcfService\" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

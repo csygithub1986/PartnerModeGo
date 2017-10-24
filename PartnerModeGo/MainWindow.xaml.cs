@@ -22,7 +22,7 @@ namespace PartnerModeGo
 {
     public partial class MainWindow : Window
     {
-        GameCalculator cal;
+        HostServer cal;
         public MainWindow()
         {
             InitializeComponent();
@@ -48,7 +48,7 @@ namespace PartnerModeGo
             w.ShowDialog();
             if (w.DialogResult == true)
             {
-                cal = new GameCalculator(ViewModel.Players.ToArray(), ViewModel.GameLoopTimes, 19);
+                cal = new HostServer(ViewModel.Players.ToArray(), ViewModel.GameLoopTimes, 19);
                 cal.GameOverCallback = GameOver;
                 cal.UICallback = Play;
                 cal.TerritoryCallback = ShowTerritory;

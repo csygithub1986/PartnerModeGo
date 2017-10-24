@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost/LeagueGoServer/WcfService/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="ArrayOfPlayer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Player" nillable="true" type="tns:Player" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPlayer" nillable="true" type="tns:ArrayOfPlayer" />
+  <xs:complexType name="Player">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Client" nillable="true" type="tns:ClientInfo" />
+      <xs:element minOccurs="0" name="Color" type="xs:int" />
+      <xs:element minOccurs="0" name="ID" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" type="tns:PlayerType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Player" nillable="true" type="tns:Player" />
+  <xs:complexType name="ClientInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientCallback" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="ClientChannel" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="HeartbeatTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="PlayingState" type="tns:ClientState" />
+      <xs:element minOccurs="0" name="SessionID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientInfo" nillable="true" type="tns:ClientInfo" />
+  <xs:simpleType name="ClientState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Idel" />
+      <xs:enumeration value="Waiting" />
+      <xs:enumeration value="Playing" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ClientState" nillable="true" type="tns:ClientState" />
+  <xs:simpleType name="PlayerType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AI" />
+      <xs:enumeration value="RealBoard" />
+      <xs:enumeration value="Host" />
+      <xs:enumeration value="Internet" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="PlayerType" nillable="true" type="tns:PlayerType" />
+  <xs:complexType name="GameSetting">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BoardSize" type="xs:int" />
+      <xs:element minOccurs="0" name="Handicap" type="xs:int" />
+      <xs:element minOccurs="0" name="Komi" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeSetting" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GameSetting" nillable="true" type="tns:GameSetting" />
+  <xs:complexType name="Game">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BoardState" nillable="true" type="q1:ArrayOfint" />
+      <xs:element minOccurs="0" name="CurrentPlayer" nillable="true" type="tns:Player" />
+      <xs:element minOccurs="0" name="GameID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="GameSetting" nillable="true" type="tns:GameSetting" />
+      <xs:element minOccurs="0" name="MoveHistory" nillable="true" type="tns:ArrayOfMovePoint" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Players" nillable="true" type="tns:ArrayOfPlayer" />
+      <xs:element minOccurs="0" name="State" type="tns:GameState" />
+      <xs:element minOccurs="0" name="StepNum" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Game" nillable="true" type="tns:Game" />
+  <xs:complexType name="ArrayOfMovePoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MovePoint" nillable="true" type="tns:MovePoint" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMovePoint" nillable="true" type="tns:ArrayOfMovePoint" />
+  <xs:complexType name="MovePoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="X" type="xs:int" />
+      <xs:element minOccurs="0" name="Y" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MovePoint" nillable="true" type="tns:MovePoint" />
+  <xs:simpleType name="GameState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Waiting" />
+      <xs:enumeration value="Playing" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="GameState" nillable="true" type="tns:GameState" />
+  <xs:complexType name="ArrayOfGame">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Game" nillable="true" type="tns:Game" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfGame" nillable="true" type="tns:ArrayOfGame" />
+</xs:schema>

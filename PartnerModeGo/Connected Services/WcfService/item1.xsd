@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost/LeagueGoServer/WcfService/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" />
+  <xs:import schemaLocation="http://localhost/LeagueGoServer/WcfService/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="Login">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoginResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="LoginResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateGame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="players" nillable="true" type="q1:ArrayOfPlayer" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="gameSettign" nillable="true" type="q2:GameSetting" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateGameResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ApplyToJoinGame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="gameID" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="playerID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ApplyToJoinGameResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GameStart">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GameStartResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ClientCommitMove">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="stepNum" type="xs:int" />
+        <xs:element minOccurs="0" name="x" type="xs:int" />
+        <xs:element minOccurs="0" name="y" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ClientCommitMoveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DistributeNewGame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q3:Game" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DistributeAllGameInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q4:ArrayOfGame" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DistributeApplyGameResult">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="success" type="xs:boolean" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q5:Game" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DistributeGameStart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="blackPlayerIDs" nillable="true" type="q6:ArrayOfint" />
+        <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="whitePlayerIDs" nillable="true" type="q7:ArrayOfint" />
+        <xs:element minOccurs="0" name="currentPlayerID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DistributeMove">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="stepNum" type="xs:int" />
+        <xs:element minOccurs="0" name="x" type="xs:int" />
+        <xs:element minOccurs="0" name="y" type="xs:int" />
+        <xs:element minOccurs="0" name="nextPlayerID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
