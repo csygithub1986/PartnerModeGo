@@ -1,9 +1,9 @@
-﻿<Window x:Class="PartnerModeGo.Game.GameSettingDialog"
+﻿<Window x:Class="PartnerModeGo.GameSettingDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PartnerModeGo.Game"  WindowStartupLocation="CenterScreen"
+        xmlns:local="clr-namespace:PartnerModeGo"  WindowStartupLocation="CenterScreen"
         x:Name="dialog"
         mc:Ignorable="d"
         Title="自测设置" Height="430" Width="600">

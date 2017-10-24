@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace PartnerModeGo.Game
+namespace PartnerModeGo
 {
     public class SettingConverter : IValueConverter
     {

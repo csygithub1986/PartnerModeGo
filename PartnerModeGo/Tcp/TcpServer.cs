@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PartnerModeGo.Tcp
+namespace PartnerModeGo
 {
     /// <summary>
     /// 只用于接收来自Phone的连接，只有一个连接，单例。目前未加入UDP搜索

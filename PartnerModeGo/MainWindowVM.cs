@@ -1,4 +1,4 @@
-﻿using PartnerModeGo.Game;
+﻿using PartnerModeGo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

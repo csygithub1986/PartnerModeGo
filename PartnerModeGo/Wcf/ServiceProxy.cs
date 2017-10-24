@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace PartnerModeGo.Wcf
+namespace PartnerModeGo
 {
     public class ServiceProxy
     {
@@ -28,6 +28,8 @@ namespace PartnerModeGo.Wcf
         }
         private ServiceProxy() { }
         #endregion
+
+        public GlobalData GlobalData { get; set; }
 
         private IWcfService m_wcfClient;
 
@@ -103,7 +105,7 @@ namespace PartnerModeGo.Wcf
 
         public void CreateGame(Player[] players, GameSetting setting)
         {
-            m_wcfClient.CreateGame(players, setting);
+            //m_wcfClient.CreateGame(players, setting);
         }
 
         public void ApplyToJoinGame(string gameID, int playerID)

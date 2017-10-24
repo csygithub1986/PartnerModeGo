@@ -13,7 +13,7 @@ namespace PartnerModeGo
             {
                 for (int j = 0; j < size; j++)
                 {
-                    copyState[i, j] = state.State[i,j];
+                    copyState[i, j] = state.State[i, j];
                 }
             }
             //改变刚落子点的状态
@@ -38,7 +38,7 @@ namespace PartnerModeGo
                     int y = selectPosition.Y + j;
                     if (x >= 0 && x < size && y >= 0 && y < size)//未超出棋盘边界
                     {
-                        if (copyState[x, y] ==3 -state.Turn && history[x, y] == 0)//对方子、且不再历史表
+                        if (copyState[x, y] == 3 - state.Turn && history[x, y] == 0)//对方子、且不再历史表
                         {
                             List<Position> list = GetConnectedPieces(copyState, new Position(x, y));//获得棋块
                             foreach (var item in list)

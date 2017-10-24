@@ -63,6 +63,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Models\GlobalData.cs" />
     <Compile Include="PagesAndDialog\CreateGamePage.xaml.cs">
       <DependentUpon>CreateGamePage.xaml</DependentUpon>
     </Compile>
@@ -71,6 +72,7 @@
     <Compile Include="PagesAndDialog\HallPage.xaml.cs">
       <DependentUpon>HallPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PagesAndDialog\HallPageVM.cs" />
     <Compile Include="PagesAndDialog\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>

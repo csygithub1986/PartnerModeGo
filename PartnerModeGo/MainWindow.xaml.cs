@@ -1,6 +1,4 @@
-﻿using PartnerModeGo.Common;
-using PartnerModeGo.Game;
-using PartnerModeGo.Tcp;
+﻿using PartnerModeGo;
 using System;
 using System.Collections.Generic;
 using System.Linq;

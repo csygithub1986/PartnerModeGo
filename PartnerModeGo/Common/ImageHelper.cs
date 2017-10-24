@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Windows;
 using System.Drawing.Imaging;
 
-namespace PartnerModeGo.Common
+namespace PartnerModeGo
 {
     class ImageHelper
     {

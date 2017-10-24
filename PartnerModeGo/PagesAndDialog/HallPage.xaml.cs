@@ -20,9 +20,28 @@ namespace PartnerModeGo
     /// </summary>
     public partial class HallPage : UserControl
     {
+        private HallPageVM VM;
         public HallPage()
         {
             InitializeComponent();
+            VM = new HallPageVM();
+            DataContext = VM;
+        }
+
+        private void Join_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NewGame_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //控件加载以后，向服务器请求一次所有列表
+
         }
     }
 }

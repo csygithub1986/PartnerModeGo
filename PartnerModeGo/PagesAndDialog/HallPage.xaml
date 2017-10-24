@@ -4,9 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PartnerModeGo"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
+             d:DesignHeight="500" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel>
+            <Label Content="棋局列表" HorizontalContentAlignment="Center" DockPanel.Dock="Top"></Label>
+            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding GlobalData,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}"></ListBox>
+        </DockPanel>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel>
+                <Label Content="棋局详细信息" HorizontalContentAlignment="Center" DockPanel.Dock="Top"/>
+                <ListBox ItemsSource="{Binding SelectedItem.Players,ElementName=listBoxGameList}"></ListBox>
+            </DockPanel>
+            <Button Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
+            <Button Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -1,4 +1,4 @@
-﻿using PartnerModeGo.Game;
+﻿using PartnerModeGo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PartnerModeGo.Game
+namespace PartnerModeGo
 {
     public class HostServer
     {

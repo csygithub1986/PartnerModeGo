@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PartnerModeGo.WcfService;
 
-namespace PartnerModeGo.Wcf
+namespace PartnerModeGo
 {
     public class ServiceCallback : WcfService.IWcfServiceCallback
     {

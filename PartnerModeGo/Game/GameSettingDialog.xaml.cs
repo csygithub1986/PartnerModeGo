@@ -1,5 +1,4 @@
-﻿using PartnerModeGo.Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace PartnerModeGo.Game
+namespace PartnerModeGo
 {
     /// <summary>
     /// SelfVsConfigWin.xaml 的交互逻辑

@@ -1,4 +1,4 @@
-﻿using PartnerModeGo.Game;
+﻿using PartnerModeGo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PartnerModeGo.Game
+namespace PartnerModeGo
 {
     /// <summary>
     /// 比赛参数设置
