@@ -57,7 +57,7 @@ namespace PartnerModeGo
         //    }
         //}
 
-        private void HandTurnCallback(int stepNum, Player player)
+        private void HandTurnCallback(int stepNum, Player2 player)
         {
             switch (player.Type)
             {

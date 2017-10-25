@@ -19,6 +19,8 @@ namespace PartnerModeGo
             set { _SelectedGame = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedGame")); }
         }
         private Game _SelectedGame;
+
+
         #endregion
 
         public HallViewModel()

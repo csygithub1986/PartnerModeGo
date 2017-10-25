@@ -125,7 +125,7 @@ namespace PartnerModeGo
             m_wcfClient.GameStart();
         }
 
-        public void CreateGame(Player[] players, GameSetting setting)
+        public void CreateGame(Player2[] players, GameSetting setting)
         {
             //m_wcfClient.CreateGame(players, setting);
         }

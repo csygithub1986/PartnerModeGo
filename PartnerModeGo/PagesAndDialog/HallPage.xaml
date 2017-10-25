@@ -38,7 +38,7 @@
                 </StackPanel>
 
                 <ListBox Grid.Row="1" ItemsSource="{Binding Players,Converter={StaticResource PlayerConverter},ConverterParameter=BlackPlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectedItem="{Binding SelectedPlayer,RelativeSource={RelativeSource TemplatedParent}}"></ListBox>
-                <ListBox Grid.Row="2" ItemsSource="{Binding Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}"></ListBox>
+                <ListBox Grid.Row="2" ItemsSource="{Binding Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectedItem="{Binding SelectedPlayer,RelativeSource={RelativeSource TemplatedParent}}"></ListBox>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -61,7 +61,23 @@
 
             <DockPanel>
                 <Label Content="棋局详细信息" HorizontalContentAlignment="Center" DockPanel.Dock="Top"/>
-                <ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Height="30">
+                        <TextBlock Text="{Binding SelectedGame.GameSetting.BoardSize}" Width="80"/>
+                        <TextBlock Text="{Binding SelectedGame.GameSetting.Handicap}" Width="80"/>
+                        <TextBlock Text="{Binding SelectedGame.GameSetting.Komi}" Width="80"/>
+                    </StackPanel>
+
+                    <ListBox x:Name="blackListbox" Grid.Row="1" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=BlackPlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}"  SelectionChanged="blackListbox_SelectionChanged"></ListBox>
+                    <ListBox x:Name="whiteListbox" Grid.Row="2" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectionChanged="whiteListbox_SelectionChanged"></ListBox>
+                </Grid>
+                <!--<ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>-->
             </DockPanel>
             <Button Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
             <Button Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>

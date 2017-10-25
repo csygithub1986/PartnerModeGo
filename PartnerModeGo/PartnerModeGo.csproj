@@ -145,7 +145,7 @@
     <Compile Include="Game\GameSettingDialog.xaml.cs">
       <DependentUpon>GameSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\Player2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

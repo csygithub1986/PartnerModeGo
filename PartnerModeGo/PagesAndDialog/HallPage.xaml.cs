@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartnerModeGo.WcfService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,18 +31,32 @@ namespace PartnerModeGo
 
         private void Join_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //控件加载以后，向服务器请求一次所有列表
-
         }
+
+        private void blackListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (blackListbox.SelectedItem != null)
+            {
+                whiteListbox.SelectedItem = null;
+            }
+        }
+
+        private void whiteListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (whiteListbox.SelectedItem != null)
+            {
+                blackListbox.SelectedItem = null;
+            }
+        }
+
     }
 }

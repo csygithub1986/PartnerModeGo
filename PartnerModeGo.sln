@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{9F84C73F-8D6
 		技术设计.docx = 技术设计.docx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueGoServer", "LeagueGoServer\LeagueGoServer.csproj", "{4E6D2E28-DE77-41C8-893C-DFA560F1FAC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{508DBDB7-60EF-4A6D-B96B-2A47238D13B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{508DBDB7-60EF-4A6D-B96B-2A47238D13B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{508DBDB7-60EF-4A6D-B96B-2A47238D13B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6D2E28-DE77-41C8-893C-DFA560F1FAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6D2E28-DE77-41C8-893C-DFA560F1FAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6D2E28-DE77-41C8-893C-DFA560F1FAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6D2E28-DE77-41C8-893C-DFA560F1FAC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

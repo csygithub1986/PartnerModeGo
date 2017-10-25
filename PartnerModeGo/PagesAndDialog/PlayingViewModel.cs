@@ -15,17 +15,17 @@ namespace PartnerModeGo
         public PlayingViewModel()
         {
             //默认分别初始2个玩家
-            _Players = new ObservableCollection<Player>();
+            _Players = new ObservableCollection<Player2>();
             for (int i = 0; i < 2; i++)
             {
-                _Players.Add(new Player() { Type = PlayerType.AI, Color = 2 });
-                _Players.Add(new Player() { Type = PlayerType.AI, Color = 1 });
+                _Players.Add(new Player2() { Type = PlayerType.AI, Color = 2 });
+                _Players.Add(new Player2() { Type = PlayerType.AI, Color = 1 });
             }
             GameLoopTimes = 1;
         }
 
 
-        public ObservableCollection<Player> Players
+        public ObservableCollection<Player2> Players
         {
             get { return _Players; }
             set
@@ -37,7 +37,7 @@ namespace PartnerModeGo
                 }
             }
         }
-        private ObservableCollection<Player> _Players;
+        private ObservableCollection<Player2> _Players;
 
         /// <summary>
         /// 用于棋力自测或者和其他软件对测时，测试的盘数。（测试用，界面不显示）

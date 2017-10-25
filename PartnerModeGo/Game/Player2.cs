@@ -13,13 +13,13 @@ namespace PartnerModeGo
     /// <summary>
     /// 比赛参数设置
     /// </summary>
-    public class Player : INotifyPropertyChanged
+    public class Player2 : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public event Action<Player, bool> ConnectChanged;
-        public event Action<Player, bool> RecognizeChanged;
+        public event Action<Player2, bool> ConnectChanged;
+        public event Action<Player2, bool> RecognizeChanged;
 
-        public Player()
+        public Player2()
         {
         }
 
