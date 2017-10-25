@@ -4,8 +4,44 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PartnerModeGo"
+             xmlns:srv="clr-namespace:PartnerModeGo.WcfService"
              mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:PlayerConverter x:Key="PlayerConverter"/>
+        <DataTemplate x:Key="GameItemTemplate" DataType="{x:Type srv:Game}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" Width="100"/>
+                <TextBlock Text="{Binding Players.Length}" Width="50"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PlayerItemTemplate" DataType="{x:Type srv:Player}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" Width="100"/>
+                <TextBlock Text="{Binding Type}" Width="50"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GameDetailTemplate" DataType="{x:Type srv:Game}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" Height="30">
+                    <TextBlock Text="{Binding GameSetting.BoardSize}" Width="80"/>
+                    <TextBlock Text="{Binding GameSetting.Handicap}" Width="80"/>
+                    <TextBlock Text="{Binding GameSetting.Komi}" Width="80"/>
+                </StackPanel>
+
+                <ListBox Grid.Row="1" ItemsSource="{Binding Players,Converter={StaticResource PlayerConverter},ConverterParameter=BlackPlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectedItem="{Binding SelectedPlayer,RelativeSource={RelativeSource TemplatedParent}}"></ListBox>
+                <ListBox Grid.Row="2" ItemsSource="{Binding Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}"></ListBox>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -14,7 +50,7 @@
 
         <DockPanel>
             <Label Content="棋局列表" HorizontalContentAlignment="Center" DockPanel.Dock="Top"></Label>
-            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding GlobalData,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}"></ListBox>
+            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding GlobalData.GameList,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}" ItemTemplate="{StaticResource GameItemTemplate}"></ListBox>
         </DockPanel>
 
         <Grid Grid.Column="1">
@@ -25,7 +61,7 @@
 
             <DockPanel>
                 <Label Content="棋局详细信息" HorizontalContentAlignment="Center" DockPanel.Dock="Top"/>
-                <ListBox ItemsSource="{Binding SelectedItem.Players,ElementName=listBoxGameList}"></ListBox>
+                <ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>
             </DockPanel>
             <Button Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
             <Button Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>

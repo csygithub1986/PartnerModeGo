@@ -20,92 +20,28 @@ namespace PartnerModeGo
 {
     public partial class MainWindow : Window
     {
-        HostServer cal;
+        public static MainWindow Instance;
         public MainWindow()
         {
             InitializeComponent();
-            m_Board.MousePlayEvent += Board_MousePlayEvent;
+            Instance = this;
+            mainGrid.Children.Add(new HomePage());
         }
 
-        private void Board_MousePlayEvent(int stepNum, int x, int y)
+        public void ChangePageTo(UserControl uc)
         {
-            cal.OutsiderMoveArrived(stepNum, x, y, false, false);
+            mainGrid.Children.Clear();
+            mainGrid.Children.Add(uc);
         }
 
-
-        public MainWindowVM ViewModel { get { return ((MainWindowVM)DataContext); } }
-
-        private void Menu_VsSelfClick(object sender, RoutedEventArgs e)
+        public void ShowProcessWindowAsync(String message, Func<Object[], Object> method, Action<Object> callback, params Object[] args)
         {
-            //m_Board.BoardMode = BoardMode.AutoPlaying;
-            m_Board.BoardMode = BoardMode.Playing;
-            GameSettingDialog w = new GameSettingDialog();
-            w.DataContext = this.DataContext;
-            w.Owner = this;
-            w.WaitingConnect = WaitingConnect;
-            w.ShowDialog();
-            if (w.DialogResult == true)
+            Action action = new Action(() =>
             {
-                cal = new HostServer(ViewModel.Players.ToArray(), ViewModel.GameLoopTimes, 19);
-                cal.GameOverCallback = GameOver;
-                cal.UICallback = Play;
-                cal.TerritoryCallback = ShowTerritory;
-                cal.WinRateCallback = ShowWinRate;
-                cal.HandTurnCallback = HandTurnCallback;
-                cal.Start();
-            }
-        }
-
-        private void HandTurnCallback(int stepNum, Player player)
-        {
-            switch (player.Type)
-            {
-                case PlayerType.AI:
-                    break;
-                case PlayerType.Host:
-                    m_Board.IsHostTurn = true;
-                    break;
-                case PlayerType.RealBoard:
-                    break;
-            }
-        }
-
-        private void WaitingConnect()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ShowTerritory(int[] territory)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                m_BoardAnalyse.ShowAffects(territory);
-            }));
-        }
-
-        /// <summary>
-        /// stepNum, x, y, isPass, isResign
-        /// </summary>
-        /// <param name="stepNum"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="isPass"></param>
-        /// <param name="isResign"></param>
-        private void Play(int stepNum, int x, int y, bool isPass, bool isResign)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                if (stepNum == 0)
-                {
-                    m_Board.InitGame();
-                }
-                m_Board.Play(x, y, 2 - stepNum % 2);
-            }));
-        }
-
-        private void GameOver(int stepNum, int x, int y, bool isPass, bool isResign)
-        {
-            MessageBox.Show("Over");
+                this.Dispatcher.Invoke(new Action(() => { new WindowProcessing(this, message, method, callback, args).ShowDialog(); }));
+                return;
+            });
+            action.BeginInvoke(null, null);
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -113,82 +49,9 @@ namespace PartnerModeGo
             Environment.Exit(0);
         }
 
-        private void ShowWinRate(float bRate)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                blackRate.Width = new GridLength(bRate, GridUnitType.Star);
-                whiteRate.Width = new GridLength(1 - bRate, GridUnitType.Star);
-                txtBlack.Text = bRate.ToString("F2");
-                txtWhite.Text = (1 - bRate).ToString("F2");
-            }));
-        }
 
-        //打开服务
-        private void Menu_OpenServerClick(object sender, RoutedEventArgs e)
-        {
-            TcpServer.Instance.WindowOnPhoneConnected += OnPhoneConnected;
-
-            TcpDataHandler.Instance.WindowReceivePhoneStepData += ReceivePhoneStepData;
-            TcpDataHandler.Instance.WindowReceivePhonePreviewData += ReceivePhonePreviewData;
-            TcpServer.Instance.Start();
-        }
-
-        private void OnPhoneConnected(string obj)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                foreach (var player in ViewModel.Players)
-                {
-                    if (player.Type == PlayerType.RealBoard)
-                    {
-                        player.IsConnected = true;
-                    }
-                }
-            }));
-        }
-
-        private void ReceivePhoneStepData(int x, int y, int color, int[] boardState)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                m_Board.Play(x, y, color);
-            }));
-        }
-
-        private void ReceivePhonePreviewData(byte[] imageBytes, bool isOk, int[] boardState)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                m_Image.Source = ImageHelper.ByteArrayToBitmapImage(imageBytes);
-
-                if (isOk)
-                {
-                    foreach (var player in ViewModel.Players)
-                    {
-                        if (player.Type == PlayerType.RealBoard)
-                        {
-                            player.IsBoardRecognized = true;
-                        }
-                    }
-
-                    //m_Board.Visibility = Visibility.Visible;
-                    //m_Board.InitGame();
-                    //m_Board.SetStones(boardState);
-                }
-                else
-                {
-                    //m_Board.Visibility = Visibility.Hidden;
-                }
-
-                Console.WriteLine("   boardState len: " + boardState.Count());
-            }));
-        }
-
-
-        private void Menu_SendStartTestClick(object sender, RoutedEventArgs e)
-        {
-            TcpDataHandler.Instance.SendGameStart(CommonDataDefine.FileName + "=abc.sgf;" + CommonDataDefine.BlackPlayerName + "=BBB;" + CommonDataDefine.WhitePlayerName + "=WWW;");
         }
     }
 }

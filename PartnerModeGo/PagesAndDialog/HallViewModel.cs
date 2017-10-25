@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PartnerModeGo
 {
-    public class HallPageVM : INotifyPropertyChanged
+    public class HallViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -21,6 +21,9 @@ namespace PartnerModeGo
         private Game _SelectedGame;
         #endregion
 
-
+        public HallViewModel()
+        {
+            ServiceProxy.Instance.GetAllGames();
+        }
     }
 }

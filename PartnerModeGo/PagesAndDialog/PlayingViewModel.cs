@@ -1,5 +1,4 @@
-﻿using PartnerModeGo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace PartnerModeGo
 {
-    public class MainWindowVM : INotifyPropertyChanged
+    public class PlayingViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowVM()
+        public PlayingViewModel()
         {
             //默认分别初始2个玩家
             _Players = new ObservableCollection<Player>();

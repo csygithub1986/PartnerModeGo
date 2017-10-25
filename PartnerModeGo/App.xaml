@@ -4,6 +4,69 @@
              xmlns:local="clr-namespace:PartnerModeGo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Color x:Key="ThemeColorDisableBack1" A="#FF" R="#D2" G="#D5" B="#D8"/>
+        <Color x:Key="ThemeColorDisableBorder1" A="#FF" R="#A7" G="#A7" B="#A7"/>
+        <Color x:Key="ThemeColorEnableBack1" A="#FF" R="#2B" G="#98" B="#DD"/>
+        <Color x:Key="ThemeColorEnableBorder1" A="#FF" R="#2B" G="#98" B="#DD"/>
+        <SolidColorBrush x:Key="ThemeBrushEnableBack" Color="{StaticResource ResourceKey=ThemeColorEnableBack1}"/>
+        <SolidColorBrush x:Key="ThemeBrushEnableBorder" Color="{StaticResource ResourceKey=ThemeColorEnableBorder1}"/>
+        <SolidColorBrush x:Key="ThemeBrushDisableBack" Color="{StaticResource ResourceKey=ThemeColorDisableBack1}"/>
+        <SolidColorBrush x:Key="ThemeBrushDisableBorder" Color="{StaticResource ResourceKey=ThemeColorDisableBorder1}"/>
+        <!--特殊 Button 样式-->
+        <Style x:Key="SpecialButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="MainBorder" Background="{StaticResource ResourceKey=ThemeBrushEnableBack}" IsHitTestVisible="True">
+                            <Border x:Name="Membrane" Background="#00FFFFFF">
+                                <ContentPresenter Content="{TemplateBinding  Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="OnMouseEnter">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Membrane">
+                                    <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#51FFFFFF"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                            <Storyboard x:Key="OnMouseLeave">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Membrane">
+                                    <EasingColorKeyFrame KeyTime="0:0:0.1" Value="#00FFFFFF"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource ResourceKey=ThemeBrushDisableBack}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsEnabled" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsPressed" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Membrane" Property="Background" Value="#00FFFFFF"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsEnabled" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsPressed" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Membrane" Property="Background" Value="#51FFFFFF"/>
+                            </MultiTrigger>
+                            <EventTrigger RoutedEvent="UIElement.MouseEnter">
+                                <BeginStoryboard Storyboard="{StaticResource OnMouseEnter}"/>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="UIElement.MouseLeave">
+                                <BeginStoryboard Storyboard="{StaticResource OnMouseLeave}"/>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

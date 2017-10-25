@@ -13,6 +13,7 @@ namespace PartnerModeGo
         public void DistributeAllGameInfo(WcfService.Game[] games)
         {
             Console.WriteLine("收到AllGameInfo");
+            ServiceProxy.Instance.GlobalData.GameList = new System.Collections.ObjectModel.ObservableCollection<Game>(games);
             //Common.GameList = games.ToList();
         }
 

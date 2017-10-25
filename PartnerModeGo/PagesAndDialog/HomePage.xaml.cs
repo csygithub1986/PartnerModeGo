@@ -32,7 +32,39 @@ namespace PartnerModeGo
 
         private void btn_Login_Click(object sender, RoutedEventArgs e)
         {
+            string userName = txtUserName.Text;
+            string ip = txtIP.Text;
+            MainWindow.Instance.ShowProcessWindowAsync("正在登陆......", Login, LoginCallback, userName, ip);
+        }
 
+        private object Login(object[] obj)
+        {
+            string userName = obj[0].ToString();
+            string ip = obj[1].ToString();
+            bool openSuccess = ServiceProxy.Instance.ClientOpen(ip);
+            if (openSuccess)
+            {
+                bool loginSuccess = ServiceProxy.Instance.Login(userName);
+                return loginSuccess;
+            }
+            return false;
+        }
+
+        private void LoginCallback(object obj)
+        {
+            bool reply = (bool)obj;
+            if (reply)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    HallPage page = new HallPage();
+                    MainWindow.Instance.ChangePageTo(page);
+                });
+            }
+            else
+            {
+                MessageBox.Show("登陆失败");
+            }
         }
     }
 }

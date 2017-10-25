@@ -26,16 +26,19 @@ namespace PartnerModeGo
                 return m_Instance;
             }
         }
-        private ServiceProxy() { }
+        private ServiceProxy()
+        {
+            GlobalData = new GlobalData();
+        }
         #endregion
 
         public GlobalData GlobalData { get; set; }
 
         private IWcfService m_wcfClient;
 
-        public void ClientOpen()
+        public bool ClientOpen(string ip)
         {
-            String url = String.Format(CultureInfo.CurrentCulture, "net.tcp://localhost:12121/LeagueGoServer/WcfService/", "127.0.0.1", 12121);
+            String url = String.Format(CultureInfo.CurrentCulture, "net.tcp://localhost:12121/LeagueGoServer/WcfService/", ip, 12121);
             NetTcpBinding tcpBinding = new NetTcpBinding()
             {
                 Name = "netTcpBindConfig",
@@ -78,7 +81,22 @@ namespace PartnerModeGo
             //this.m_instanceContext = new InstanceContext(OccClientServicesCallBack.Instance);
             //this.m_duplexChannel = new DuplexChannelFactory<IPtlcWcfService>(this.m_instanceContext, tcpBinding);
             //this.m_wcfClient = this.m_duplexChannel.CreateChannel(new EndpointAddress(url));
-            var client = new WcfServiceClient(new InstanceContext(new ServiceCallback()), tcpBinding, new EndpointAddress(url));
+
+            try
+            {
+                var client = new WcfServiceClient(new InstanceContext(new ServiceCallback()), tcpBinding, new EndpointAddress(url));
+                if (client == null)
+                {
+                    return false;
+                }
+                m_wcfClient = client;
+                Console.WriteLine("连接成功");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
             //client.InnerDuplexChannel.Closed += (s, e) => m_isConnected = false;
             //client.InnerDuplexChannel.Faulted += (s, e) =>
             //{
@@ -87,15 +105,19 @@ namespace PartnerModeGo
             //        m_isConnected = false; this.OnServerConnectedChanged(new ServerConnectedChangedEventArgs(false, String.Empty));
             //    }
             //};
-            m_wcfClient = client;
-            Console.WriteLine("连接成功");
         }
 
-        public void Login(object userName)
+        public bool Login(object userName)
         {
-            int result = m_wcfClient.Login(userName.ToString());
+            bool result = m_wcfClient.Login(userName.ToString());
 
             Console.WriteLine("登录成功");
+            return result;
+        }
+
+        public void GetAllGames()
+        {
+            m_wcfClient.GetAllGames();
         }
 
         public void GameStart()

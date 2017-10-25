@@ -22,6 +22,12 @@
   <wsdl:message name="IWcfService_Login_OutputMessage">
     <wsdl:part name="parameters" element="tns:LoginResponse" />
   </wsdl:message>
+  <wsdl:message name="IWcfService_GetAllGames_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllGames" />
+  </wsdl:message>
+  <wsdl:message name="IWcfService_GetAllGames_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllGamesResponse" />
+  </wsdl:message>
   <wsdl:message name="IWcfService_CreateGame_InputMessage">
     <wsdl:part name="parameters" element="tns:CreateGame" />
   </wsdl:message>
@@ -66,6 +72,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfService/Login" message="tns:IWcfService_Login_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/LoginResponse" message="tns:IWcfService_Login_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllGames">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWcfService/GetAllGames" message="tns:IWcfService_GetAllGames_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/GetAllGamesResponse" message="tns:IWcfService_GetAllGames_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreateGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfService/CreateGame" message="tns:IWcfService_CreateGame_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/CreateGameResponse" message="tns:IWcfService_CreateGame_OutputMessage" />
@@ -103,6 +113,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
     <wsdl:operation name="Login">
       <soap12:operation soapAction="http://tempuri.org/IWcfService/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllGames">
+      <soap12:operation soapAction="http://tempuri.org/IWcfService/GetAllGames" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

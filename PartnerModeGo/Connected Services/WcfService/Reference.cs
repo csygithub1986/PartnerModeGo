@@ -648,10 +648,16 @@ namespace PartnerModeGo.WcfService {
     public interface IWcfService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/Login", ReplyAction="http://tempuri.org/IWcfService/LoginResponse")]
-        int Login(string userName);
+        bool Login(string userName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/Login", ReplyAction="http://tempuri.org/IWcfService/LoginResponse")]
-        System.Threading.Tasks.Task<int> LoginAsync(string userName);
+        System.Threading.Tasks.Task<bool> LoginAsync(string userName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/GetAllGames", ReplyAction="http://tempuri.org/IWcfService/GetAllGamesResponse")]
+        void GetAllGames();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/GetAllGames", ReplyAction="http://tempuri.org/IWcfService/GetAllGamesResponse")]
+        System.Threading.Tasks.Task GetAllGamesAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/CreateGame", ReplyAction="http://tempuri.org/IWcfService/CreateGameResponse")]
         void CreateGame(PartnerModeGo.WcfService.Player[] players, PartnerModeGo.WcfService.GameSetting gameSettign);
@@ -725,12 +731,20 @@ namespace PartnerModeGo.WcfService {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public int Login(string userName) {
+        public bool Login(string userName) {
             return base.Channel.Login(userName);
         }
         
-        public System.Threading.Tasks.Task<int> LoginAsync(string userName) {
+        public System.Threading.Tasks.Task<bool> LoginAsync(string userName) {
             return base.Channel.LoginAsync(userName);
+        }
+        
+        public void GetAllGames() {
+            base.Channel.GetAllGames();
+        }
+        
+        public System.Threading.Tasks.Task GetAllGamesAsync() {
+            return base.Channel.GetAllGamesAsync();
         }
         
         public void CreateGame(PartnerModeGo.WcfService.Player[] players, PartnerModeGo.WcfService.GameSetting gameSettign) {

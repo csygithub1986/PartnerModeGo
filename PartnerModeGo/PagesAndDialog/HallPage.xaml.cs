@@ -20,11 +20,11 @@ namespace PartnerModeGo
     /// </summary>
     public partial class HallPage : UserControl
     {
-        private HallPageVM VM;
+        private HallViewModel VM;
         public HallPage()
         {
             InitializeComponent();
-            VM = new HallPageVM();
+            VM = new HallViewModel();
             DataContext = VM;
         }
 

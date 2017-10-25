@@ -6,7 +6,52 @@
              xmlns:local="clr-namespace:PartnerModeGo"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
+    <!--<ToolBarPanel DockPanel.Dock="Top">
+            <ToolBar >
+                <Menu>
+                    <MenuItem Header="自我测试">
+                        <MenuItem Header="VsSelf" Click="Menu_VsSelfClick"/>
+                    </MenuItem>
+                    <MenuItem Header="打开服务">
+                        <MenuItem Header="打开服务" Click="Menu_OpenServerClick"/>
+                        <MenuItem Header="SendStart测试" Click="Menu_SendStartTestClick"/>
+                    </MenuItem>
+                </Menu>
+            </ToolBar>
+        </ToolBarPanel>-->
+
+    <Grid Name="gameGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Viewbox >
+            <local:Board x:Name="m_Board" Visibility="Hidden" BoardSize="19" BoardMode="Playing"></local:Board>
+        </Viewbox>
+        <Viewbox Grid.Column="1">
+            <local:Board x:Name="m_BoardAnalyse" Visibility="Hidden" BoardSize="19" BoardMode="Analyse"></local:Board>
+        </Viewbox>
+        <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="360" Height="360"></Image>
+
+        <Grid Grid.Column="1" Grid.Row="1" Background="Gray">
+            <Grid Height="30" Name="rateGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" Name="blackRate"/>
+                    <ColumnDefinition Width="*" Name="whiteRate"/>
+                </Grid.ColumnDefinitions>
+                <Grid Background="Black">
+                    <TextBlock Name="txtBlack" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Background="White" Grid.Column="1">
+                    <TextBlock Name="txtWhite" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+        </Grid>
+
     </Grid>
 </UserControl>
