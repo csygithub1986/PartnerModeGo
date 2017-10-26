@@ -31,6 +31,32 @@ namespace PartnerModeGo
 
         private void Join_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.Instance.ShowProcessWindowAsync("正在进入加入......", Login, LoginCallback, VM.SelectedGame.GameID, VM.SelectedPlayerID);
+        }
+
+        private object Login(object[] obj)
+        {
+            string gameID = obj[0].ToString();
+            int playerID = int.Parse(obj[1].ToString());
+            ServiceProxy.Instance.ApplyToJoinGame(gameID, playerID);
+            return null;
+        }
+
+        private void LoginCallback(object obj)
+        {
+            bool reply = (bool)obj;
+            if (reply)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    HallPage page = new HallPage();
+                    MainWindow.Instance.ChangePageTo(page);
+                });
+            }
+            else
+            {
+                MessageBox.Show("登陆失败");
+            }
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e)
@@ -44,17 +70,37 @@ namespace PartnerModeGo
 
         private void blackListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            CheckCanJoin();
             if (blackListbox.SelectedItem != null)
             {
+                VM.SelectedPlayerID = (blackListbox.SelectedItem as Player).ID;
                 whiteListbox.SelectedItem = null;
             }
         }
 
         private void whiteListbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            CheckCanJoin();
             if (whiteListbox.SelectedItem != null)
             {
+                VM.SelectedPlayerID = (whiteListbox.SelectedItem as Player).ID;
                 blackListbox.SelectedItem = null;
+            }
+        }
+
+        private void CheckCanJoin()
+        {
+            if (blackListbox.SelectedItem == null && whiteListbox.SelectedItem == null)
+            {
+                btn_Join.IsEnabled = false;
+            }
+            else if (blackListbox.SelectedItem != null)
+            {
+                btn_Join.IsEnabled = (blackListbox.SelectedItem as Player).Type == WcfService.PlayerType.Internet && !(blackListbox.SelectedItem as Player).Occupied;
+            }
+            else
+            {
+                btn_Join.IsEnabled = (whiteListbox.SelectedItem as Player).Type == WcfService.PlayerType.Internet && !(whiteListbox.SelectedItem as Player).Occupied;
             }
         }
 

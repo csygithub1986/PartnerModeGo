@@ -35,6 +35,9 @@ namespace PartnerModeGo.WcfService {
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool OccupiedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private PartnerModeGo.WcfService.PlayerType TypeField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -95,6 +98,19 @@ namespace PartnerModeGo.WcfService {
                 if ((object.ReferenceEquals(this.NameField, value) != true)) {
                     this.NameField = value;
                     this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Occupied {
+            get {
+                return this.OccupiedField;
+            }
+            set {
+                if ((this.OccupiedField.Equals(value) != true)) {
+                    this.OccupiedField = value;
+                    this.RaisePropertyChanged("Occupied");
                 }
             }
         }

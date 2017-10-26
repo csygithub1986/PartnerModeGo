@@ -120,10 +120,11 @@ namespace LeagueGoServer
                     if (Common.GameList[gameID].State == GameState.Waiting)
                     {
                         Player player = Common.GameList[gameID].Players.FirstOrDefault(p => p.ID == playerID);
-                        if (player != null && player.Client == null)//后者判断此player位置还未被占用
+                        if (player != null && player.Occupied == false)//后者判断此player位置还未被占用
                         {
 
                             player.Client = currentClient;
+                            player.Occupied = true;
                             foreach (var client in Common.ClientList.Values)
                             {
                                 client.ClientCallback.DistributeApplyGameResult(true, Common.GameList[gameID]);

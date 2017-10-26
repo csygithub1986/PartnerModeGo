@@ -16,6 +16,8 @@ namespace LeagueGoServer.Model
         /// </summary>
         public int Color { get; set; }
 
+        //是否已经被占用
+        public bool Occupied { get; set; }
         /// <summary>
         /// 玩家对应的链接，可以多个玩家对应同一个链接。例如Host本身和RealBoard都是Host的链接
         /// </summary>

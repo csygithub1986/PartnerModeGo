@@ -10,6 +10,9 @@ namespace PartnerModeGo
     public class ServiceCallback : WcfService.IWcfServiceCallback
     {
 
+
+
+
         public void DistributeAllGameInfo(WcfService.Game[] games)
         {
             Console.WriteLine("收到AllGameInfo");
@@ -20,8 +23,7 @@ namespace PartnerModeGo
         public void DistributeApplyGameResult(bool success, WcfService.Game game)
         {
             Console.WriteLine("收到ApplyGameResult  " + success);
-            //Common.GameList.Remove(Common.GameList.FirstOrDefault(p => p.GameID == game.GameID));
-            //Common.GameList.Add(game);
+            //ServiceProxy.Instance.JoinGameCallback
         }
 
         public void DistributeGameStart(int[] blackPlayerIDs, int[] whitePlayerIDs, int currentPlayerID)

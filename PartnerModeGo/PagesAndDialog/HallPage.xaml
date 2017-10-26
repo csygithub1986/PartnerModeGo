@@ -79,8 +79,8 @@
                 </Grid>
                 <!--<ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>-->
             </DockPanel>
-            <Button Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
-            <Button Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
+            <Button x:Name="btn_Join" IsEnabled="False" Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
+            <Button x:Name="btn_Create" Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
         </Grid>
     </Grid>
 </UserControl>

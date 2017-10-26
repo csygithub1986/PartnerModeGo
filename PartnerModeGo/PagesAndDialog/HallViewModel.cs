@@ -20,6 +20,7 @@ namespace PartnerModeGo
         }
         private Game _SelectedGame;
 
+        public int SelectedPlayerID { get; set; }
 
         #endregion
 

@@ -32,6 +32,9 @@ namespace PartnerModeGo
         }
         #endregion
 
+        #region Callback事件
+        public event Action<bool, Game> JoinGameCallback;
+        #endregion
         public GlobalData GlobalData { get; set; }
 
         private IWcfService m_wcfClient;
