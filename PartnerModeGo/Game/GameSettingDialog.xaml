@@ -12,7 +12,7 @@
     </Window.DataContext>-->
     <Window.Resources>
         <local:SettingConverter x:Key="SettingConverter"/>
-        <DataTemplate DataType="{x:Type local:Player2}">
+        <DataTemplate DataType="{x:Type local:Player}">
             <Border Background="#F0F0E0" Grid.Column="0"  Margin="5" Grid.Row="0" VerticalAlignment="Center" CornerRadius="5">
                 <Grid>
                     <Grid.RowDefinitions>

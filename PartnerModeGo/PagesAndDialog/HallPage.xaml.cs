@@ -27,36 +27,47 @@ namespace PartnerModeGo
             InitializeComponent();
             VM = new HallViewModel();
             DataContext = VM;
+            ServiceProxy.Instance.JoinGameCallback = JoinGameCallback;//进入棋局的通知
+            ServiceProxy.Instance.GameStartCallback = GameStartCallback;
+        }
+
+        private void GameStartCallback(int[] blackIDs, int[] whiteIDs, int currentID)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                PlayingPage page = new PlayingPage(VM.SelectedGame, blackIDs, whiteIDs, currentID);
+                MainWindow.Instance.ChangePageTo(page);
+            });
+        }
+
+        private void JoinGameCallback(bool success, Game game)
+        {
+            if (success)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    this.labelWait.Visibility = Visibility.Visible;
+                    //PlayingPage page = new PlayingPage(game);
+                    //MainWindow.Instance.ChangePageTo(page);
+                });
+            }
+            else
+            {
+                MessageBox.Show("加入棋局失败");
+            }
         }
 
         private void Join_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Instance.ShowProcessWindowAsync("正在进入加入......", Login, LoginCallback, VM.SelectedGame.GameID, VM.SelectedPlayerID);
+            MainWindow.Instance.ShowProcessWindowAsync("正在进入加入......", Join, null, VM.SelectedGame.GameID, VM.SelectedPlayerID);
         }
 
-        private object Login(object[] obj)
+        private object Join(object[] obj)
         {
             string gameID = obj[0].ToString();
             int playerID = int.Parse(obj[1].ToString());
             ServiceProxy.Instance.ApplyToJoinGame(gameID, playerID);
             return null;
-        }
-
-        private void LoginCallback(object obj)
-        {
-            bool reply = (bool)obj;
-            if (reply)
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    HallPage page = new HallPage();
-                    MainWindow.Instance.ChangePageTo(page);
-                });
-            }
-            else
-            {
-                MessageBox.Show("登陆失败");
-            }
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e)

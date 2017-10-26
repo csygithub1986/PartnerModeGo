@@ -32,8 +32,9 @@ namespace PartnerModeGo
         }
         #endregion
 
-        #region Callback事件
-        public event Action<bool, Game> JoinGameCallback;
+        #region Callback委托
+        public Action<bool, Game> JoinGameCallback;//加入棋局
+        public Action<int[], int[], int> GameStartCallback;   //游戏开始
         #endregion
         public GlobalData GlobalData { get; set; }
 
@@ -128,7 +129,7 @@ namespace PartnerModeGo
             m_wcfClient.GameStart();
         }
 
-        public void CreateGame(Player2[] players, GameSetting setting)
+        public void CreateGame(Player[] players, GameSetting setting)
         {
             //m_wcfClient.CreateGame(players, setting);
         }

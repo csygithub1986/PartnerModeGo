@@ -63,13 +63,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Models\PlayerExtention.cs" />
     <Compile Include="Models\GlobalData.cs" />
     <Compile Include="PagesAndDialog\Converters.cs" />
     <Compile Include="PagesAndDialog\CreateGamePage.xaml.cs">
       <DependentUpon>CreateGamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game\Converters.cs" />
-    <Compile Include="Game\Enums.cs" />
     <Compile Include="PagesAndDialog\HallPage.xaml.cs">
       <DependentUpon>HallPage.xaml</DependentUpon>
     </Compile>
@@ -145,7 +145,6 @@
     <Compile Include="Game\GameSettingDialog.xaml.cs">
       <DependentUpon>GameSettingDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Game\Player2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

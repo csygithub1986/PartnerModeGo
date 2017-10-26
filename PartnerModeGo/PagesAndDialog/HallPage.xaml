@@ -79,8 +79,12 @@
                 </Grid>
                 <!--<ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>-->
             </DockPanel>
-            <Button x:Name="btn_Join" IsEnabled="False" Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
-            <Button x:Name="btn_Create" Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="28"/>
+
+            <Grid Grid.Row="1">
+                <Button x:Name="btn_Join" IsEnabled="False" Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
+                <Button x:Name="btn_Create" Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
+            </Grid>
+            <Label x:Name="labelWait" Visibility="Collapsed" Grid.Row="1" Background="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Content="加入成功，等待棋局开始......"/>
         </Grid>
     </Grid>
 </UserControl>

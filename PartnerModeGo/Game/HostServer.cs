@@ -14,10 +14,10 @@ namespace PartnerModeGo
         private int m_TotalGameLoopTimes;
         private int m_CurrentGameTimes;
         //private Player[] aiSettings;
-        private Player2[] m_Players;
+        private Player[] m_Players;
         private int m_BoardSize;
-        private Player2[] m_BlackPlayers;
-        private Player2[] m_WhitePlayers;
+        private Player[] m_BlackPlayers;
+        private Player[] m_WhitePlayers;
 
         public Action StartCallback;
         public Action<int, int, int, bool, bool> UICallback;
@@ -25,14 +25,14 @@ namespace PartnerModeGo
         public Action<int[]> TerritoryCallback;
         public Action<float> WinRateCallback;
 
-        public Action<int, Player2> HandTurnCallback;//移交顺序
+        public Action<int, Player> HandTurnCallback;//移交顺序
 
         /// <summary>
         /// 历史记录 分别记录 步数、x坐标、y坐标、ispass、isresign
         /// </summary>
         private List<Tuple<int, int, bool, bool>> m_History;
 
-        public HostServer(Player2[] players, int totalGameLoopTimes, int boardSize)
+        public HostServer(Player[] players, int totalGameLoopTimes, int boardSize)
         {
             m_Players = players;
             m_BoardSize = boardSize;
@@ -71,7 +71,7 @@ namespace PartnerModeGo
         /// </summary>
         /// <param name="stepNum">从0开始的步数</param>
         /// <returns></returns>
-        private Player2 GetPlayerByStep(int stepNum)
+        private Player GetPlayerByStep(int stepNum)
         {
             int turnColor = stepNum % 2;//0是黑，1是白
             var players = turnColor == 0 ? m_BlackPlayers : m_WhitePlayers;
@@ -86,7 +86,7 @@ namespace PartnerModeGo
         {
             Task task = Task.Factory.StartNew(() =>
             {
-                Player2 player = GetPlayerByStep(stepNum);
+                Player player = GetPlayerByStep(stepNum);
                 DllImport.SetNumberOfSimulations(player.Layout);
                 DllImport.StartThinking(player.Color);
                 Thread.Sleep(player.TimePerMove * 1000);
@@ -165,7 +165,7 @@ namespace PartnerModeGo
 
 
             stepNum++;
-            Player2 player = GetPlayerByStep(stepNum);
+            Player player = GetPlayerByStep(stepNum);
             int turn = stepNum % 4;
             if (player.Type == PlayerType.AI)
             {
@@ -246,7 +246,7 @@ namespace PartnerModeGo
 
 
             stepNum++;
-            Player2 player = GetPlayerByStep(stepNum);
+            Player player = GetPlayerByStep(stepNum);
             if (player.Type == PlayerType.AI)
             {
                 //如果下一步还是Zen

@@ -8,72 +8,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PartnerModeGo
+namespace PartnerModeGo.WcfService
 {
     /// <summary>
     /// 比赛参数设置
     /// </summary>
-    public class Player2 : INotifyPropertyChanged
+    public partial class Player
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event Action<Player2, bool> ConnectChanged;
-        public event Action<Player2, bool> RecognizeChanged;
-
-        public Player2()
-        {
-        }
-
-        /// <summary>
-        /// 玩家类型
-        /// </summary>
-        public PlayerType Type
-        {
-            get { return _Type; }
-            set
-            {
-                if (_Type != value)
-                {
-                    _Type = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Type"));
-                }
-            }
-        }
-        private PlayerType _Type;
-
-        /// <summary>
-        /// 2：黑色，1：白色
-        /// </summary>
-        public int Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color != value)
-                {
-                    _Color = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Color"));
-                }
-            }
-        }
-        private int _Color;
-
-        /// <summary>
-        /// 玩家名称
-        /// </summary>
-        public string PlayerName
-        {
-            get { return _PlayerName; }
-            set
-            {
-                if (_PlayerName != value)
-                {
-                    _PlayerName = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PlayerName"));
-                }
-            }
-        }
-        private string _PlayerName;
-
+        public event Action<Player, bool> ConnectChanged;
+        public event Action<Player, bool> RecognizeChanged;
 
         #region 网络共同属性
         /// <summary>
@@ -132,8 +75,6 @@ namespace PartnerModeGo
         private int _Layout = 50000;
 
         #endregion
-
-        #region 真实棋盘属性
         /// <summary>
         /// 是否被识别了
         /// </summary>
@@ -151,6 +92,7 @@ namespace PartnerModeGo
             }
         }
         private bool _IsBoardRecognized;
+        #region 真实棋盘属性
 
         #endregion
 

@@ -16,18 +16,6 @@ namespace PartnerModeGo
         //ObservableCollection<  Game> GameList
 
 
-        private int myVar;
-
-        public int MyProperty
-        {
-            get { return myVar; }
-            set
-            {
-                myVar = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            }
-        }
-
         public ObservableCollection<Game> GameList
         {
             get { return _GameList; }

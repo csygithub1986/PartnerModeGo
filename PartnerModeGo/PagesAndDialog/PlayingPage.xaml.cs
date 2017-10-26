@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartnerModeGo.WcfService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,13 @@ namespace PartnerModeGo
     /// </summary>
     public partial class PlayingPage : UserControl
     {
-        public PlayingPage()
+        private Game m_Game;
+        //private int[] m_BlackPlayerIDs;
+        //private int[] m_WhitePlayerIDs;
+        //private int m_WhitePlayerIDs;
+        public PlayingPage(Game game, int[] blackIDs, int[] whiteIDs, int currentID)
         {
+            m_Game = game;
             InitializeComponent();
             m_Board.MousePlayEvent += Board_MousePlayEvent;
         }
@@ -57,7 +63,7 @@ namespace PartnerModeGo
         //    }
         //}
 
-        private void HandTurnCallback(int stepNum, Player2 player)
+        private void HandTurnCallback(int stepNum, Player player)
         {
             switch (player.Type)
             {

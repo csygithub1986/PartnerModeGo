@@ -57,12 +57,12 @@ namespace PartnerModeGo
             }
             if (parameter.ToString() == "BlackPlayerVisibility")
             {
-                Collection<Player2> players = value as Collection<Player2>;
+                Collection<Player> players = value as Collection<Player>;
                 return players.Where(p => p.Color == 2);
             }
             if (parameter.ToString() == "WhitePlayerVisibility")
             {
-                Collection<Player2> players = value as Collection<Player2>;
+                Collection<Player> players = value as Collection<Player>;
                 return players.Where(p => p.Color == 1);
             }
             return value;

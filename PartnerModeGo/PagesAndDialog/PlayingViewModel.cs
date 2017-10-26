@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartnerModeGo.WcfService;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,32 +13,29 @@ namespace PartnerModeGo
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+
         public PlayingViewModel()
         {
             //默认分别初始2个玩家
-            _Players = new ObservableCollection<Player2>();
+            _Players = new ObservableCollection<Player>();
             for (int i = 0; i < 2; i++)
             {
-                _Players.Add(new Player2() { Type = PlayerType.AI, Color = 2 });
-                _Players.Add(new Player2() { Type = PlayerType.AI, Color = 1 });
+                _Players.Add(new Player() { Type = PlayerType.AI, Color = 2 });
+                _Players.Add(new Player() { Type = PlayerType.AI, Color = 1 });
             }
             GameLoopTimes = 1;
         }
 
+        #region 属性
 
-        public ObservableCollection<Player2> Players
+        #endregion
+        public ObservableCollection<Player> Players
         {
             get { return _Players; }
-            set
-            {
-                if (_Players != value)
-                {
-                    _Players = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Players"));
-                }
-            }
+            set { if (_Players != value) { _Players = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Players")); } }
         }
-        private ObservableCollection<Player2> _Players;
+        private ObservableCollection<Player> _Players;
 
         /// <summary>
         /// 用于棋力自测或者和其他软件对测时，测试的盘数。（测试用，界面不显示）

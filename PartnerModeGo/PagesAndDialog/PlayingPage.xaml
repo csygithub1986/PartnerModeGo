@@ -4,53 +4,70 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PartnerModeGo"
+             xmlns:srv="clr-namespace:PartnerModeGo.WcfService"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <!--<ToolBarPanel DockPanel.Dock="Top">
-            <ToolBar >
-                <Menu>
-                    <MenuItem Header="自我测试">
-                        <MenuItem Header="VsSelf" Click="Menu_VsSelfClick"/>
-                    </MenuItem>
-                    <MenuItem Header="打开服务">
-                        <MenuItem Header="打开服务" Click="Menu_OpenServerClick"/>
-                        <MenuItem Header="SendStart测试" Click="Menu_SendStartTestClick"/>
-                    </MenuItem>
-                </Menu>
-            </ToolBar>
-        </ToolBarPanel>-->
+             d:DesignHeight="720" d:DesignWidth="1366">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type srv:Player}" x:Key="PlayerTemplate">
+            <Border x:Name="playerBorder" BorderThickness="1" BorderBrush="Gray" Height="180" Width="130">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Ellipse Height="20" Width="20" Fill="Black" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                    <TextBlock Text="Name" VerticalAlignment="Center" Margin="40,0,0,0" FontSize="14"/>
+                    <TextBlock Text="00:00" Grid.Row="1" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
 
     <Grid Name="gameGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="500"/>
         </Grid.ColumnDefinitions>
 
         <Viewbox >
-            <local:Board x:Name="m_Board" Visibility="Hidden" BoardSize="19" BoardMode="Playing"></local:Board>
+            <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
         </Viewbox>
-        <Viewbox Grid.Column="1">
-            <local:Board x:Name="m_BoardAnalyse" Visibility="Hidden" BoardSize="19" BoardMode="Analyse"></local:Board>
-        </Viewbox>
-        <Image Name="m_Image" Grid.Column="1" Visibility="Visible" Width="360" Height="360"></Image>
 
-        <Grid Grid.Column="1" Grid.Row="1" Background="Gray">
-            <Grid Height="30" Name="rateGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" Name="blackRate"/>
-                    <ColumnDefinition Width="*" Name="whiteRate"/>
-                </Grid.ColumnDefinitions>
-                <Grid Background="Black">
-                    <TextBlock Name="txtBlack" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
-                <Grid Background="White" Grid.Column="1">
-                    <TextBlock Name="txtWhite" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="400"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="gridPlayers">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ItemsControl ItemsSource="{Binding BlackPlayers}" ItemTemplate="{StaticResource PlayerTemplate}">
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <UniformGrid Rows="1" Columns="{Binding BlackPlayers.Length}" IsItemsHost="True"/>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding WhitePlayers}" ItemTemplate="{StaticResource PlayerTemplate}">
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <UniformGrid Rows="1" Columns="{Binding WhitePlayers.Length}" IsItemsHost="True"/>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
             </Grid>
+
+            <GroupBox Header="聊天" Grid.Row="1"></GroupBox>
+
+            <GroupBox Header="功能" Grid.Row="2"></GroupBox>
+
         </Grid>
 
     </Grid>

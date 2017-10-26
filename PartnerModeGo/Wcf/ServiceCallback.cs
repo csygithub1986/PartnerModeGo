@@ -23,12 +23,14 @@ namespace PartnerModeGo
         public void DistributeApplyGameResult(bool success, WcfService.Game game)
         {
             Console.WriteLine("收到ApplyGameResult  " + success);
-            //ServiceProxy.Instance.JoinGameCallback
+
+            ServiceProxy.Instance.JoinGameCallback?.Invoke(success, game);
         }
 
         public void DistributeGameStart(int[] blackPlayerIDs, int[] whitePlayerIDs, int currentPlayerID)
         {
             Console.WriteLine("收到GameStart");
+            ServiceProxy.Instance.GameStartCallback?.Invoke(blackPlayerIDs, whitePlayerIDs, currentPlayerID);
         }
 
         public void DistributeMove(int stepNum, int x, int y, int nextPlayerID)
