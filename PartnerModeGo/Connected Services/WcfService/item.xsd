@@ -56,14 +56,23 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="GameSetting" nillable="true" type="tns:GameSetting" />
+  <xs:simpleType name="GameDistributeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Add" />
+      <xs:enumeration value="Update" />
+      <xs:enumeration value="Delete" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="GameDistributeType" nillable="true" type="tns:GameDistributeType" />
   <xs:complexType name="Game">
     <xs:sequence>
       <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BoardState" nillable="true" type="q1:ArrayOfint" />
-      <xs:element minOccurs="0" name="CurrentPlayer" nillable="true" type="tns:Player" />
       <xs:element minOccurs="0" name="GameID" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="GameSetting" nillable="true" type="tns:GameSetting" />
+      <xs:element minOccurs="0" name="LastPlayer" nillable="true" type="tns:Player" />
       <xs:element minOccurs="0" name="MoveHistory" nillable="true" type="tns:ArrayOfMovePoint" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NextPlayer" nillable="true" type="tns:Player" />
       <xs:element minOccurs="0" name="Players" nillable="true" type="tns:ArrayOfPlayer" />
       <xs:element minOccurs="0" name="State" type="tns:GameState" />
       <xs:element minOccurs="0" name="StepNum" type="xs:int" />

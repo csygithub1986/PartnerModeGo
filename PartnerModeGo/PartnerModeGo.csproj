@@ -63,13 +63,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Game\AI.cs" />
+    <Compile Include="Game\Enums.cs" />
     <Compile Include="Models\PlayerExtention.cs" />
-    <Compile Include="Models\GlobalData.cs" />
+    <Compile Include="Models\Session.cs" />
     <Compile Include="PagesAndDialog\Converters.cs" />
-    <Compile Include="PagesAndDialog\CreateGamePage.xaml.cs">
-      <DependentUpon>CreateGamePage.xaml</DependentUpon>
+    <Compile Include="PagesAndDialog\RoomViewModel.cs" />
+    <Compile Include="PagesAndDialog\RoomPage.xaml.cs">
+      <DependentUpon>RoomPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Game\Converters.cs" />
     <Compile Include="PagesAndDialog\HallPage.xaml.cs">
       <DependentUpon>HallPage.xaml</DependentUpon>
     </Compile>
@@ -95,7 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="PagesAndDialog\CreateGamePage.xaml">
+    <Page Include="PagesAndDialog\RoomPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -127,10 +129,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Game\GameSettingDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="PagesAndDialog\PlayingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,9 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\HostServer.cs" />
-    <Compile Include="Game\GameSettingDialog.xaml.cs">
-      <DependentUpon>GameSettingDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

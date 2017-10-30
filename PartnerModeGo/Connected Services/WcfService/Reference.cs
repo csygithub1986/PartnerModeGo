@@ -147,6 +147,7 @@ namespace PartnerModeGo.WcfService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.ClientState))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.PlayerType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.GameSetting))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.GameDistributeType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.Game))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.MovePoint[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(PartnerModeGo.WcfService.MovePoint))]
@@ -414,6 +415,20 @@ namespace PartnerModeGo.WcfService {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="GameDistributeType", Namespace="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model")]
+    public enum GameDistributeType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Add = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Update = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Delete = 2,
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Game", Namespace="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model")]
@@ -427,19 +442,22 @@ namespace PartnerModeGo.WcfService {
         private int[] BoardStateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private PartnerModeGo.WcfService.Player CurrentPlayerField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string GameIDField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private PartnerModeGo.WcfService.GameSetting GameSettingField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private PartnerModeGo.WcfService.Player LastPlayerField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private PartnerModeGo.WcfService.MovePoint[] MoveHistoryField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private PartnerModeGo.WcfService.Player NextPlayerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private PartnerModeGo.WcfService.Player[] PlayersField;
@@ -474,19 +492,6 @@ namespace PartnerModeGo.WcfService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public PartnerModeGo.WcfService.Player CurrentPlayer {
-            get {
-                return this.CurrentPlayerField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CurrentPlayerField, value) != true)) {
-                    this.CurrentPlayerField = value;
-                    this.RaisePropertyChanged("CurrentPlayer");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public string GameID {
             get {
                 return this.GameIDField;
@@ -513,6 +518,19 @@ namespace PartnerModeGo.WcfService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public PartnerModeGo.WcfService.Player LastPlayer {
+            get {
+                return this.LastPlayerField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.LastPlayerField, value) != true)) {
+                    this.LastPlayerField = value;
+                    this.RaisePropertyChanged("LastPlayer");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public PartnerModeGo.WcfService.MovePoint[] MoveHistory {
             get {
                 return this.MoveHistoryField;
@@ -534,6 +552,19 @@ namespace PartnerModeGo.WcfService {
                 if ((object.ReferenceEquals(this.NameField, value) != true)) {
                     this.NameField = value;
                     this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public PartnerModeGo.WcfService.Player NextPlayer {
+            get {
+                return this.NextPlayerField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NextPlayerField, value) != true)) {
+                    this.NextPlayerField = value;
+                    this.RaisePropertyChanged("NextPlayer");
                 }
             }
         }
@@ -664,10 +695,10 @@ namespace PartnerModeGo.WcfService {
     public interface IWcfService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/Login", ReplyAction="http://tempuri.org/IWcfService/LoginResponse")]
-        bool Login(string userName);
+        string Login(string userName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/Login", ReplyAction="http://tempuri.org/IWcfService/LoginResponse")]
-        System.Threading.Tasks.Task<bool> LoginAsync(string userName);
+        System.Threading.Tasks.Task<string> LoginAsync(string userName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/GetAllGames", ReplyAction="http://tempuri.org/IWcfService/GetAllGamesResponse")]
         void GetAllGames();
@@ -703,20 +734,20 @@ namespace PartnerModeGo.WcfService {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IWcfServiceCallback {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeNewGame")]
-        void DistributeNewGame(PartnerModeGo.WcfService.Game game);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeGameInfo")]
+        void DistributeGameInfo(PartnerModeGo.WcfService.GameDistributeType type, PartnerModeGo.WcfService.Game game);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeAllGameInfo")]
         void DistributeAllGameInfo(PartnerModeGo.WcfService.Game[] game);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeApplyGameResult")]
-        void DistributeApplyGameResult(bool success, PartnerModeGo.WcfService.Game game);
+        void DistributeApplyGameResult(bool success, string gameID, int playerID);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeGameStart")]
         void DistributeGameStart(int[] blackPlayerIDs, int[] whitePlayerIDs, int currentPlayerID);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IWcfService/DistributeMove")]
-        void DistributeMove(int stepNum, int x, int y, int nextPlayerID);
+        void DistributeMove(int stepNum, int currentPlayerID, int x, int y, int nextPlayerID);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -747,11 +778,11 @@ namespace PartnerModeGo.WcfService {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public bool Login(string userName) {
+        public string Login(string userName) {
             return base.Channel.Login(userName);
         }
         
-        public System.Threading.Tasks.Task<bool> LoginAsync(string userName) {
+        public System.Threading.Tasks.Task<string> LoginAsync(string userName) {
             return base.Channel.LoginAsync(userName);
         }
         

@@ -24,10 +24,16 @@ namespace LeagueGoServer.Model
         /// 准备发送给Client的，这一步的StepNum，收到回复的步数也是这个值
         /// </summary>
         public int StepNum { get; set; }
+
+        /// <summary>
+        /// 刚收到棋步的Player
+        /// </summary>
+        public Player LastPlayer { get; set; }
+
         /// <summary>
         /// 准备发送给Client的，这一步的PlayerID，收到回复的步数也是这个PlayerID
         /// </summary>
-        public Player CurrentPlayer { get; set; }
+        public Player NextPlayer { get; set; }
         public List<MovePoint> MoveHistory { get; set; }
 
         /// <summary>
@@ -64,7 +70,8 @@ namespace LeagueGoServer.Model
             //准备分配下一步
             StepNum++;
             Player[] players = StepNum % 2 == 0 ? m_BlackPlayerIDs : m_WhitePlayerIDs;//2的倍数是黑棋。TODO：让子的话就不一定了
-            CurrentPlayer = players[StepNum / 2 % players.Length];
+            LastPlayer = NextPlayer;
+            NextPlayer = players[StepNum / 2 % players.Length];
         }
 
         public Player[] GetBlackPlayers()

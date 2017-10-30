@@ -50,7 +50,7 @@
 
         <DockPanel>
             <Label Content="棋局列表" HorizontalContentAlignment="Center" DockPanel.Dock="Top"></Label>
-            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding GlobalData.GameList,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}" ItemTemplate="{StaticResource GameItemTemplate}"></ListBox>
+            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding Session.GameList,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}" ItemTemplate="{StaticResource GameItemTemplate}"></ListBox>
         </DockPanel>
 
         <Grid Grid.Column="1">

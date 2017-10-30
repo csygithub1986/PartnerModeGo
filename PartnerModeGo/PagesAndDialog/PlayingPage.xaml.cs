@@ -22,175 +22,124 @@ namespace PartnerModeGo
     public partial class PlayingPage : UserControl
     {
         private Game m_Game;
-        //private int[] m_BlackPlayerIDs;
-        //private int[] m_WhitePlayerIDs;
-        //private int m_WhitePlayerIDs;
-        public PlayingPage(Game game, int[] blackIDs, int[] whiteIDs, int currentID)
+        private LocalType m_LocalType;
+        private int m_MyPlayerID;//当是client的时候用
+        private AI m_AI;
+        private int m_StepNum;
+
+        public PlayingPage(Game game, LocalType localType, int myPlayerID, int[] blackIDs, int[] whiteIDs, int nextPlayerID)
         {
-            m_Game = game;
             InitializeComponent();
+
+            m_Game = game;
+            m_MyPlayerID = myPlayerID;
+            m_LocalType = localType;
+
+            m_AI = new AI(game.GameSetting.BoardSize);
+            m_AI.Init();
+
+            //添加事件：服务器、AI、Board
+            ServiceProxy.Instance.MoveCallback = MoveCallback;
             m_Board.MousePlayEvent += Board_MousePlayEvent;
+            m_AI.OnAIMove += OnAIMove;
+
+            //日志
+            ClientLog.FilePath = "D:/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
+            ClientLog.WriteLog("(;PB[xyz]PW[abc]");
+
+            DealNextMove(nextPlayerID);
         }
 
-        HostServer cal;
 
-        private void Board_MousePlayEvent(int stepNum, int x, int y)
+        private void OnAIMove(int x, int y, bool isPass, bool isResign)
         {
-            cal.OutsiderMoveArrived(stepNum, x, y, false, false);
-        }
-
-
-        public PlayingViewModel ViewModel { get { return ((PlayingViewModel)DataContext); } }
-
-        //private void Menu_VsSelfClick(object sender, RoutedEventArgs e)
-        //{
-        //    //m_Board.BoardMode = BoardMode.AutoPlaying;
-        //    m_Board.BoardMode = BoardMode.Playing;
-        //    GameSettingDialog w = new GameSettingDialog();
-        //    w.DataContext = this.DataContext;
-        //    w.Owner = this;
-        //    w.WaitingConnect = WaitingConnect;
-        //    w.ShowDialog();
-        //    if (w.DialogResult == true)
-        //    {
-        //        cal = new HostServer(ViewModel.Players.ToArray(), ViewModel.GameLoopTimes, 19);
-        //        cal.GameOverCallback = GameOver;
-        //        cal.UICallback = Play;
-        //        cal.TerritoryCallback = ShowTerritory;
-        //        cal.WinRateCallback = ShowWinRate;
-        //        cal.HandTurnCallback = HandTurnCallback;
-        //        cal.Start();
-        //    }
-        //}
-
-        private void HandTurnCallback(int stepNum, Player player)
-        {
-            switch (player.Type)
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                case PlayerType.AI:
-                    break;
-                case PlayerType.Host:
-                    m_Board.IsHostTurn = true;
-                    break;
-                case PlayerType.RealBoard:
-                    break;
-            }
-        }
-
-        private void WaitingConnect()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ShowTerritory(int[] territory)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                m_BoardAnalyse.ShowAffects(territory);
+                m_Board.Play(x, y);
             }));
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_StepNum, x, y); });
         }
 
+        #region 服务器回调
         /// <summary>
-        /// stepNum, x, y, isPass, isResign
+        /// 棋步到来
         /// </summary>
         /// <param name="stepNum"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        /// <param name="isPass"></param>
-        /// <param name="isResign"></param>
-        private void Play(int stepNum, int x, int y, bool isPass, bool isResign)
+        /// <param name="nextPlayerID"></param>
+        private void MoveCallback(int stepNum, int currentPlayerID, int x, int y, int nextPlayerID)
         {
-            Dispatcher.Invoke(new Action(() =>
+            m_StepNum = stepNum;
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (stepNum == 0)
+                //如果收到的这步正是我刚才走的，就不需要在处理棋盘UI
+                Player currentPlayer = m_Game.Players.First(p => p.ID == currentPlayerID);
+                if ((m_LocalType == LocalType.Host && currentPlayer.Type == PlayerType.Internet) ||
+                  (m_LocalType == LocalType.Client && currentPlayerID != m_MyPlayerID))
                 {
-                    m_Board.InitGame();
+                    m_Board.Play(x, y);
+                    m_AI.Play(x, y, currentPlayer.Color);
                 }
-                m_Board.Play(x, y, 2 - stepNum % 2);
+
+                DealNextMove(nextPlayerID);
             }));
         }
 
-        private void GameOver(int stepNum, int x, int y, bool isPass, bool isResign)
-        {
-            MessageBox.Show("Over");
-        }
+        #endregion
 
-        private void ShowWinRate(float bRate)
+        private void DealNextMove(int nextID)
         {
-            Dispatcher.Invoke(new Action(() =>
+            m_StepNum++;
+            //UI
+
+            Player nextPlayer = m_Game.Players.First(p => p.ID == nextID);
+            if (m_LocalType == LocalType.Host)
             {
-                blackRate.Width = new GridLength(bRate, GridUnitType.Star);
-                whiteRate.Width = new GridLength(1 - bRate, GridUnitType.Star);
-                txtBlack.Text = bRate.ToString("F2");
-                txtWhite.Text = (1 - bRate).ToString("F2");
-            }));
-        }
-
-        //打开服务
-        private void Menu_OpenServerClick(object sender, RoutedEventArgs e)
-        {
-            TcpServer.Instance.WindowOnPhoneConnected += OnPhoneConnected;
-
-            TcpDataHandler.Instance.WindowReceivePhoneStepData += ReceivePhoneStepData;
-            TcpDataHandler.Instance.WindowReceivePhonePreviewData += ReceivePhonePreviewData;
-            TcpServer.Instance.Start();
-        }
-
-        private void OnPhoneConnected(string obj)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                foreach (var player in ViewModel.Players)
+                switch (nextPlayer.Type)
                 {
-                    if (player.Type == PlayerType.RealBoard)
-                    {
-                        player.IsConnected = true;
-                    }
+                    case PlayerType.AI:
+                        m_AI.AIThink(nextPlayer);
+                        break;
+                    case PlayerType.RealBoard:
+                        break;
+                    case PlayerType.Host:
+                        m_Board.IsHostTurn = true;
+                        break;
+                    case PlayerType.Internet:
+                        break;
                 }
-            }));
-        }
-
-        private void ReceivePhoneStepData(int x, int y, int color, int[] boardState)
-        {
-            Dispatcher.Invoke(new Action(() =>
+            }
+            else if (m_LocalType == LocalType.Client)
             {
-                m_Board.Play(x, y, color);
-            }));
-        }
-
-        private void ReceivePhonePreviewData(byte[] imageBytes, bool isOk, int[] boardState)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                m_Image.Source = ImageHelper.ByteArrayToBitmapImage(imageBytes);
-
-                if (isOk)
+                switch (nextPlayer.Type)
                 {
-                    foreach (var player in ViewModel.Players)
-                    {
-                        if (player.Type == PlayerType.RealBoard)
+                    case PlayerType.AI:
+                        break;
+                    case PlayerType.RealBoard:
+                        break;
+                    case PlayerType.Host:
+                        break;
+                    case PlayerType.Internet:
+                        if (nextID == m_MyPlayerID)
                         {
-                            player.IsBoardRecognized = true;
+                            m_Board.IsHostTurn = true;
                         }
-                    }
-
-                    //m_Board.Visibility = Visibility.Visible;
-                    //m_Board.InitGame();
-                    //m_Board.SetStones(boardState);
+                        break;
                 }
-                else
-                {
-                    //m_Board.Visibility = Visibility.Hidden;
-                }
+            }
 
-                Console.WriteLine("   boardState len: " + boardState.Count());
-            }));
         }
 
 
-        private void Menu_SendStartTestClick(object sender, RoutedEventArgs e)
+        private void Board_MousePlayEvent(int stepNum, int x, int y, int color)
         {
-            TcpDataHandler.Instance.SendGameStart(CommonDataDefine.FileName + "=abc.sgf;" + CommonDataDefine.BlackPlayerName + "=BBB;" + CommonDataDefine.WhitePlayerName + "=WWW;");
+            m_Board.IsHostTurn = false;
+            m_AI.Play(x, y, color);
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(stepNum, x, y); });
         }
+
+        public PlayingViewModel ViewModel { get { return ((PlayingViewModel)DataContext); } }
+
     }
 }

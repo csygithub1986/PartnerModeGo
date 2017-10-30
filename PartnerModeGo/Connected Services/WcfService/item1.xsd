@@ -12,7 +12,7 @@
   <xs:element name="LoginResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="LoginResult" type="xs:boolean" />
+        <xs:element minOccurs="0" name="LoginResult" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -76,17 +76,18 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
-  <xs:element name="DistributeNewGame">
+  <xs:element name="DistributeGameInfo">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q3:Game" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="type" type="q3:GameDistributeType" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q4:Game" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="DistributeAllGameInfo">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q4:ArrayOfGame" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q5:ArrayOfGame" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -94,7 +95,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="success" type="xs:boolean" />
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/LeagueGoServer.Model" minOccurs="0" name="game" nillable="true" type="q5:Game" />
+        <xs:element minOccurs="0" name="gameID" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="playerID" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -111,6 +113,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="stepNum" type="xs:int" />
+        <xs:element minOccurs="0" name="currentPlayerID" type="xs:int" />
         <xs:element minOccurs="0" name="x" type="xs:int" />
         <xs:element minOccurs="0" name="y" type="xs:int" />
         <xs:element minOccurs="0" name="nextPlayerID" type="xs:int" />

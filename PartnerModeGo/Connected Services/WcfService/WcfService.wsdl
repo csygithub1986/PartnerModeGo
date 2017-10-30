@@ -52,8 +52,8 @@
   <wsdl:message name="IWcfService_ClientCommitMove_OutputMessage">
     <wsdl:part name="parameters" element="tns:ClientCommitMoveResponse" />
   </wsdl:message>
-  <wsdl:message name="IWcfService_DistributeNewGame_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:DistributeNewGame" />
+  <wsdl:message name="IWcfService_DistributeGameInfo_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:DistributeGameInfo" />
   </wsdl:message>
   <wsdl:message name="IWcfService_DistributeAllGameInfo_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:DistributeAllGameInfo" />
@@ -92,8 +92,8 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IWcfService/ClientCommitMove" message="tns:IWcfService_ClientCommitMove_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/ClientCommitMoveResponse" message="tns:IWcfService_ClientCommitMove_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DistributeNewGame">
-      <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/DistributeNewGame" message="tns:IWcfService_DistributeNewGame_OutputCallbackMessage" />
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DistributeGameInfo">
+      <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/DistributeGameInfo" message="tns:IWcfService_DistributeGameInfo_OutputCallbackMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DistributeAllGameInfo">
       <wsdl:output wsaw:Action="http://tempuri.org/IWcfService/DistributeAllGameInfo" message="tns:IWcfService_DistributeAllGameInfo_OutputCallbackMessage" />
@@ -165,8 +165,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="DistributeNewGame">
-      <soap12:operation soapAction="http://tempuri.org/IWcfService/DistributeNewGame" style="document" />
+    <wsdl:operation name="DistributeGameInfo">
+      <soap12:operation soapAction="http://tempuri.org/IWcfService/DistributeGameInfo" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

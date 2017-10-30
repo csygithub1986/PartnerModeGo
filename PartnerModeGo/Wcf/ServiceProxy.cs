@@ -28,21 +28,24 @@ namespace PartnerModeGo
         }
         private ServiceProxy()
         {
-            GlobalData = new GlobalData();
+            Session = new Session();
         }
         #endregion
 
         #region Callback委托
-        public Action<bool, Game> JoinGameCallback;//加入棋局
+        public Action<bool, string, int> JoinGameCallback;//加入棋局
         public Action<int[], int[], int> GameStartCallback;   //游戏开始
+        public Action<GameDistributeType, Game> DistributeGameInfoCallback;
+        public Action<int, int,int, int, int> MoveCallback;
+
         #endregion
-        public GlobalData GlobalData { get; set; }
+        public Session Session { get; set; }
 
         private IWcfService m_wcfClient;
 
         public bool ClientOpen(string ip)
         {
-            String url = String.Format(CultureInfo.CurrentCulture, "net.tcp://localhost:12121/LeagueGoServer/WcfService/", ip, 12121);
+            String url = String.Format(CultureInfo.CurrentCulture, "net.tcp://{0}:{1}/LeagueGoServer/WcfService/", ip, 12121);
             NetTcpBinding tcpBinding = new NetTcpBinding()
             {
                 Name = "netTcpBindConfig",
@@ -111,12 +114,10 @@ namespace PartnerModeGo
             //};
         }
 
-        public bool Login(object userName)
+        public string Login(object userName)
         {
-            bool result = m_wcfClient.Login(userName.ToString());
-
-            Console.WriteLine("登录成功");
-            return result;
+            string ssid = m_wcfClient.Login(userName.ToString());
+            return ssid;
         }
 
         public void GetAllGames()
@@ -131,7 +132,7 @@ namespace PartnerModeGo
 
         public void CreateGame(Player[] players, GameSetting setting)
         {
-            //m_wcfClient.CreateGame(players, setting);
+            m_wcfClient.CreateGame(players, setting);
         }
 
         public void ApplyToJoinGame(string gameID, int playerID)

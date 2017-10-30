@@ -20,7 +20,7 @@ namespace LeagueGoServer
         /// <param name="userName"></param>
         /// <returns></returns>
         [OperationContract]
-        bool Login(string userName);
+        string Login(string userName);
 
         /// <summary>
         /// 请求所有列表

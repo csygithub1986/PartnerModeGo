@@ -76,7 +76,7 @@ namespace PartnerModeGo
         #endregion
 
         #region 事件
-        public event Action<int,int, int> MousePlayEvent;
+        public event Action<int, int, int, int> MousePlayEvent;
         #endregion
 
         #region 属性
@@ -122,7 +122,7 @@ namespace PartnerModeGo
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="color">1为白，2为黑</param>
-        public void Play(int x, int y, int color)
+        public void Play(int x, int y)
         {
             if (x < BoardSize && x >= 0 && y < BoardSize && y >= 0 && m_BoardState.State[x, y] == 0)
             {
@@ -209,8 +209,7 @@ namespace PartnerModeGo
                 Canvas.SetTop(m_LastPlayStone, m_Offset + y * m_GridSize - m_LastPlayStone.Height / 2);
                 m_LastPlayStone.Visibility = Visibility.Visible;
 
-                m_BoardState.Turn = 3 - m_BoardState.Turn;
-                //吃子
+                //检查吃子
                 if (BoardMode == BoardMode.Playing)
                 {
                     foreach (var p in list)
@@ -219,9 +218,10 @@ namespace PartnerModeGo
                         m_Stones[p.X, p.Y].Visibility = Visibility.Hidden;
                     }
                     IsHostTurn = false;
-                    MousePlayEvent?.Invoke(m_BoardState.LastSetpNum,x, y);
+                    MousePlayEvent?.Invoke(m_BoardState.LastSetpNum, x, y, m_BoardState.Turn);
                 }
 
+                m_BoardState.Turn = 3 - m_BoardState.Turn;
             }
             else if (m_BoardState.State[x, y] != 0)
             {

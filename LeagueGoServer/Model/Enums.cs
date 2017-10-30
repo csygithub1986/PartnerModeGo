@@ -21,6 +21,14 @@ namespace LeagueGoServer.Model
 
     public enum GameState
     {
-        Waiting,Playing
+        Waiting, Playing
+    }
+
+    /// <summary>
+    /// 往客户端发送游戏信息类型
+    /// </summary>
+    public enum GameDistributeType
+    {
+        Add, Update, Delete
     }
 }

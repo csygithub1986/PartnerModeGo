@@ -26,7 +26,6 @@ namespace PartnerModeGo
 
         public HallViewModel()
         {
-            ServiceProxy.Instance.GetAllGames();
         }
     }
 }

@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace PartnerModeGo
 {
-    public class GlobalData : INotifyPropertyChanged
+    public class Session : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         //ObservableCollection<  Game> GameList
-
+        public string UserName { get; set; }
+        public string SessionID { get; set; }
 
         public ObservableCollection<Game> GameList
         {

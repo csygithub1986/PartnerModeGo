@@ -39,15 +39,35 @@ namespace PartnerModeGo
 
         private object Login(object[] obj)
         {
-            string userName = obj[0].ToString();
-            string ip = obj[1].ToString();
-            bool openSuccess = ServiceProxy.Instance.ClientOpen(ip);
-            if (openSuccess)
+            try
             {
-                bool loginSuccess = ServiceProxy.Instance.Login(userName);
-                return loginSuccess;
+                string userName = obj[0].ToString();
+                string ip = obj[1].ToString();
+                bool openSuccess = ServiceProxy.Instance.ClientOpen(ip);
+                if (openSuccess)
+                {
+                    string ssid = ServiceProxy.Instance.Login(userName);
+                    if (ssid != null)
+                    {
+                        ServiceProxy.Instance.Session.UserName = userName;
+                        ServiceProxy.Instance.Session.SessionID = ssid;
+                        return true;
+                    }
+                    else
+                    {
+                        ServiceProxy.Instance.Session.UserName = null;
+                        ServiceProxy.Instance.Session.SessionID = null;
+                        return false;
+                    }
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+
         }
 
         private void LoginCallback(object obj)
