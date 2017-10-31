@@ -32,10 +32,25 @@ namespace PartnerModeGo.WcfService {
         private int IDField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string IpField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsBoardRecognizedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsConnectedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int LayoutField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool OccupiedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TimePerMoveField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private PartnerModeGo.WcfService.PlayerType TypeField;
@@ -90,6 +105,58 @@ namespace PartnerModeGo.WcfService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Ip {
+            get {
+                return this.IpField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.IpField, value) != true)) {
+                    this.IpField = value;
+                    this.RaisePropertyChanged("Ip");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsBoardRecognized {
+            get {
+                return this.IsBoardRecognizedField;
+            }
+            set {
+                if ((this.IsBoardRecognizedField.Equals(value) != true)) {
+                    this.IsBoardRecognizedField = value;
+                    this.RaisePropertyChanged("IsBoardRecognized");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsConnected {
+            get {
+                return this.IsConnectedField;
+            }
+            set {
+                if ((this.IsConnectedField.Equals(value) != true)) {
+                    this.IsConnectedField = value;
+                    this.RaisePropertyChanged("IsConnected");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Layout {
+            get {
+                return this.LayoutField;
+            }
+            set {
+                if ((this.LayoutField.Equals(value) != true)) {
+                    this.LayoutField = value;
+                    this.RaisePropertyChanged("Layout");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Name {
             get {
                 return this.NameField;
@@ -111,6 +178,19 @@ namespace PartnerModeGo.WcfService {
                 if ((this.OccupiedField.Equals(value) != true)) {
                     this.OccupiedField = value;
                     this.RaisePropertyChanged("Occupied");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TimePerMove {
+            get {
+                return this.TimePerMoveField;
+            }
+            set {
+                if ((this.TimePerMoveField.Equals(value) != true)) {
+                    this.TimePerMoveField = value;
+                    this.RaisePropertyChanged("TimePerMove");
                 }
             }
         }
@@ -725,10 +805,10 @@ namespace PartnerModeGo.WcfService {
         System.Threading.Tasks.Task GameStartAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/ClientCommitMove", ReplyAction="http://tempuri.org/IWcfService/ClientCommitMoveResponse")]
-        void ClientCommitMove(int stepNum, int x, int y);
+        void ClientCommitMove(string gameID, int stepNum, int x, int y);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWcfService/ClientCommitMove", ReplyAction="http://tempuri.org/IWcfService/ClientCommitMoveResponse")]
-        System.Threading.Tasks.Task ClientCommitMoveAsync(int stepNum, int x, int y);
+        System.Threading.Tasks.Task ClientCommitMoveAsync(string gameID, int stepNum, int x, int y);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -818,12 +898,12 @@ namespace PartnerModeGo.WcfService {
             return base.Channel.GameStartAsync();
         }
         
-        public void ClientCommitMove(int stepNum, int x, int y) {
-            base.Channel.ClientCommitMove(stepNum, x, y);
+        public void ClientCommitMove(string gameID, int stepNum, int x, int y) {
+            base.Channel.ClientCommitMove(gameID, stepNum, x, y);
         }
         
-        public System.Threading.Tasks.Task ClientCommitMoveAsync(int stepNum, int x, int y) {
-            return base.Channel.ClientCommitMoveAsync(stepNum, x, y);
+        public System.Threading.Tasks.Task ClientCommitMoveAsync(string gameID, int stepNum, int x, int y) {
+            return base.Channel.ClientCommitMoveAsync(gameID, stepNum, x, y);
         }
     }
 }

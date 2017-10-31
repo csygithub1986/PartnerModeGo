@@ -34,6 +34,7 @@ namespace PartnerModeGo
             m_Game = game;
             m_MyPlayerID = myPlayerID;
             m_LocalType = localType;
+            m_StepNum = -1;
 
             m_AI = new AI(game.GameSetting.BoardSize);
             m_AI.Init();
@@ -44,20 +45,22 @@ namespace PartnerModeGo
             m_AI.OnAIMove += OnAIMove;
 
             //日志
-            ClientLog.FilePath = "D:/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
+            ClientLog.FilePath = "D:/LeagueGoLog/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
             ClientLog.WriteLog("(;PB[xyz]PW[abc]");
 
             DealNextMove(nextPlayerID);
         }
 
 
-        private void OnAIMove(int x, int y, bool isPass, bool isResign)
+        private void OnAIMove(int x, int y, bool isPass, bool isResign, int color)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                Console.WriteLine("自己下完，处理board和AI");
                 m_Board.Play(x, y);
+                m_AI.Play(x, y, color);
+                Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_Game.GameID, m_StepNum, x, y); });
             }));
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_StepNum, x, y); });
         }
 
         #region 服务器回调
@@ -70,6 +73,7 @@ namespace PartnerModeGo
         /// <param name="nextPlayerID"></param>
         private void MoveCallback(int stepNum, int currentPlayerID, int x, int y, int nextPlayerID)
         {
+            Console.WriteLine("收到服务的Move stepNum=" + stepNum + " nextID=" + nextPlayerID);
             m_StepNum = stepNum;
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -78,6 +82,7 @@ namespace PartnerModeGo
                 if ((m_LocalType == LocalType.Host && currentPlayer.Type == PlayerType.Internet) ||
                   (m_LocalType == LocalType.Client && currentPlayerID != m_MyPlayerID))
                 {
+                    Console.WriteLine("刚才不是自己下，需要处理board和AI");
                     m_Board.Play(x, y);
                     m_AI.Play(x, y, currentPlayer.Color);
                 }
@@ -90,6 +95,8 @@ namespace PartnerModeGo
 
         private void DealNextMove(int nextID)
         {
+            Console.WriteLine("处理下一步，该 " + m_Game.Players.First(p => p.ID == nextID).Name + " 走棋");
+
             m_StepNum++;
             //UI
 
@@ -136,7 +143,7 @@ namespace PartnerModeGo
         {
             m_Board.IsHostTurn = false;
             m_AI.Play(x, y, color);
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(stepNum, x, y); });
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_Game.GameID, stepNum, x, y); });
         }
 
         public PlayingViewModel ViewModel { get { return ((PlayingViewModel)DataContext); } }

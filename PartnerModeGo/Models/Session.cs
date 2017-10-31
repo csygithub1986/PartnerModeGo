@@ -17,6 +17,8 @@ namespace PartnerModeGo
         public string UserName { get; set; }
         public string SessionID { get; set; }
 
+
+
         public ObservableCollection<Game> GameList
         {
             get { return _GameList; }

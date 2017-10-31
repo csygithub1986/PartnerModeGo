@@ -36,7 +36,7 @@ namespace PartnerModeGo
         public Action<bool, string, int> JoinGameCallback;//加入棋局
         public Action<int[], int[], int> GameStartCallback;   //游戏开始
         public Action<GameDistributeType, Game> DistributeGameInfoCallback;
-        public Action<int, int,int, int, int> MoveCallback;
+        public Action<int, int, int, int, int> MoveCallback;
 
         #endregion
         public Session Session { get; set; }
@@ -140,9 +140,18 @@ namespace PartnerModeGo
             m_wcfClient.ApplyToJoinGame(gameID, playerID);
         }
 
-        public void ClientCommitMove(int stepNum, int x, int y)
+        public void ClientCommitMove(string gameID, int stepNum, int x, int y)
         {
-            m_wcfClient.ClientCommitMove(stepNum, x, y);
+            Console.WriteLine("发送自己下的到Server");
+
+            //try
+            //{
+            m_wcfClient.ClientCommitMove(gameID, stepNum, x, y);
+            //}
+            //catch (Exception ex)
+            //{
+
+            //}
         }
 
     }

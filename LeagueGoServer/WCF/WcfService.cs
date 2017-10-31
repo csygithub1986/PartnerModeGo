@@ -50,6 +50,7 @@ namespace LeagueGoServer
                 currentClient.HeartbeatTime = DateTime.Now;
                 Common.ClientListAdd(ssid, currentClient);
                 OperationContext.Current.Channel.Closing += new EventHandler(ClientChannel_Closing);
+                OperationContext.Current.Channel.Faulted += Channel_Faulted;
                 return ssid;
             }
             catch (Exception)
@@ -60,6 +61,15 @@ namespace LeagueGoServer
 
             //发送所有Game
             //currentClient.ClientCallback.DistributeAllGameInfo(Common.GameList.Values.ToArray());
+        }
+
+        private void Channel_Faulted(object sender, EventArgs e)
+        {
+            Console.WriteLine("客户端channel出错" + e.ToString());
+            ClientInfo info = GetClientInfo((ICallback)sender);
+            if (info == null)
+                return;
+            Common.ClientListDelete(info.SessionID);
         }
 
         /// <summary>
@@ -169,24 +179,36 @@ namespace LeagueGoServer
             game.PrepareNextMove();
         }
 
-        public void ClientCommitMove(int stepNum, int x, int y)
+        /// <summary>
+        /// 收到客户端上传的Move
+        /// </summary>
+        /// <param name="stepNum">第几步，从0开始</param>
+        /// <param name="x">坐标</param>
+        /// <param name="y">坐标</param>
+        public void ClientCommitMove(string gameID, int stepNum, int x, int y)
         {
+            Console.WriteLine("         服务端：收到move");
             string sessionID = OperationContext.Current.SessionId;
             ClientInfo currentClient = Common.ClientListGet(sessionID);
-            Game game = Common.GameList[sessionID];
+            Game game = Common.GameList[gameID];
             if (game.NextPlayer.Client != currentClient || game.StepNum != stepNum)
             {
                 //不是应该提交的client提交了数据，错误。 TODO:记录日志
+                Console.WriteLine("         服务端：不是应该提交的client提交了数据，错误。 TODO:记录日志");
+
                 return;
             }
 
             game.DealArrivedMove(x, y);
             game.PrepareNextMove();
-            //发送Move相应给所有人，当前client单独发。（当前客户端走棋已经落子，但不能落下一子）
-            currentClient.ClientCallback.DistributeMove(stepNum, game.LastPlayer.ID, x, y, game.NextPlayer.ID);
-            foreach (var player in Common.GameList[sessionID].Players)
+            //发送Move相应给所有人，Host单独发。（当前客户端走棋已经落子，但不能落下一子）
+            Player host = game.Players.First(p => p.Client.SessionID == gameID);
+            Console.WriteLine("         服务端：发送move给client");
+
+            host.Client.ClientCallback.DistributeMove(stepNum, game.LastPlayer.ID, x, y, game.NextPlayer.ID);
+            foreach (var player in game.Players)
             {
-                if (player.Client != null && player.Client != currentClient)
+                if (player.Client != null && player.Client.SessionID != game.GameID)
                 {
                     player.Client.ClientCallback.DistributeMove(stepNum, game.LastPlayer.ID, x, y, game.NextPlayer.ID);
                 }
@@ -196,6 +218,7 @@ namespace LeagueGoServer
         #region 私有方法
         private void ClientChannel_Closing(object sender, EventArgs e)
         {
+            Console.WriteLine("客户端断开连接" + sender);
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;

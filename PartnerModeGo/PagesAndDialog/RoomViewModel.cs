@@ -23,9 +23,9 @@ namespace PartnerModeGo
         {
             Players = new ObservableCollection<Player>();
             Players.Add(new Player() { Color = 2, ID = 1, Name = ServiceProxy.Instance.Session.UserName, Type = PlayerType.Host });
-            Players.Add(new Player() { Color = 2, ID = 2, Name = "AI黑", Type = PlayerType.AI });
+            Players.Add(new Player() { Color = 2, ID = 2, Name = "AI黑", Type = PlayerType.AI, TimePerMove = 2, Layout = 50000 });
             Players.Add(new Player() { Color = 1, ID = 3, Type = PlayerType.Internet });
-            Players.Add(new Player() { Color = 1, ID = 4, Name = "AI白", Type = PlayerType.AI });
+            Players.Add(new Player() { Color = 1, ID = 4, Name = "AI白", Type = PlayerType.AI, TimePerMove = 2, Layout = 50000 });
             //Player p1 = new Player() { Color = 2, ID = 1, Name = ServiceProxy.Instance.GlobalData.UserName, Type = PlayerType.Host };
             //Player p2 = new Player() { Color = 2, ID = 2, Name = "AI黑", Type = PlayerType.AI };
             //Player p3 = new Player() { Color = 1, ID = 3, Type = PlayerType.Internet };
@@ -43,8 +43,6 @@ namespace PartnerModeGo
             AddWhitePlayerCommand = new CommandBase() { CanExecuteAction = CanAddWhiteExecute, ExecuteAction = AddWhiteExecute };
             DeleteWhitePlayerCommand = new CommandBase() { CanExecuteAction = CanDeleteWhiteExecute, ExecuteAction = DeleteWhiteExecute };
         }
-
-
 
         //public RoomViewModel(Game game)
         //{

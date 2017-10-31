@@ -23,6 +23,7 @@ namespace PartnerModeGo
     {
         private HallViewModel VM;
         private int m_MyPlayerID;
+        private Game m_JoinedGame;
 
         public HallPage()
         {
@@ -36,7 +37,7 @@ namespace PartnerModeGo
         {
             Dispatcher.Invoke(() =>
             {
-                PlayingPage page = new PlayingPage(VM.SelectedGame, LocalType.Client, m_MyPlayerID, blackIDs, whiteIDs, currentID);
+                PlayingPage page = new PlayingPage(m_JoinedGame, LocalType.Client, m_MyPlayerID, blackIDs, whiteIDs, currentID);
                 MainWindow.Instance.ChangePageTo(page);
             });
         }
@@ -48,6 +49,7 @@ namespace PartnerModeGo
                 Dispatcher.Invoke(() =>
                 {
                     Player player = ServiceProxy.Instance.Session.GameList.First(p => p.GameID == gameID).Players.First(p => p.ID == playerID);
+                    player.Name = ServiceProxy.Instance.Session.UserName;
                     //player.Name=
                     this.labelWait.Visibility = Visibility.Visible;
                     //PlayingPage page = new PlayingPage(game);
@@ -64,6 +66,7 @@ namespace PartnerModeGo
 
         private void Join_Click(object sender, RoutedEventArgs e)
         {
+            m_JoinedGame = VM.SelectedGame;
             MainWindow.Instance.ShowProcessWindowAsync("正在进入加入......", Join, null, VM.SelectedGame.GameID, VM.SelectedPlayerID);
         }
 
