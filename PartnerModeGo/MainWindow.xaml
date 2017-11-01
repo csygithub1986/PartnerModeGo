@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:local="clr-namespace:PartnerModeGo" Closed="Window_Closed" Closing="Window_Closing"
         mc:Ignorable="d"
-        Title="自测" Height="544" Width="900" WindowStartupLocation="CenterScreen">
+        Title="Beta狗" Height="544" Width="900" WindowStartupLocation="CenterScreen">
     <Grid x:Name="mainGrid">
         
     </Grid>

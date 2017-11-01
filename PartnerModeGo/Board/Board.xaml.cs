@@ -172,6 +172,7 @@ namespace PartnerModeGo
             m_BoardState.LastMove = new Position(-1, -1);
             m_BoardState.LastEatCount = 0;
             m_BoardState.LastSetpNum++;
+            m_BoardState.Turn = 3 - m_BoardState.Turn;
         }
 
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

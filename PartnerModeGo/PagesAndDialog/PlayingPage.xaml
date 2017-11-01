@@ -45,7 +45,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
 
         <Viewbox >
@@ -84,8 +84,9 @@
 
             <GroupBox Header="功能" Grid.Row="2">
                 <Grid>
-                    <Button Content="Pass" Width="80" Height="30" Margin="26,23,382,25" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnPass" Click="btnPass_Click"/>
-                    <Button Content="Resign" Width="80" Height="30" Margin="136,23,272,25" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnResign" Click="btnResign_Click"/>
+                    <Button Content="Pass" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="26,23,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnPass" Click="btnPass_Click"/>
+                    <Button Content="Resign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="136,23,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnResign" Click="btnResign_Click"/>
+
                 </Grid>
             </GroupBox>
 

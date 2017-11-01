@@ -51,6 +51,7 @@ namespace PartnerModeGo
                     {
                         ServiceProxy.Instance.Session.UserName = userName;
                         ServiceProxy.Instance.Session.SessionID = ssid;
+                        Dispatcher.Invoke(() => { MainWindow.Instance.Title = userName; });
                         return true;
                     }
                     else

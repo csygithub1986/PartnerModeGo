@@ -94,19 +94,21 @@ namespace PartnerModeGo
             //m_StepNum = stepNum;
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                //如果收到的这步正是我刚才走的，就不需要在处理棋盘UI
                 Player lastPlayer = VM.Game.Players.First(p => p.ID == lastPlayerID);
+
+                if (x == -100 || y == -100)//resign
+                {
+                    MessageBox.Show(MainWindow.Instance, (lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输了", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                //如果收到的这步正是我刚才走的，就不需要在处理棋盘UI
                 if ((m_LocalType == LocalType.Host && lastPlayer.Type == PlayerType.Internet) ||
                   (m_LocalType == LocalType.Client && lastPlayerID != VM.SelfPlayer.ID))
                 {
                     if (x == -1 || y == -1)//pass
                     {
                         m_Board.Pass();
-                    }
-                    else if (x == -100 || y == -100)//resign
-                    {
-                        MessageBox.Show((lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输了", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return;
                     }
                     else
                     {
@@ -117,7 +119,7 @@ namespace PartnerModeGo
 
                 }
 
-                DealNextMove(stepNum, nextPlayerID);
+                DealNextMove(stepNum + 1, nextPlayerID);
             }));
         }
 
@@ -174,8 +176,7 @@ namespace PartnerModeGo
         private void Board_MousePlayEvent(int stepNum, int x, int y, int color)
         {
             m_Board.IsHostTurn = false;
-            btnPass.IsEnabled = false;
-            btnResign.IsEnabled = false;
+            VM.SelfPlayer.Playing = false;
             m_AI.Play(x, y, color);
             string gameID = VM.Game.GameID;
             Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, stepNum, x, y); });
@@ -188,8 +189,7 @@ namespace PartnerModeGo
         {
             m_Board.Pass();
             m_Board.IsHostTurn = false;
-            btnPass.IsEnabled = false;
-            btnResign.IsEnabled = false;
+            VM.SelfPlayer.Playing = false;
 
             //m_AI.Play(-3, 22, VM.CurrentPlayer.Color);
             //-1,-1表示pass
@@ -207,8 +207,7 @@ namespace PartnerModeGo
             }
 
             m_Board.IsHostTurn = false;
-            btnPass.IsEnabled = false;
-            btnResign.IsEnabled = false;
+            VM.SelfPlayer.Playing = false;
             //m_AI.Play(x, y, color);
             string gameID = VM.Game.GameID;
             int currentStepNum = VM.CurrentStepNum;
