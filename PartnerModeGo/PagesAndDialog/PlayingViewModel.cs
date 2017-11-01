@@ -13,14 +13,12 @@ namespace PartnerModeGo
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-
-        public PlayingViewModel(Game game)
+        public PlayingViewModel(Game game, int selfPlayerID)
         {
             Game = game;
             BlackPlayers = game.Players.Where(p => p.Color == 2).ToArray();
             WhitePlayers = game.Players.Where(p => p.Color == 1).ToArray();
-
+            SelfPlayer = game.Players.First(p => p.ID == selfPlayerID);
             //默认分别初始2个玩家
             //_Players = new ObservableCollection<Player>();
             //for (int i = 0; i < 2; i++)
@@ -71,6 +69,48 @@ namespace PartnerModeGo
         }
         private Player[] _WhitePlayers;
 
+        public Player SelfPlayer
+        {
+            get { return _SelfPlayer; }
+            set
+            {
+                if (_SelfPlayer != value)
+                {
+                    _SelfPlayer = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelfPlayer"));
+                }
+            }
+        }
+        private Player _SelfPlayer;
+
+        public Player CurrentPlayer
+        {
+            get { return _CurrentPlayer; }
+            set
+            {
+                if (_CurrentPlayer != value)
+                {
+                    _CurrentPlayer = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentPlayer"));
+                }
+            }
+        }
+        private Player _CurrentPlayer;
+
+        public int CurrentStepNum
+        {
+            get { return _CurrentStepNum; }
+            set
+            {
+                if (_CurrentStepNum != value)
+                {
+                    _CurrentStepNum = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentStepNum"));
+                }
+            }
+        }
+        private int _CurrentStepNum;
+
 
 
 
@@ -98,5 +138,22 @@ namespace PartnerModeGo
         }
         private int _GameLoopTimes = 1;//(测试修改这里)
 
+
+        public void DealNextPlayer(int stepNum,int nextPlayerID)
+        {
+            CurrentStepNum = stepNum;
+            foreach (var item in Game.Players)
+            {
+                if (item.ID == nextPlayerID)
+                {
+                    item.Playing = true;
+                    CurrentPlayer = item;
+                }
+                else
+                {
+                    item.Playing = false;
+                }
+            }
+        }
     }
 }

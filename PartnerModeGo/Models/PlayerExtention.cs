@@ -24,6 +24,21 @@ namespace PartnerModeGo.WcfService
             Layout = 50000;
         }
 
+        public bool Playing
+        {
+            get { return _Playing; }
+            set
+            {
+                if (_Playing != value)
+                {
+                    _Playing = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Playing"));
+                }
+            }
+        }
+        private bool _Playing;
+
+
         //#region 网络共同属性
         ///// <summary>
         ///// 是否连接

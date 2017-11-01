@@ -65,7 +65,7 @@ namespace LeagueGoServer
 
         private void Channel_Faulted(object sender, EventArgs e)
         {
-            Console.WriteLine("客户端channel出错" + e.ToString());
+            Console.WriteLine("服务端：     Channel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;
@@ -77,9 +77,12 @@ namespace LeagueGoServer
         /// </summary>
         public void GetAllGames()
         {
+            Console.WriteLine("服务器：client请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
             string sessionID = OperationContext.Current.SessionId;
             ClientInfo client = Common.ClientListGet(sessionID);
+            Console.WriteLine("服务器：发送给client  allgame " + DateTime.Now.ToString("mm-ss-fff"));
             client.ClientCallback.DistributeAllGameInfo(Common.GameList.Values.ToArray());
+            Console.WriteLine("服务器：发送给client  allgame完成 " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         /// <summary>
@@ -201,6 +204,7 @@ namespace LeagueGoServer
 
             game.DealArrivedMove(x, y);
             game.PrepareNextMove();
+
             //发送Move相应给所有人，Host单独发。（当前客户端走棋已经落子，但不能落下一子）
             Player host = game.Players.First(p => p.Client.SessionID == gameID);
             Console.WriteLine("         服务端：发送move给client");
@@ -218,7 +222,7 @@ namespace LeagueGoServer
         #region 私有方法
         private void ClientChannel_Closing(object sender, EventArgs e)
         {
-            Console.WriteLine("客户端断开连接" + sender);
+            Console.WriteLine("服务端：     ClientChannel_Closing " + DateTime.Now.ToString("mm-ss-fff"));
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;

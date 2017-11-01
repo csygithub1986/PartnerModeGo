@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PartnerModeGo.WcfService;
+using System.Threading;
 
 namespace PartnerModeGo
 {
@@ -11,8 +12,10 @@ namespace PartnerModeGo
     {
         public void DistributeAllGameInfo(WcfService.Game[] games)
         {
-            Console.WriteLine("收到AllGameInfo");
+            Console.WriteLine("客户端：收到AllGameInfo " + DateTime.Now.ToString("mm-ss-fff"));
             ServiceProxy.Instance.Session.GameList = new System.Collections.ObjectModel.ObservableCollection<Game>(games);
+            //Thread.Sleep(2000);
+            Console.WriteLine("客户端：收到AllGameInfo处理完毕 " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         public void DistributeApplyGameResult(bool success, string gameID, int playerID)

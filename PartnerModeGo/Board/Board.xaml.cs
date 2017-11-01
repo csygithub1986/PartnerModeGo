@@ -166,6 +166,14 @@ namespace PartnerModeGo
         }
         #endregion
 
+        public void Pass()
+        {
+            //更改游戏状态
+            m_BoardState.LastMove = new Position(-1, -1);
+            m_BoardState.LastEatCount = 0;
+            m_BoardState.LastSetpNum++;
+        }
+
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (BoardMode != BoardMode.Playing && BoardMode != BoardMode.Edit)

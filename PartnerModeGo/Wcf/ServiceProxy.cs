@@ -97,6 +97,8 @@ namespace PartnerModeGo
                     return false;
                 }
                 m_wcfClient = client;
+                client.InnerDuplexChannel.Closed += InnerDuplexChannel_Closed;
+                client.InnerDuplexChannel.Faulted += InnerDuplexChannel_Faulted;
                 Console.WriteLine("连接成功");
                 return true;
             }
@@ -114,6 +116,16 @@ namespace PartnerModeGo
             //};
         }
 
+        private void InnerDuplexChannel_Faulted(object sender, EventArgs e)
+        {
+            Console.WriteLine("客户端：  InnerDuplexChannel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
+        }
+
+        private void InnerDuplexChannel_Closed(object sender, EventArgs e)
+        {
+            Console.WriteLine("客户端：  InnerDuplexChannel_Closed " + DateTime.Now.ToString("mm-ss-fff"));
+        }
+
         public string Login(object userName)
         {
             string ssid = m_wcfClient.Login(userName.ToString());
@@ -122,7 +134,9 @@ namespace PartnerModeGo
 
         public void GetAllGames()
         {
+            Console.WriteLine("客户端：向server请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
             m_wcfClient.GetAllGames();
+            Console.WriteLine("客户端：向server请求getallgame 返回" + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         public void GameStart()

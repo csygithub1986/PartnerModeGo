@@ -21,20 +21,23 @@ namespace PartnerModeGo
     /// </summary>
     public partial class PlayingPage : UserControl
     {
-        private Game m_Game;
+        //private Game m_Game;
         private LocalType m_LocalType;
-        private int m_MyPlayerID;//当是client的时候用
+        //private int m_MyPlayerID;//当是client的时候用
         private AI m_AI;
-        private int m_StepNum;
+        //private int m_StepNum;
 
         public PlayingPage(Game game, LocalType localType, int myPlayerID, int[] blackIDs, int[] whiteIDs, int nextPlayerID)
         {
             InitializeComponent();
 
-            m_Game = game;
-            m_MyPlayerID = myPlayerID;
+            DataContext = new PlayingViewModel(game, myPlayerID);
+
+            //m_Game = game;
+
+            //m_MyPlayerID = myPlayerID;
             m_LocalType = localType;
-            m_StepNum = -1;
+            //m_StepNum = -1;
 
             m_AI = new AI(game.GameSetting.BoardSize);
             m_AI.Init();
@@ -48,7 +51,7 @@ namespace PartnerModeGo
             ClientLog.FilePath = "D:/LeagueGoLog/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
             ClientLog.WriteLog("(;PB[xyz]PW[abc]");
 
-            DealNextMove(nextPlayerID);
+            DealNextMove(0, nextPlayerID);
         }
 
 
@@ -56,10 +59,22 @@ namespace PartnerModeGo
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                Console.WriteLine("自己下完，处理board和AI");
-                m_Board.Play(x, y);
-                m_AI.Play(x, y, color);
-                Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_Game.GameID, m_StepNum, x, y); });
+                if (isPass)
+                {
+                    m_Board.Pass();
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -1, -1); });
+                }
+                else if (isResign)
+                {
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -100, -100); });
+                }
+                else
+                {
+                    Console.WriteLine("自己下完，处理board和AI");
+                    m_Board.Play(x, y);
+                    m_AI.Play(x, y, color);
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, x, y); });
+                }
             }));
         }
 
@@ -71,42 +86,56 @@ namespace PartnerModeGo
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="nextPlayerID"></param>
-        private void MoveCallback(int stepNum, int currentPlayerID, int x, int y, int nextPlayerID)
+        private void MoveCallback(int stepNum, int lastPlayerID, int x, int y, int nextPlayerID)
         {
             Console.WriteLine("收到服务的Move stepNum=" + stepNum + " nextID=" + nextPlayerID);
-            m_StepNum = stepNum;
+            //m_StepNum = stepNum;
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 //如果收到的这步正是我刚才走的，就不需要在处理棋盘UI
-                Player currentPlayer = m_Game.Players.First(p => p.ID == currentPlayerID);
-                if ((m_LocalType == LocalType.Host && currentPlayer.Type == PlayerType.Internet) ||
-                  (m_LocalType == LocalType.Client && currentPlayerID != m_MyPlayerID))
+                Player lastPlayer = VM.Game.Players.First(p => p.ID == lastPlayerID);
+                if ((m_LocalType == LocalType.Host && lastPlayer.Type == PlayerType.Internet) ||
+                  (m_LocalType == LocalType.Client && lastPlayerID != VM.SelfPlayer.ID))
                 {
-                    Console.WriteLine("刚才不是自己下，需要处理board和AI");
-                    m_Board.Play(x, y);
-                    m_AI.Play(x, y, currentPlayer.Color);
+                    if (x == -1 || y == -1)//pass
+                    {
+                        m_Board.Pass();
+                    }
+                    else if (x == -100 || y == -100)//resign
+                    {
+                        MessageBox.Show((lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输了", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("刚才不是自己下，需要处理board和AI");
+                        m_Board.Play(x, y);
+                        m_AI.Play(x, y, lastPlayer.Color);
+                    }
+
                 }
 
-                DealNextMove(nextPlayerID);
+                DealNextMove(stepNum, nextPlayerID);
             }));
         }
 
         #endregion
 
-        private void DealNextMove(int nextID)
+        private void DealNextMove(int stepNum, int nextID)
         {
-            Console.WriteLine("处理下一步，该 " + m_Game.Players.First(p => p.ID == nextID).Name + " 走棋");
+            Console.WriteLine("处理下一步，该 " + VM.Game.Players.First(p => p.ID == nextID).Name + " 走棋");
 
-            m_StepNum++;
+            //m_StepNum++;
             //UI
+            VM.DealNextPlayer(stepNum, nextID);
 
-            Player nextPlayer = m_Game.Players.First(p => p.ID == nextID);
+
             if (m_LocalType == LocalType.Host)
             {
-                switch (nextPlayer.Type)
+                switch (VM.CurrentPlayer.Type)
                 {
                     case PlayerType.AI:
-                        m_AI.AIThink(nextPlayer);
+                        m_AI.AIThink(VM.CurrentPlayer);
                         break;
                     case PlayerType.RealBoard:
                         break;
@@ -119,7 +148,7 @@ namespace PartnerModeGo
             }
             else if (m_LocalType == LocalType.Client)
             {
-                switch (nextPlayer.Type)
+                switch (VM.CurrentPlayer.Type)
                 {
                     case PlayerType.AI:
                         break;
@@ -128,7 +157,7 @@ namespace PartnerModeGo
                     case PlayerType.Host:
                         break;
                     case PlayerType.Internet:
-                        if (nextID == m_MyPlayerID)
+                        if (nextID == VM.SelfPlayer.ID)
                         {
                             m_Board.IsHostTurn = true;
                         }
@@ -142,11 +171,40 @@ namespace PartnerModeGo
         private void Board_MousePlayEvent(int stepNum, int x, int y, int color)
         {
             m_Board.IsHostTurn = false;
+            btnPass.IsEnabled = false;
+            btnResign.IsEnabled = false;
             m_AI.Play(x, y, color);
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(m_Game.GameID, stepNum, x, y); });
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, stepNum, x, y); });
         }
 
-        public PlayingViewModel ViewModel { get { return ((PlayingViewModel)DataContext); } }
+        public PlayingViewModel VM { get { return ((PlayingViewModel)DataContext); } }
 
+
+        private void btnPass_Click(object sender, RoutedEventArgs e)
+        {
+            m_Board.Pass();
+            m_Board.IsHostTurn = false;
+            btnPass.IsEnabled = false;
+            btnResign.IsEnabled = false;
+
+            //m_AI.Play(-3, 22, VM.CurrentPlayer.Color);
+            //-1,-1表示pass
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -1, -1); });
+        }
+
+        private void btnResign_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult re = MessageBox.Show("是否认输？", "确认", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (re == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
+            m_Board.IsHostTurn = false;
+            btnPass.IsEnabled = false;
+            btnResign.IsEnabled = false;
+            //m_AI.Play(x, y, color);
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -100, -100); });
+        }
     }
 }
