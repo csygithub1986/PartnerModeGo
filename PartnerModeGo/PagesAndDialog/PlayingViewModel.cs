@@ -18,7 +18,11 @@ namespace PartnerModeGo
             Game = game;
             BlackPlayers = game.Players.Where(p => p.Color == 2).ToArray();
             WhitePlayers = game.Players.Where(p => p.Color == 1).ToArray();
-            SelfPlayer = game.Players.First(p => p.ID == selfPlayerID);
+            //如果是host，这里id为0
+            if (selfPlayerID != 0)
+            {
+                SelfPlayer = game.Players.First(p => p.ID == selfPlayerID);
+            }
             //默认分别初始2个玩家
             //_Players = new ObservableCollection<Player>();
             //for (int i = 0; i < 2; i++)
@@ -83,6 +87,9 @@ namespace PartnerModeGo
         }
         private Player _SelfPlayer;
 
+        /// <summary>
+        /// 处于长时间思考的player
+        /// </summary>
         public Player CurrentPlayer
         {
             get { return _CurrentPlayer; }
@@ -139,7 +146,7 @@ namespace PartnerModeGo
         private int _GameLoopTimes = 1;//(测试修改这里)
 
 
-        public void DealNextPlayer(int stepNum,int nextPlayerID)
+        public void DealNextPlayer(int stepNum, int nextPlayerID)
         {
             CurrentStepNum = stepNum;
             foreach (var item in Game.Players)

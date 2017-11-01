@@ -141,6 +141,7 @@ namespace PartnerModeGo
                         break;
                     case PlayerType.Host:
                         m_Board.IsHostTurn = true;
+                        VM.SelfPlayer = VM.CurrentPlayer;
                         break;
                     case PlayerType.Internet:
                         break;
