@@ -59,21 +59,23 @@ namespace PartnerModeGo
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                string gameID = VM.Game.GameID;
+                int currentStepNum = VM.CurrentStepNum;
                 if (isPass)
                 {
                     m_Board.Pass();
-                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -1, -1); });
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -1, -1); });
                 }
                 else if (isResign)
                 {
-                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -100, -100); });
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -100, -100); });
                 }
                 else
                 {
                     Console.WriteLine("自己下完，处理board和AI");
                     m_Board.Play(x, y);
                     m_AI.Play(x, y, color);
-                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, x, y); });
+                    Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, x, y); });
                 }
             }));
         }
@@ -175,7 +177,8 @@ namespace PartnerModeGo
             btnPass.IsEnabled = false;
             btnResign.IsEnabled = false;
             m_AI.Play(x, y, color);
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, stepNum, x, y); });
+            string gameID = VM.Game.GameID;
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, stepNum, x, y); });
         }
 
         public PlayingViewModel VM { get { return ((PlayingViewModel)DataContext); } }
@@ -190,7 +193,9 @@ namespace PartnerModeGo
 
             //m_AI.Play(-3, 22, VM.CurrentPlayer.Color);
             //-1,-1表示pass
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -1, -1); });
+            string gameID = VM.Game.GameID;
+            int currentStepNum = VM.CurrentStepNum;
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -1, -1); });
         }
 
         private void btnResign_Click(object sender, RoutedEventArgs e)
@@ -205,7 +210,9 @@ namespace PartnerModeGo
             btnPass.IsEnabled = false;
             btnResign.IsEnabled = false;
             //m_AI.Play(x, y, color);
-            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(VM.Game.GameID, VM.CurrentStepNum, -100, -100); });
+            string gameID = VM.Game.GameID;
+            int currentStepNum = VM.CurrentStepNum;
+            Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -100, -100); });
         }
     }
 }
