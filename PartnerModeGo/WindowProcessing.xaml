@@ -74,7 +74,7 @@
                 </Viewbox>
                 <Label x:Name="lblProcessing" Content="0%" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
-            <Button x:Name="btnCancel" Style="{StaticResource SpecialButtonStyle}" Content="取消" VerticalAlignment="Bottom" Height="40" Click="btnCancel_Click" FontWeight="Bold" Margin="0"/>
+            <Button x:Name="btnCancel" Content="取消" VerticalAlignment="Bottom" Height="40" Click="btnCancel_Click" FontWeight="Bold" Margin="0"/>
         </Grid>
     </Border>
 </Window>
