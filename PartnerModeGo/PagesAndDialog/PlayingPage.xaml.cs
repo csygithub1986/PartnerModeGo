@@ -213,5 +213,17 @@ namespace PartnerModeGo
             int currentStepNum = VM.CurrentStepNum;
             Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -100, -100); });
         }
+
+        /// <summary>
+        /// 系统
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSystemSetting_Click(object sender, RoutedEventArgs e)
+        {
+            SystemSettingDialog d = new SystemSettingDialog();
+            d.Owner = MainWindow.Instance;
+            d.ShowDialog();
+        }
     }
 }

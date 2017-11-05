@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FrameWorkExtension">
+      <HintPath>..\Lib\FrameWorkExtension.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\Lib\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -42,6 +45,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\Lib\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -54,6 +60,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\Lib\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -86,6 +95,9 @@
       <DependentUpon>PlayingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PagesAndDialog\PlayingViewModel.cs" />
+    <Compile Include="PagesAndDialog\SystemSettingDialog.xaml.cs">
+      <DependentUpon>SystemSettingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Rule\IRule.cs" />
     <Compile Include="Rule\RuleDemo.cs" />
     <Compile Include="Tcp\CommonDataDefine.cs" />
@@ -133,6 +145,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PagesAndDialog\PlayingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagesAndDialog\SystemSettingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -26,6 +26,11 @@ namespace PartnerModeGo
             InitializeComponent();
             Instance = this;
             mainGrid.Children.Add(new HomePage());
+
+            Application.Current.Resources.Add("BlackStoneColor", new SolidColorBrush(Properties.Settings.Default.BlackStoneColor));
+            Application.Current.Resources.Add("WhiteStoneColor", new SolidColorBrush(Properties.Settings.Default.WhiteStoneColor));
+
+            
         }
 
         public void ChangePageTo(UserControl uc)

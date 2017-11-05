@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -98,7 +99,7 @@ namespace PartnerModeGo
                 for (int y = 0; y < BoardSize; y++)
                 {
                     m_Stones[x, y].Visibility = state[x * BoardSize + y] == 0 ? Visibility.Hidden : Visibility.Visible;
-                    m_Stones[x, y].Fill = m_BoardState.Turn == 2 ? Brushes.Black : Brushes.White;
+                m_Stones[x, y].SetResourceReference(Ellipse.FillProperty, m_BoardState.Turn == 2 ? "BlackStoneColor" : "WhiteStoneColor");
                 }
             }
 
@@ -138,7 +139,7 @@ namespace PartnerModeGo
                 }
 
                 //处理界面
-                m_Stones[x, y].Fill = m_BoardState.Turn == 2 ? Brushes.Black : Brushes.White;
+                m_Stones[x, y].SetResourceReference(Ellipse.FillProperty, m_BoardState.Turn == 2 ? "BlackStoneColor" : "WhiteStoneColor");
                 m_Stones[x, y].Visibility = Visibility.Visible;
                 //highlightImage.Margin = new Thickness(m_Offset + x * m_GridSize - m_GridSize / 2, m_Offset + y * m_GridSize - m_GridSize / 2, 0, 0);
                 //highlightImage.Visibility = Visibility.Visible;
@@ -204,7 +205,7 @@ namespace PartnerModeGo
                 }
 
                 //处理界面
-                m_Stones[x, y].Fill = m_BoardState.Turn == 2 ? Brushes.Black : Brushes.White;
+                m_Stones[x, y].SetResourceReference(Ellipse.FillProperty, m_BoardState.Turn == 2 ? "BlackStoneColor" : "WhiteStoneColor");
                 m_Stones[x, y].Visibility = Visibility.Visible;
                 //highlightImage.Margin = new Thickness(m_Offset + x * m_GridSize - m_GridSize / 2, m_Offset + y * m_GridSize - m_GridSize / 2, 0, 0);
                 //highlightImage.Visibility = Visibility.Visible;
@@ -296,9 +297,11 @@ namespace PartnerModeGo
                     Canvas.SetTop(m_Stones[i, j], m_Offset + j * m_GridSize - m_StoneSize / 2);
                     Canvas.SetLeft(m_Stones[i, j], m_Offset + i * m_GridSize - m_StoneSize / 2);
                     m_Stones[i, j].StrokeThickness = 1;
-                    m_Stones[i, j].Stroke = Brushes.Black;
+                    //m_Stones[i, j].Stroke = Application.Current.Resources["BlueStone"] as Brush;//Brushes.Black;
                     //m_Stones[i].Fill = Brushes.Black;
                     m_Canvas.Children.Add(m_Stones[i, j]);
+
+
                 }
             }
 

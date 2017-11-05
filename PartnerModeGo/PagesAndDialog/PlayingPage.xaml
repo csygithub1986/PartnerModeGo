@@ -19,7 +19,7 @@
                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="40,0,0,0" FontSize="14"/>
                     <TextBlock Text="00:00" Grid.Row="1" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-            </Border> 
+            </Border>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Color}" Value="1">
                     <Setter Property="Fill" TargetName="ellipse" Value="White"/>
@@ -48,49 +48,54 @@
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
 
-        <Viewbox >
-            <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
-        </Viewbox>
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
+            <Viewbox>
+                <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
+            </Viewbox>
+        </Border>
 
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="400"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
-            </Grid.RowDefinitions>
-
-            <Grid x:Name="gridPlayers">
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="2" Grid.Column="1">
+            <Grid >
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="400"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
-                <ItemsControl ItemsSource="{Binding BlackPlayers}" ItemTemplate="{StaticResource PlayerTemplate}">
-                    <ItemsControl.Template>
-                        <ControlTemplate>
-                            <UniformGrid Rows="1" Columns="{Binding BlackPlayers.Length}" IsItemsHost="True"/>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{Binding WhitePlayers}" ItemTemplate="{StaticResource PlayerTemplate}" Grid.Row="1">
-                    <ItemsControl.Template>
-                        <ControlTemplate>
-                            <UniformGrid Rows="1" Columns="{Binding WhitePlayers.Length}" IsItemsHost="True"/>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
-                </ItemsControl>
-            </Grid>
 
-            <GroupBox Header="聊天" Grid.Row="1"></GroupBox>
-
-            <GroupBox Header="功能" Grid.Row="2">
-                <Grid>
-                    <Button Content="Pass" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="26,23,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnPass" Click="btnPass_Click"/>
-                    <Button Content="Resign" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="136,23,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnResign" Click="btnResign_Click"/>
-
+                <Grid x:Name="gridPlayers">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ItemsControl ItemsSource="{Binding BlackPlayers}" ItemTemplate="{StaticResource PlayerTemplate}">
+                        <ItemsControl.Template>
+                            <ControlTemplate>
+                                <UniformGrid Rows="1" Columns="{Binding BlackPlayers.Length}" IsItemsHost="True"/>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding WhitePlayers}" ItemTemplate="{StaticResource PlayerTemplate}" Grid.Row="1">
+                        <ItemsControl.Template>
+                            <ControlTemplate>
+                                <UniformGrid Rows="1" Columns="{Binding WhitePlayers.Length}" IsItemsHost="True"/>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                    </ItemsControl>
                 </Grid>
-            </GroupBox>
 
-        </Grid>
+                <GroupBox Header="聊天" Grid.Row="1"></GroupBox>
+
+                <GroupBox Header="功能" Grid.Row="2">
+                    <Grid>
+                        <Button Content="Pass" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="26,0,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnPass" Click="btnPass_Click"/>
+                        <Button Content="认输" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="141,11,0,11" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnResign" Click="btnResign_Click"/>
+                        <Button Content="系统设置" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="254,0,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnSystemSetting" Click="btnSystemSetting_Click"/>
+
+                    </Grid>
+                </GroupBox>
+
+            </Grid>
+        </Border>
 
     </Grid>
 </UserControl>

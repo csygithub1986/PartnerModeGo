@@ -14,6 +14,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!--<Color x:Key="BlueStone" R="#11" G="#51" B="#C9"/>-->
+            <!--<Color x:Key="RedStone" R="#BB" G="#0C" B="#C8"/>-->
+            <SolidColorBrush x:Key="BlueStone" Color="#1151C9"/>
+            <SolidColorBrush x:Key="RedStone" Color="#BB0CC8"/>
+
             <!--以下来自于ptlc-->
             <Color x:Key="DropShadowEffectColor" A="#FF" R="#2B" G="#98" B="#DD"/>
 

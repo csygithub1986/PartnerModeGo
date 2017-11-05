@@ -48,43 +48,58 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <DockPanel>
-            <Label Content="棋局列表" HorizontalContentAlignment="Center" DockPanel.Dock="Top"></Label>
-            <ListBox x:Name="listBoxGameList" ItemsSource="{Binding Session.GameList,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}" ItemTemplate="{StaticResource GameItemTemplate}"></ListBox>
-        </DockPanel>
-
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="70"/>
-            </Grid.RowDefinitions>
-
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
             <DockPanel>
-                <Label Content="棋局详细信息" HorizontalContentAlignment="Center" DockPanel.Dock="Top"/>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Orientation="Horizontal" Height="30">
-                        <TextBlock Text="{Binding SelectedGame.GameSetting.BoardSize}" Width="80"/>
-                        <TextBlock Text="{Binding SelectedGame.GameSetting.Handicap}" Width="80"/>
-                        <TextBlock Text="{Binding SelectedGame.GameSetting.Komi}" Width="80"/>
-                    </StackPanel>
-
-                    <ListBox x:Name="blackListbox" Grid.Row="1" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=BlackPlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}"  SelectionChanged="blackListbox_SelectionChanged"></ListBox>
-                    <ListBox x:Name="whiteListbox" Grid.Row="2" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectionChanged="whiteListbox_SelectionChanged"></ListBox>
-                </Grid>
-                <!--<ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>-->
+                <Label Content="棋局列表" HorizontalContentAlignment="Center" DockPanel.Dock="Top"></Label>
+                <ListBox x:Name="listBoxGameList" ItemsSource="{Binding Session.GameList,Source={x:Static local:ServiceProxy.Instance}}" SelectedItem="{Binding SelectedGame}" ItemTemplate="{StaticResource GameItemTemplate}"></ListBox>
             </DockPanel>
+        </Border>
 
-            <Grid Grid.Row="1">
-                <Button x:Name="btn_Join" IsEnabled="False" Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
-                <Button x:Name="btn_Create" Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="2" Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="70"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel>
+                    <Label Content="棋局详细信息" HorizontalContentAlignment="Center" DockPanel.Dock="Top"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
+                            <StackPanel Orientation="Horizontal" Height="30">
+                                <TextBlock Text="棋盘大小" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="{Binding SelectedGame.GameSetting.BoardSize}" Width="80"/>
+                                <TextBlock Text="让子" VerticalAlignment="Center" Margin="40,0,10,0"/>
+                                <TextBlock Text="{Binding SelectedGame.GameSetting.Handicap}" Width="80"/>
+                                <TextBlock Text="贴目" VerticalAlignment="Center" Margin="40,0,10,0"/>
+                                <TextBlock Text="{Binding SelectedGame.GameSetting.Komi}" Width="80"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="Gray" BorderThickness="1" Margin="2" Grid.Row="1">
+                            <ListBox x:Name="blackListbox" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=BlackPlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}"  SelectionChanged="blackListbox_SelectionChanged"></ListBox>
+                        </Border>
+
+                        <Border BorderBrush="Gray" BorderThickness="1" Margin="2" Grid.Row="2">
+                            <ListBox x:Name="whiteListbox" ItemsSource="{Binding SelectedGame.Players,Converter={StaticResource PlayerConverter},ConverterParameter=WhitePlayer}" ItemTemplate="{StaticResource PlayerItemTemplate}" SelectionChanged="whiteListbox_SelectionChanged"></ListBox>
+                        </Border>
+
+                    </Grid>
+                    <!--<ContentControl Content="{Binding SelectedItem,ElementName=listBoxGameList}" ContentTemplate="{StaticResource GameDetailTemplate}"/>-->
+                </DockPanel>
+
+                <Grid Grid.Row="1">
+                    <Button x:Name="btn_Join" IsEnabled="False" Content="加入" Click="Join_Click" HorizontalAlignment="Left" Margin="39,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
+                    <Button x:Name="btn_Create" Content="新建" Click="NewGame_Click" HorizontalAlignment="Left" Margin="316,22,0,0" VerticalAlignment="Top" Width="140" Height="28"/>
+                </Grid>
+                <Label x:Name="labelWait" Visibility="Collapsed" Grid.Row="1" Background="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Content="加入成功，等待棋局开始......"/>
             </Grid>
-            <Label x:Name="labelWait" Visibility="Collapsed" Grid.Row="1" Background="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Content="加入成功，等待棋局开始......"/>
-        </Grid>
+        </Border>
     </Grid>
 </UserControl>
