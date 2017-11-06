@@ -40,12 +40,12 @@ namespace PartnerModeGo
             DataContext = VM;
             AddEventHandler();
 
-            Array array = Enum.GetValues(typeof(PlayerType));
-            PlayerTypes = new PlayerType[array.Length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                PlayerTypes[i] = (PlayerType)array.GetValue(i);
-            }
+            //Array array = Enum.GetValues(typeof(PlayerType));
+            //PlayerTypes = new PlayerType[array.Length];
+            //for (int i = 0; i < array.Length; i++)
+            //{
+            //    PlayerTypes[i] = (PlayerType)array.GetValue(i);
+            //}
         }
 
         private RoomViewModel VM { get; set; }
@@ -171,12 +171,12 @@ namespace PartnerModeGo
             return null;
         }
 
-        public PlayerType[] PlayerTypes
-        {
-            get { return (PlayerType[])GetValue(PlayerTypesProperty); }
-            set { SetValue(PlayerTypesProperty, value); }
-        }
-        public static readonly DependencyProperty PlayerTypesProperty = DependencyProperty.Register("PlayerTypes", typeof(PlayerType[]), typeof(RoomPage), new PropertyMetadata(null));
+        //public PlayerType[] PlayerTypes
+        //{
+        //    get { return (PlayerType[])GetValue(PlayerTypesProperty); }
+        //    set { SetValue(PlayerTypesProperty, value); }
+        //}
+        //public static readonly DependencyProperty PlayerTypesProperty = DependencyProperty.Register("PlayerTypes", typeof(PlayerType[]), typeof(RoomPage), new PropertyMetadata(null));
 
 
     }

@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="Beta狗" Height="544" Width="900" WindowStartupLocation="CenterScreen">
     <Grid x:Name="mainGrid">
-        
+
     </Grid>
 </Window>

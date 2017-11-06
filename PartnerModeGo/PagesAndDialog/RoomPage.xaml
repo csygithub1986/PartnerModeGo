@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:srv="clr-namespace:PartnerModeGo.WcfService"
              xmlns:local="clr-namespace:PartnerModeGo"
              xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="PartnerModeGo.RoomPage"
@@ -11,9 +12,10 @@
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <local:SettingConverter x:Key="SettingConverter"/>
+        <local:PlayerTypeConverter x:Key="PlayerTypeConverter"/>
 
         <DataTemplate DataType="{x:Type srv:Player}" x:Key="PlayerTemplate">
-            <Border  Margin="3" Grid.Row="0" VerticalAlignment="Center" CornerRadius="5">
+            <Border Background="#BBBBBB"  Margin="3,10" Grid.Row="0" VerticalAlignment="Center" CornerRadius="5" Width="280">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="36"/>
@@ -22,9 +24,19 @@
 
                     <Border BorderThickness="0,0,0,1" BorderBrush="LightGray" Grid.ColumnSpan="2">
                         <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="110"/>
+                            </Grid.ColumnDefinitions>
                             <Ellipse Width="20" Height="20" Fill="{Binding Color, ConverterParameter=Color, Converter={StaticResource SettingConverter}}" HorizontalAlignment="Left" Margin="10,0,0,0"/>
-                            <TextBox Text="{Binding Name}" HorizontalAlignment="Left" Width="120" Margin="50,0,0,0" Height="26" VerticalAlignment="Center" HorizontalContentAlignment="Left"/>
-                            <ComboBox SelectedItem="{Binding Type}" ItemsSource="{Binding PlayerTypes, ElementName=uc}" Width="50" HorizontalAlignment="Right" Margin="0,0,10,0" Height="26"/>
+                            <TextBox metro:TextBoxHelper.Watermark="填写昵称" Grid.Column="1" Text="{Binding Name}" Height="26" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="2" SelectedItem="{Binding Type,Converter={StaticResource PlayerTypeConverter}}" Margin="10,0,10,0" Height="26">
+                                <System:String>人工智能</System:String>
+                                <System:String>本机</System:String>
+                                <System:String>远程玩家</System:String>
+                                <System:String>真实棋盘</System:String>
+                            </ComboBox>
                         </Grid>
                     </Border>
 
@@ -70,7 +82,7 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
+        <Border BorderBrush="Gray" BorderThickness="1" Margin="2" Background="#22FFFFFF">
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Margin="22,10,0,0" TextWrapping="Wrap" Text="游戏名称" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtGameName" HorizontalAlignment="Left" Height="23" Margin="87,6,0,0" TextWrapping="Wrap" Text="{Binding CurrentGame.Name}" VerticalAlignment="Top" Width="120"/>
@@ -99,7 +111,42 @@
 
             </Grid>
         </Border>
-        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="2">
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="2"  Background="#55FFFFFF">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="添加" Command="{Binding AddBlackPlayerCommand, ConverterParameter=AddBlack}" FontSize="16" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
+                    <Button Content="删除" Command="{Binding DeleteBlackPlayerCommand, ConverterParameter=DeleteBlack}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
+                    <ListBox Background="Transparent" SelectionChanged="blackListBox_SelectionChanged" x:Name="blackListbox"  ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=BlackPlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="20,0" Grid.Row="1"/>
+
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="2"  Background="#55FFFFFF">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                <Button Content="添加" Command="{Binding AddWhitePlayerCommand, ConverterParameter=AddWhite}" FontSize="16" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" Width="75" Height="28"  Grid.Column="1"/>
+                <Button Content="删除" Command="{Binding DeleteWhitePlayerCommand, ConverterParameter=DeleteWhite}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28" Grid.Column="1"/>
+                <ListBox Background="Transparent" SelectionChanged="whiteListBox_SelectionChanged" x:Name="whiteListbox" ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=WhitePlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="20,0" Grid.Column="1" Grid.Row="1"/>
+                </Grid>
+
+            </Border>
+
+        </Grid>
+        
+        <!--<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="2"  Background="#22FFFFFF">
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
@@ -113,10 +160,10 @@
                 <Button Content="删除" Command="{Binding DeleteBlackPlayerCommand, ConverterParameter=DeleteBlack}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28"/>
                 <Button Content="添加" Command="{Binding AddWhitePlayerCommand, ConverterParameter=AddWhite}" FontSize="16" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" Width="75" Height="28"  Grid.Column="1"/>
                 <Button Content="删除" Command="{Binding DeleteWhitePlayerCommand, ConverterParameter=DeleteWhite}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28" Grid.Column="1"/>
-                <ListBox SelectionChanged="blackListBox_SelectionChanged" x:Name="blackListbox"  ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=BlackPlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="0,0,0,0" Grid.Row="1"/>
-                <ListBox SelectionChanged="whiteListBox_SelectionChanged" x:Name="whiteListbox" ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=WhitePlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="0,0,0,0" Grid.Column="1" Grid.Row="1"/>
+                <ListBox Background="Transparent" SelectionChanged="blackListBox_SelectionChanged" x:Name="blackListbox"  ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=BlackPlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="0,0,0,0" Grid.Row="1"/>
+                <ListBox Background="Transparent" SelectionChanged="whiteListBox_SelectionChanged" x:Name="whiteListbox" ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=WhitePlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="0,0,0,0" Grid.Column="1" Grid.Row="1"/>
             </Grid>
-        </Border>
+        </Border>-->
 
         <!--<GroupBox Header="比赛总次数" Grid.Row="1"  Margin="5" Name="gbSelfConfig" Background="#F0F0E0"> 
             <Grid>
@@ -125,7 +172,7 @@
             </Grid>
         </GroupBox>-->
 
-        <Grid x:Name="grid1" Grid.Row="2" Grid.ColumnSpan="2" Background="#F0F0F0">
+        <Grid x:Name="grid1" Grid.Row="2" Grid.ColumnSpan="2" Background="#55000000">
             <Button x:Name="btnSetting" Width="100" Height="30" Content="确定设置" IsEnabled="True" Margin="58,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="BtnOk_Click"/>
             <Button x:Name="btnStart" Width="254" Height="30" Content="等待加入游戏......" Visibility="Hidden" IsEnabled="False" Margin="161,10,0,10" HorizontalAlignment="Left" VerticalAlignment="Center" Click="btnStart_Click"/>
             <Button Width="100" Height="30" Content="退出" Margin="0,0,58,0" VerticalAlignment="Center" HorizontalAlignment="Right" Click="BtnCancel_Click"/>

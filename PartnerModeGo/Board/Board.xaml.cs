@@ -297,7 +297,7 @@ namespace PartnerModeGo
                     Canvas.SetTop(m_Stones[i, j], m_Offset + j * m_GridSize - m_StoneSize / 2);
                     Canvas.SetLeft(m_Stones[i, j], m_Offset + i * m_GridSize - m_StoneSize / 2);
                     m_Stones[i, j].StrokeThickness = 1;
-                    //m_Stones[i, j].Stroke = Application.Current.Resources["BlueStone"] as Brush;//Brushes.Black;
+                    m_Stones[i, j].Stroke = Brushes.Black;
                     //m_Stones[i].Fill = Brushes.Black;
                     m_Canvas.Children.Add(m_Stones[i, j]);
 
