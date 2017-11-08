@@ -14,6 +14,11 @@ namespace PartnerModeGo
     {
         public static string FilePath;
         private static object O_LockLog = new object();
+
+        static ClientLog()
+        {
+            FilePath = Environment.CurrentDirectory + "/Log/" + "Log.txt";
+        }
         public static void WriteLog(string info)
         {
             lock (O_LockLog)
@@ -31,7 +36,7 @@ namespace PartnerModeGo
                     f.Close();
                 }
                 System.IO.StreamWriter f2 = new System.IO.StreamWriter(FilePath, true, Encoding.UTF8);
-                f2.Write(info);
+                f2.WriteLine(DateTime.Now.ToString("MMdd-HH:mm:ss") + "\t" + info);
                 f2.Close();
                 f2.Dispose();
             }

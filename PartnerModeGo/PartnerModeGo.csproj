@@ -40,6 +40,12 @@
     <Reference Include="MahApps.Metro">
       <HintPath>..\Lib\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\Lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\Lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -69,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Sgf.cs" />
     <Compile Include="Common\ImageHelper.cs" />
     <Compile Include="Connected Services\WcfService\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -79,6 +86,7 @@
     <Compile Include="Game\Enums.cs" />
     <Compile Include="Models\PlayerExtention.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\Step.cs" />
     <Compile Include="PagesAndDialog\Converters.cs" />
     <Compile Include="PagesAndDialog\RoomViewModel.cs" />
     <Compile Include="PagesAndDialog\RoomPage.xaml.cs">

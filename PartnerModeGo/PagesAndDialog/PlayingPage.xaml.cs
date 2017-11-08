@@ -1,6 +1,8 @@
-﻿using PartnerModeGo.WcfService;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using PartnerModeGo.WcfService;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,31 +28,27 @@ namespace PartnerModeGo
         //private int m_MyPlayerID;//当是client的时候用
         private AI m_AI;
         //private int m_StepNum;
+        //private StringBuilder sgfStringBuilder;
+        private List<Step> m_StepHistory;
 
         public PlayingPage(Game game, LocalType localType, int myPlayerID, int[] blackIDs, int[] whiteIDs, int nextPlayerID)
         {
             InitializeComponent();
 
             DataContext = new PlayingViewModel(game, myPlayerID);
-
-            //m_Game = game;
-
-            //m_MyPlayerID = myPlayerID;
             m_LocalType = localType;
-            //m_StepNum = -1;
 
             m_AI = new AI(game.GameSetting.BoardSize);
             m_AI.Init();
+
+            m_StepHistory = new List<Step>();
 
             //添加事件：服务器、AI、Board
             ServiceProxy.Instance.MoveCallback = MoveCallback;
             m_Board.MousePlayEvent += Board_MousePlayEvent;
             m_AI.OnAIMove += OnAIMove;
 
-            //日志
-            ClientLog.FilePath = "D:/LeagueGoLog/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
-            ClientLog.WriteLog("(;PB[xyz]PW[abc]");
-
+            //第一步
             DealNextMove(0, nextPlayerID);
         }
 
@@ -96,9 +94,14 @@ namespace PartnerModeGo
             {
                 Player lastPlayer = VM.Game.Players.First(p => p.ID == lastPlayerID);
 
+
                 if (x == -100 || y == -100)//resign
                 {
-                    MessageBox.Show(MainWindow.Instance, (lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输了", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBoxResult r = MessageBox.Show(MainWindow.Instance, (lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输了，是否保存棋谱？", "消息", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (r == MessageBoxResult.Yes)
+                    {
+                        WriteSgf((lastPlayer.Color == 2 ? "黑棋" : "白棋") + "认输])");
+                    }
                     return;
                 }
 
@@ -116,9 +119,10 @@ namespace PartnerModeGo
                         m_Board.Play(x, y);
                         m_AI.Play(x, y, lastPlayer.Color);
                     }
-
                 }
 
+                Step step = new Step() { StepNum = stepNum, Player = lastPlayer, Position = new Position(x, y), Comment = "落子：" + lastPlayer.Name };
+                m_StepHistory.Add(step);
                 DealNextMove(stepNum + 1, nextPlayerID);
             }));
         }
@@ -215,7 +219,7 @@ namespace PartnerModeGo
         }
 
         /// <summary>
-        /// 系统
+        /// 系统设置
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -224,6 +228,68 @@ namespace PartnerModeGo
             SystemSettingDialog d = new SystemSettingDialog();
             d.Owner = MainWindow.Instance;
             d.ShowDialog();
+        }
+
+        private void WriteSgf(string lastComment)
+        {
+            CommonSaveFileDialog saveFileDialog = new CommonSaveFileDialog();
+            saveFileDialog.DefaultExtension = "sgf";
+            saveFileDialog.DefaultFileName = ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString(" MM-dd HH-mm-ss");
+            saveFileDialog.RestoreDirectory = true;
+            if (saveFileDialog.ShowDialog() != CommonFileDialogResult.Ok)
+            {
+                return;
+            }
+
+            //头
+            StringBuilder sgfStringBuilder = new StringBuilder();
+            sgfStringBuilder.Append("(;PB[");
+            for (int i = 0; i < VM.BlackPlayers.Length; i++)
+            {
+                sgfStringBuilder.Append(VM.BlackPlayers[i].Name);
+                if (i != VM.BlackPlayers.Length - 1)
+                    sgfStringBuilder.Append("+");
+            }
+            sgfStringBuilder.Append("]PW[");
+            for (int i = 0; i < VM.WhitePlayers.Length; i++)
+            {
+                sgfStringBuilder.Append(VM.WhitePlayers[i].Name);
+                if (i != VM.WhitePlayers.Length - 1)
+                    sgfStringBuilder.Append("+");
+            }
+            sgfStringBuilder.Append("]");
+            //记录棋谱
+            for (int i = 0; i < m_StepHistory.Count; i++)
+            {
+                if (m_StepHistory[i].Position.X == -1 || m_StepHistory[i].Position.Y == -1)
+                    sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[]");
+                else
+                    sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
+                sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name + "]");
+            }
+            //末尾
+            sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+            sgfStringBuilder.Append(lastComment + "]");
+            sgfStringBuilder.Append(")");
+
+            //Sgf.WriteSgf(sgfStringBuilder.ToString());
+
+
+            FileInfo file = new FileInfo(saveFileDialog.FileName);
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName);
+            }
+
+            if (!System.IO.File.Exists(saveFileDialog.FileName))
+            {
+                System.IO.FileStream f = System.IO.File.Create(saveFileDialog.FileName);
+                f.Close();
+            }
+            System.IO.StreamWriter f2 = new System.IO.StreamWriter(saveFileDialog.FileName, true, Encoding.UTF8);
+            f2.Write(sgfStringBuilder.ToString());
+            f2.Close();
+            f2.Dispose();
         }
     }
 }

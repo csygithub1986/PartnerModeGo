@@ -43,15 +43,17 @@ namespace PartnerModeGo
                     //Thread.Sleep(500);
                     int x = 0, y = 0;
                     bool isPass = false, isResign = false;
-                    DllImport.ReadGeneratedMove(ref x, ref y, ref isPass, ref isResign); Console.WriteLine("ai readMove " + x + "," + y);
+                    Console.WriteLine("ReadGeneratedMove " + DateTime.Now.ToString("ss-fff"));
+                    DllImport.ReadGeneratedMove(ref x, ref y, ref isPass, ref isResign); Console.WriteLine("ai readMove " + x + "," + y + "  " + DateTime.Now.ToString("ss-fff"));
 
                     int count = 0;
                     float winRate = 0;
-                    DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0); Console.WriteLine("ai winRate " + winRate);
+                    Console.WriteLine("GetTopMoveInfo " + DateTime.Now.ToString("ss-fff"));
+                    DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0); Console.WriteLine("ai winRate " + winRate + "  " + DateTime.Now.ToString("ss-fff"));
 
 
-                    int[] territoryStatictics = new int[m_BoardSize * m_BoardSize]; Console.WriteLine("ai territoryStatictics " + m_BoardSize);
-                    DllImport.GetTerritoryStatictics(territoryStatictics); Console.WriteLine("ai territory成功 " + m_BoardSize);
+                    int[] territoryStatictics = new int[m_BoardSize * m_BoardSize]; Console.WriteLine("ai territoryStatictics " + DateTime.Now.ToString("ss-fff"));
+                    DllImport.GetTerritoryStatictics(territoryStatictics); Console.WriteLine("ai territory成功 " + DateTime.Now.ToString("ss-fff"));
 
 
                     OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color);
