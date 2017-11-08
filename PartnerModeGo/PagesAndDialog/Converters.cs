@@ -96,4 +96,41 @@ namespace PartnerModeGo
             throw new NotImplementedException();
         }
     }
+
+    public class PlayerTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            PlayerType type = (PlayerType)value;
+            switch (type)
+            {
+                case PlayerType.AI:
+                    return "人工智能";
+                case PlayerType.RealBoard:
+                    return "真实棋盘";
+                case PlayerType.Host:
+                    return "本机";
+                case PlayerType.Internet:
+                    return "远程玩家";
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string type = (string)value;
+            switch (type)
+            {
+                case "人工智能":
+                    return PlayerType.AI;
+                case "真实棋盘":
+                    return PlayerType.RealBoard;
+                case "本机":
+                    return PlayerType.Host;
+                case "远程玩家":
+                    return PlayerType.Internet;
+            }
+            return value;
+        }
+    }
 }
