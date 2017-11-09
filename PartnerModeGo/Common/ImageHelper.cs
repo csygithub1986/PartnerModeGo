@@ -122,7 +122,7 @@ namespace PartnerModeGo
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                //Console.WriteLine(ex);
             }
             return bytearray;
         }
@@ -158,7 +158,7 @@ namespace PartnerModeGo
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                //Console.WriteLine(ex);
             }
             return img;
         }

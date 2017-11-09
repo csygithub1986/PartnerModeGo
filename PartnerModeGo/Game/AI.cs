@@ -64,7 +64,7 @@ namespace PartnerModeGo
                                 ClientLog.WriteLog("m_AnalyseQueue为空");
                             }
                             //分析胜率
-                            DllImport.StartThinking(step.Player.Color);
+                            DllImport.StartThinking(3 - step.Player.Color);
                             Thread.Sleep(2000); //固定分析2s
                             DllImport.StopThinking();
                             int x = 0, y = 0;
@@ -108,10 +108,10 @@ namespace PartnerModeGo
                 {
                     try
                     {
-                        //DllImport.SetNumberOfSimulations(aiPlayer.Layout); Console.WriteLine("设置ai layout " + aiPlayer.Layout);
-                        DllImport.StartThinking(aiPlayer.Color); Console.WriteLine("ai StartThinking " + aiPlayer.Color);
-                        Thread.Sleep(aiPlayer.TimePerMove * 1000); Console.WriteLine("ai sleep " + aiPlayer.TimePerMove);
-                        DllImport.StopThinking(); Console.WriteLine("ai stopThink " + aiPlayer.Color);
+                        //DllImport.SetNumberOfSimulations(aiPlayer.Layout); //Console.WriteLine("设置ai layout " + aiPlayer.Layout);
+                        DllImport.StartThinking(aiPlayer.Color); //Console.WriteLine("ai StartThinking " + aiPlayer.Color);
+                        Thread.Sleep(aiPlayer.TimePerMove * 1000); //Console.WriteLine("ai sleep " + aiPlayer.TimePerMove);
+                        DllImport.StopThinking(); //Console.WriteLine("ai stopThink " + aiPlayer.Color);
                         //Thread.Sleep(500);
                         int x = 0, y = 0;
                         bool isPass = false, isResign = false;
@@ -121,13 +121,33 @@ namespace PartnerModeGo
                         float winRate = 0;
                         DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0);
 
+
+                        #region 测试
+                        //DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0);
+
+                        //Console.Write("推荐：" + (winRate * 100).ToString("F1") + " , ");
+                        //DllImport.GetTopMoveInfo(1, ref x, ref y, ref count, ref winRate, null, 0);
+                        //Console.Write((winRate * 100).ToString("F1") + " , ");
+                        //DllImport.GetTopMoveInfo(2, ref x, ref y, ref count, ref winRate, null, 0);
+                        //Console.Write((winRate * 100).ToString("F1") + " , ");
+                        //DllImport.GetTopMoveInfo(3, ref x, ref y, ref count, ref winRate, null, 0);
+                        //Console.Write((winRate * 100).ToString("F1") + " , ");
+                        //DllImport.GetTopMoveInfo(4, ref x, ref y, ref count, ref winRate, null, 0);
+                        //Console.WriteLine((winRate * 100).ToString("F1"));
+
+                        #endregion
+
+
+
                         int[] territoryStatictics = new int[m_BoardSize * m_BoardSize];
                         DllImport.GetTerritoryStatictics(territoryStatictics);
 
-
-                        lastStep.BlackWinRate = lastStep.Player.Color == 1 ? winRate : 1 - winRate;
-                        lastStep.Territory = territoryStatictics;
-                        lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
+                        if (lastStep != null)
+                        {
+                            lastStep.BlackWinRate = lastStep.Player.Color == 1 ? winRate : 1 - winRate;
+                            lastStep.Territory = territoryStatictics;
+                            lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
+                        }
 
                         OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color, winRate, territoryStatictics);
                         //OnWinRate?.Invoke(winRate);

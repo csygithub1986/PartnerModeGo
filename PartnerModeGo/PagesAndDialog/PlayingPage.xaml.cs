@@ -70,7 +70,7 @@ namespace PartnerModeGo
                 }
                 else
                 {
-                    Console.WriteLine("AI下完，先处理board");
+                    //Console.WriteLine("AI下完，先处理board");
                     m_Board.Play(x, y);
                     //m_AI.Play(x, y, color);
                     Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, x, y); });
@@ -83,7 +83,7 @@ namespace PartnerModeGo
         // 棋步到来
         private void MoveCallback(int stepNum, int lastPlayerID, int x, int y, int nextPlayerID)
         {
-            Console.WriteLine("收到服务的Move stepNum=" + stepNum + " nextID=" + nextPlayerID);
+            //Console.WriteLine("收到服务的Move stepNum=" + stepNum + " nextID=" + nextPlayerID);
             //m_StepNum = stepNum;
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -110,7 +110,7 @@ namespace PartnerModeGo
                     }
                     else
                     {
-                        Console.WriteLine("刚才不是自己下，需要处理board和AI");
+                        //Console.WriteLine("刚才不是自己下，需要处理board和AI");
                         m_Board.Play(x, y);
                         //m_AI.Play(x, y, lastPlayer.Color);
                     }
@@ -135,7 +135,7 @@ namespace PartnerModeGo
 
         private void DealNextMove(int stepNum, int nextID)
         {
-            Console.WriteLine("处理下一步，该 " + VM.Game.Players.First(p => p.ID == nextID).Name + " 走棋");
+            //Console.WriteLine("处理下一步，该 " + VM.Game.Players.First(p => p.ID == nextID).Name + " 走棋");
 
             //m_StepNum++;
             //UI
@@ -147,7 +147,7 @@ namespace PartnerModeGo
                 switch (VM.CurrentPlayer.Type)
                 {
                     case PlayerType.AI:
-                        m_AI.AIThink(VM.CurrentPlayer, m_StepHistory.Last());
+                        m_AI.AIThink(VM.CurrentPlayer, m_StepHistory.LastOrDefault());
                         break;
                     case PlayerType.RealBoard:
                         break;
@@ -268,8 +268,12 @@ namespace PartnerModeGo
                 else
                     sgfStringBuilder.Append(";" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
                 sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name);
-                sgfStringBuilder.Append("\n黑棋胜率：" + (m_StepHistory[i].BlackWinRate * 100).ToString("F1") + "%");
-                sgfStringBuilder.Append("\n" + (m_StepHistory[i].BlackLeadPoints > 0 ? "黑棋" : "白棋") + "领先 " + (Math.Abs(m_StepHistory[i].BlackLeadPoints)).ToString("F1") + " 目]");
+                sgfStringBuilder.Append("\r\n黑棋胜率：" + (m_StepHistory[i].BlackWinRate * 100).ToString("F1") + "%");
+                sgfStringBuilder.Append("\r\n" + (m_StepHistory[i].BlackLeadPoints > 0 ? "黑棋" : "白棋") + "领先 " + (Math.Abs(m_StepHistory[i].BlackLeadPoints)).ToString("F1") + " 目]");
+                //用于debug分析
+#if DEBUG
+                sgfStringBuilder.Append("\r\nDebug[" + (m_StepHistory[i].BlackWinRate * 100 - 50) + "\t" + m_StepHistory[i].BlackLeadPoints + "]\r\n");
+#endif
                 //territory
                 //1、不能记录完整territory，不然棋谱文件会达到几百k，一般棋谱文件只有几k
                 //2、可以考虑只记录简化的territory，一个点用012表示，目前不做
@@ -294,7 +298,8 @@ namespace PartnerModeGo
                 System.IO.FileStream f = System.IO.File.Create(saveFileDialog.FileName);
                 f.Close();
             }
-            System.IO.StreamWriter f2 = new System.IO.StreamWriter(saveFileDialog.FileName, true, Encoding.UTF8);
+            //只有保存棋谱用gb2312，内部传输和debug日志都用utf-8
+            System.IO.StreamWriter f2 = new System.IO.StreamWriter(saveFileDialog.FileName, true, Encoding.GetEncoding("gb2312"));
             f2.Write(sgfStringBuilder.ToString());
             f2.Close();
             f2.Dispose();

@@ -12,15 +12,15 @@ namespace PartnerModeGo
     {
         public void DistributeAllGameInfo(WcfService.Game[] games)
         {
-            Console.WriteLine("客户端：收到AllGameInfo " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：收到AllGameInfo " + DateTime.Now.ToString("mm-ss-fff"));
             ServiceProxy.Instance.Session.GameList = new System.Collections.ObjectModel.ObservableCollection<Game>(games);
             //Thread.Sleep(2000);
-            Console.WriteLine("客户端：收到AllGameInfo处理完毕 " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：收到AllGameInfo处理完毕 " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         public void DistributeApplyGameResult(bool success, string gameID, int playerID)
         {
-            Console.WriteLine("收到ApplyGameResult  " + success);
+            //Console.WriteLine("收到ApplyGameResult  " + success);
 
             ServiceProxy.Instance.JoinGameCallback?.Invoke(success, gameID, playerID);
         }
@@ -32,7 +32,7 @@ namespace PartnerModeGo
         /// <param name="game"></param>
         public void DistributeGameInfo(GameDistributeType type, Game game)
         {
-            Console.WriteLine("收到DistributeGameInfo");
+            //Console.WriteLine("收到DistributeGameInfo");
             ServiceProxy.Instance.DistributeGameInfoCallback?.Invoke(type, game);
             MainWindow.Instance.Dispatcher.Invoke(() =>
             {
@@ -54,13 +54,13 @@ namespace PartnerModeGo
 
         public void DistributeGameStart(int[] blackPlayerIDs, int[] whitePlayerIDs, int currentPlayerID)
         {
-            Console.WriteLine("收到GameStart");
+            //Console.WriteLine("收到GameStart");
             ServiceProxy.Instance.GameStartCallback?.Invoke(blackPlayerIDs, whitePlayerIDs, currentPlayerID);
         }
 
         public void DistributeMove(int stepNum, int currentPlayerID, int x, int y, int nextPlayerID)
         {
-            Console.WriteLine("收到Move");
+            //Console.WriteLine("收到Move");
             ServiceProxy.Instance.MoveCallback?.Invoke(stepNum, currentPlayerID, x, y, nextPlayerID);
             //Common.StepNum++;
         }

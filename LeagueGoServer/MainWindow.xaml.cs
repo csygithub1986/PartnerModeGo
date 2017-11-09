@@ -34,7 +34,7 @@ namespace LeagueGoServer
                 {
                     ServiceHost _host = new ServiceHost(typeof(WcfService));
                     _host.Open();
-                    Console.WriteLine("启动");
+                    //Console.WriteLine("启动");
                     Dispatcher.Invoke(() => { txtPrompt.Text = "启动"; });
                 }
                 catch (Exception ex)

@@ -120,7 +120,7 @@ namespace PartnerModeGo
                 bool isOk = data[index] == 1; index += 1;
                 //图像
                 int imagelen = BitConverter.ToInt32(data, index); index += 4;
-                Console.WriteLine("图像大小: " + imagelen);
+                //Console.WriteLine("图像大小: " + imagelen);
                 byte[] image = new byte[imagelen];
                 for (int i = 0; i < image.Length; i++)
                 {

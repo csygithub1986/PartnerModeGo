@@ -102,13 +102,13 @@ namespace PartnerModeGo
                             else
                             {
                                 restByteCount = restByteCount - actualLen2;
-                                //Console.WriteLine("dataLen:  " + restByteCount);
+                                ////Console.WriteLine("dataLen:  " + restByteCount);
                             }
                             continue;
                         }
 
                         dataLen = br.ReadInt32();//长度
-                        Console.WriteLine("dataLen:  " + dataLen);
+                        //Console.WriteLine("dataLen:  " + dataLen);
                         data = new byte[dataLen];
                         int actualLen = br.Read(data, 0, data.Length);
                         if (actualLen == dataLen)

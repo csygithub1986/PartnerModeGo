@@ -162,7 +162,7 @@ namespace PartnerModeGo
             }
 
             ClientLog.WriteLog(";" + (stepNum % 2 == 1 ? "W" : "B") + "[" + (char)('a' + x) + (char)('a' + y) + "]");
-            //Console.WriteLine((stepNum % 2 == 0 ? "黑" : "白") + "  WinRate: " + x + " " + y);
+            ////Console.WriteLine((stepNum % 2 == 0 ? "黑" : "白") + "  WinRate: " + x + " " + y);
 
 
             stepNum++;
@@ -239,7 +239,7 @@ namespace PartnerModeGo
             if (TerritoryCallback != null)
             {
                 TerritoryCallback.Invoke(territoryStatictics);
-                Console.WriteLine((stepNum % 2 == 0 ? "黑" : "白") + "走棋  黑胜率: " + (stepNum % 2 == 0 ? winRate : 1 - winRate).ToString("F2") + "  黑领先目数：" + (territoryStatictics.Sum() / 1000.0 - 6.5).ToString("F1"));
+                //Console.WriteLine((stepNum % 2 == 0 ? "黑" : "白") + "走棋  黑胜率: " + (stepNum % 2 == 0 ? winRate : 1 - winRate).ToString("F2") + "  黑领先目数：" + (territoryStatictics.Sum() / 1000.0 - 6.5).ToString("F1"));
             }
 
             ClientLog.WriteLog(";" + (stepNum % 2 == 1 ? "W" : "B") + "[" + (char)('a' + x) + (char)('a' + y) + "]" + "C[胜率：" + winRate.ToString("F2") + "% count=" + count + "]");

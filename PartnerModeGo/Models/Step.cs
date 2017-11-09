@@ -24,5 +24,7 @@ namespace PartnerModeGo
         public string Comment { get; set; }
 
         public int[] Territory { get; set; }
+
+        public List<Tuple<Position,float>> RecommendPoints { get; set; }
     }
 }

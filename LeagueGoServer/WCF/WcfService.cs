@@ -37,7 +37,7 @@ namespace LeagueGoServer
                 RemoteEndpointMessageProperty endpoint = properties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
                 string ip = endpoint.Address;
                 int port = endpoint.Port;
-                Console.WriteLine(userName + " " + ssid + " " + ip + " " + port);
+                //Console.WriteLine(userName + " " + ssid + " " + ip + " " + port);
 
                 //将此用户加入集合
                 ICallback callBack = OperationContext.Current.GetCallbackChannel<ICallback>();
@@ -65,7 +65,7 @@ namespace LeagueGoServer
 
         private void Channel_Faulted(object sender, EventArgs e)
         {
-            Console.WriteLine("服务端：     Channel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("服务端：     Channel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;
@@ -77,12 +77,12 @@ namespace LeagueGoServer
         /// </summary>
         public void GetAllGames()
         {
-            Console.WriteLine("服务器：client请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("服务器：client请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
             string sessionID = OperationContext.Current.SessionId;
             ClientInfo client = Common.ClientListGet(sessionID);
-            Console.WriteLine("服务器：发送给client  allgame " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("服务器：发送给client  allgame " + DateTime.Now.ToString("mm-ss-fff"));
             client.ClientCallback.DistributeAllGameInfo(Common.GameList.Values.ToArray());
-            Console.WriteLine("服务器：发送给client  allgame完成 " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("服务器：发送给client  allgame完成 " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         /// <summary>
@@ -190,14 +190,14 @@ namespace LeagueGoServer
         /// <param name="y">坐标</param>
         public void ClientCommitMove(string gameID, int stepNum, int x, int y)
         {
-            Console.WriteLine("         服务端：收到move");
+            //Console.WriteLine("         服务端：收到move");
             string sessionID = OperationContext.Current.SessionId;
             ClientInfo currentClient = Common.ClientListGet(sessionID);
             Game game = Common.GameList[gameID];
             if (game.NextPlayer.Client != currentClient || game.StepNum != stepNum)
             {
                 //不是应该提交的client提交了数据，错误。 TODO:记录日志
-                Console.WriteLine("         服务端：不是应该提交的client提交了数据，错误。 TODO:记录日志");
+                //Console.WriteLine("         服务端：不是应该提交的client提交了数据，错误。 TODO:记录日志");
 
                 return;
             }
@@ -207,7 +207,7 @@ namespace LeagueGoServer
 
             //发送Move相应给所有人，Host单独发。（当前客户端走棋已经落子，但不能落下一子）
             Player host = game.Players.First(p => p.Client.SessionID == gameID);
-            Console.WriteLine("         服务端：发送move给client");
+            //Console.WriteLine("         服务端：发送move给client");
 
             host.Client.ClientCallback.DistributeMove(stepNum, game.LastPlayer.ID, x, y, game.NextPlayer.ID);
             foreach (var player in game.Players)
@@ -222,7 +222,7 @@ namespace LeagueGoServer
         #region 私有方法
         private void ClientChannel_Closing(object sender, EventArgs e)
         {
-            Console.WriteLine("服务端：     ClientChannel_Closing " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("服务端：     ClientChannel_Closing " + DateTime.Now.ToString("mm-ss-fff"));
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;

@@ -99,7 +99,7 @@ namespace PartnerModeGo
                 m_wcfClient = client;
                 client.InnerDuplexChannel.Closed += InnerDuplexChannel_Closed;
                 client.InnerDuplexChannel.Faulted += InnerDuplexChannel_Faulted;
-                Console.WriteLine("连接成功");
+                //Console.WriteLine("连接成功");
                 return true;
             }
             catch (Exception)
@@ -118,12 +118,12 @@ namespace PartnerModeGo
 
         private void InnerDuplexChannel_Faulted(object sender, EventArgs e)
         {
-            Console.WriteLine("客户端：  InnerDuplexChannel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：  InnerDuplexChannel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         private void InnerDuplexChannel_Closed(object sender, EventArgs e)
         {
-            Console.WriteLine("客户端：  InnerDuplexChannel_Closed " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：  InnerDuplexChannel_Closed " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         public string Login(object userName)
@@ -134,9 +134,9 @@ namespace PartnerModeGo
 
         public void GetAllGames()
         {
-            Console.WriteLine("客户端：向server请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：向server请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
             m_wcfClient.GetAllGames();
-            Console.WriteLine("客户端：向server请求getallgame 返回" + DateTime.Now.ToString("mm-ss-fff"));
+            //Console.WriteLine("客户端：向server请求getallgame 返回" + DateTime.Now.ToString("mm-ss-fff"));
         }
 
         public void GameStart()
@@ -156,7 +156,7 @@ namespace PartnerModeGo
 
         public void ClientCommitMove(string gameID, int stepNum, int x, int y)
         {
-            Console.WriteLine("发送自己下的到Server");
+            //Console.WriteLine("发送自己下的到Server");
 
             //try
             //{
