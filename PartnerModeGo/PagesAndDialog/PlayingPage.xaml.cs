@@ -38,7 +38,7 @@ namespace PartnerModeGo
             DataContext = new PlayingViewModel(game, myPlayerID);
             m_LocalType = localType;
 
-            m_AI = new AI(game.GameSetting.BoardSize);
+            m_AI = new AI(game);
             m_AI.Init();
 
             m_StepHistory = new List<Step>();
@@ -46,14 +46,14 @@ namespace PartnerModeGo
             //添加事件：服务器、AI、Board
             ServiceProxy.Instance.MoveCallback = MoveCallback;
             m_Board.MousePlayEvent += Board_MousePlayEvent;
+            m_AI.OnAiThinking += OnAiThinking;
             m_AI.OnAIMove += OnAIMove;
 
             //第一步
             DealNextMove(0, nextPlayerID);
         }
 
-
-        private void OnAIMove(int x, int y, bool isPass, bool isResign, int color)
+        private void OnAIMove(int x, int y, bool isPass, bool isResign, int color, float winRate, int[] territory)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -70,22 +70,17 @@ namespace PartnerModeGo
                 }
                 else
                 {
-                    Console.WriteLine("自己下完，处理board和AI");
+                    Console.WriteLine("AI下完，先处理board");
                     m_Board.Play(x, y);
-                    m_AI.Play(x, y, color);
+                    //m_AI.Play(x, y, color);
                     Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, x, y); });
                 }
             }));
         }
 
+
         #region 服务器回调
-        /// <summary>
-        /// 棋步到来
-        /// </summary>
-        /// <param name="stepNum"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="nextPlayerID"></param>
+        // 棋步到来
         private void MoveCallback(int stepNum, int lastPlayerID, int x, int y, int nextPlayerID)
         {
             Console.WriteLine("收到服务的Move stepNum=" + stepNum + " nextID=" + nextPlayerID);
@@ -117,12 +112,21 @@ namespace PartnerModeGo
                     {
                         Console.WriteLine("刚才不是自己下，需要处理board和AI");
                         m_Board.Play(x, y);
-                        m_AI.Play(x, y, lastPlayer.Color);
+                        //m_AI.Play(x, y, lastPlayer.Color);
                     }
                 }
 
+                m_AI.Play(x, y, lastPlayer.Color);
+
                 Step step = new Step() { StepNum = stepNum, Player = lastPlayer, Position = new Position(x, y), Comment = "落子：" + lastPlayer.Name };
                 m_StepHistory.Add(step);
+
+                //如果是Host，下一步该AI，就不进行分析。除此之外要进行分析。
+                if (!(VM.Game.Players.First(p => p.ID == nextPlayerID).Type == PlayerType.AI && m_LocalType == LocalType.Host))
+                {
+                    m_AI.AddAnalyseStep(m_StepHistory.Last());
+                }
+
                 DealNextMove(stepNum + 1, nextPlayerID);
             }));
         }
@@ -143,7 +147,7 @@ namespace PartnerModeGo
                 switch (VM.CurrentPlayer.Type)
                 {
                     case PlayerType.AI:
-                        m_AI.AIThink(VM.CurrentPlayer);
+                        m_AI.AIThink(VM.CurrentPlayer, m_StepHistory.Last());
                         break;
                     case PlayerType.RealBoard:
                         break;
@@ -181,7 +185,7 @@ namespace PartnerModeGo
         {
             m_Board.IsHostTurn = false;
             VM.SelfPlayer.Playing = false;
-            m_AI.Play(x, y, color);
+            //m_AI.Play(x, y, color);
             string gameID = VM.Game.GameID;
             Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, stepNum, x, y); });
         }
@@ -195,7 +199,6 @@ namespace PartnerModeGo
             m_Board.IsHostTurn = false;
             VM.SelfPlayer.Playing = false;
 
-            //m_AI.Play(-3, 22, VM.CurrentPlayer.Color);
             //-1,-1表示pass
             string gameID = VM.Game.GameID;
             int currentStepNum = VM.CurrentStepNum;
@@ -212,7 +215,6 @@ namespace PartnerModeGo
 
             m_Board.IsHostTurn = false;
             VM.SelfPlayer.Playing = false;
-            //m_AI.Play(x, y, color);
             string gameID = VM.Game.GameID;
             int currentStepNum = VM.CurrentStepNum;
             Task.Factory.StartNew(() => { ServiceProxy.Instance.ClientCommitMove(gameID, currentStepNum, -100, -100); });
@@ -264,8 +266,14 @@ namespace PartnerModeGo
                 if (m_StepHistory[i].Position.X == -1 || m_StepHistory[i].Position.Y == -1)
                     sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[]");
                 else
-                    sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
-                sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name + "]");
+                    sgfStringBuilder.Append(";" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
+                sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name);
+                sgfStringBuilder.Append("\n黑棋胜率：" + (m_StepHistory[i].BlackWinRate * 100).ToString("F1") + "%");
+                sgfStringBuilder.Append("\n" + (m_StepHistory[i].BlackLeadPoints > 0 ? "黑棋" : "白棋") + "领先 " + (Math.Abs(m_StepHistory[i].BlackLeadPoints)).ToString("F1") + " 目]");
+                //territory
+                //1、不能记录完整territory，不然棋谱文件会达到几百k，一般棋谱文件只有几k
+                //2、可以考虑只记录简化的territory，一个点用012表示，目前不做
+                //3、可以考虑记录领先目数
             }
             //末尾
             sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
@@ -291,5 +299,17 @@ namespace PartnerModeGo
             f2.Close();
             f2.Dispose();
         }
+
+        #region 按钮事件和状态
+        private void OnAiThinking(bool isThink)
+        {
+            Dispatcher.Invoke(() => { btnAnalyse.IsEnabled = !isThink; });
+        }
+
+        private void btnAnalyse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
     }
 }

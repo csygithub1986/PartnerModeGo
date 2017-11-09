@@ -88,7 +88,7 @@ namespace PartnerModeGo
             Task task = Task.Factory.StartNew(() =>
             {
                 Player player = GetPlayerByStep(stepNum);
-                DllImport.SetNumberOfSimulations(player.Layout);
+                //DllImport.SetNumberOfSimulations(player.Layout);
                 DllImport.StartThinking(player.Color);
                 Thread.Sleep(player.TimePerMove * 1000);
                 DllImport.StopThinking();

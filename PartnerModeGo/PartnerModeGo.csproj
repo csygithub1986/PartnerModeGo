@@ -103,6 +103,9 @@
       <DependentUpon>PlayingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PagesAndDialog\PlayingViewModel.cs" />
+    <Compile Include="PagesAndDialog\SituationAnalysisWin.xaml.cs">
+      <DependentUpon>SituationAnalysisWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PagesAndDialog\SystemSettingDialog.xaml.cs">
       <DependentUpon>SystemSettingDialog.xaml</DependentUpon>
     </Compile>
@@ -153,6 +156,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PagesAndDialog\PlayingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagesAndDialog\SituationAnalysisWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

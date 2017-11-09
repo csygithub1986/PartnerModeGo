@@ -14,8 +14,15 @@ namespace PartnerModeGo
 
         public Position Position { get; set; }
 
-        public float WinRate { get; set; }
+        public float BlackWinRate { get; set; }
+
+        /// <summary>
+        /// 黑棋领先的目数
+        /// </summary>
+        public float BlackLeadPoints { get; set; }
 
         public string Comment { get; set; }
+
+        public int[] Territory { get; set; }
     }
 }

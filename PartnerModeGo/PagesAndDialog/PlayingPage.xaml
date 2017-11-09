@@ -45,7 +45,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="500"/>
         </Grid.ColumnDefinitions>
 
         <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
@@ -89,7 +89,8 @@
                     <Grid>
                         <Button Content="Pass" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="26,0,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnPass" Click="btnPass_Click"/>
                         <Button Content="认输" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="141,11,0,11" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnResign" Click="btnResign_Click"/>
-                        <Button Content="系统设置" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="254,0,0,0" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnSystemSetting" Click="btnSystemSetting_Click"/>
+                        <Button Content="形势估计" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="254,11,0,11" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnAnalyse" Click="btnAnalyse_Click"/>
+                        <Button Content="系统设置" HorizontalAlignment="Left" VerticalAlignment="Center" Width="80" Height="30" Margin="367,11,0,11" IsEnabled="{Binding SelfPlayer.Playing}" x:Name="btnSystemSetting" Click="btnSystemSetting_Click"/>
 
                     </Grid>
                 </GroupBox>

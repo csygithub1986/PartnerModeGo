@@ -124,6 +124,10 @@ namespace PartnerModeGo
         public static extern void GetPriorKnowledge(int[] param0);
 
 
+        /// <summary>
+        /// 此函数需要接近1s
+        /// </summary>
+        /// <param name="param0"></param>
         [DllImport(DLLNAME, EntryPoint = "?ZenGetTerritoryStatictics@@YAXQAY0BD@H@Z", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GetTerritoryStatictics(int[] param0);
 

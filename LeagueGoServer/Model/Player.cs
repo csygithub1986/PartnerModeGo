@@ -11,7 +11,7 @@ namespace LeagueGoServer.Model
         public Player()
         {
             TimePerMove = 2;
-            Layout = 50000;
+            //Layout = 50000;
         }
 
         public int ID { get; set; }

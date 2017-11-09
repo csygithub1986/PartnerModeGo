@@ -18,11 +18,13 @@
             <SolidColorBrush x:Key="RedStone" Color="#BB0CC8"/>-->
 
             <Style TargetType="UserControl">
-                <Setter Property="Background" Value="#5C8F61"/>
+                <!--<Setter Property="Background" Value="#5C8F61"/>-->
+                <Setter Property="Background" Value="#FFF1FFF2"/>
             </Style>
 
             <Style TargetType="local:MainWindow">
-                <Setter Property="Background" Value="#5C8F61"/>
+                <!--<Setter Property="Background" Value="#5C8F61"/>-->
+                <Setter Property="Background" Value="#FFF1FFF2"/>
             </Style>
             
 
