@@ -48,7 +48,7 @@ namespace LeagueGoServer
                 currentClient.ClientCallback = callBack;
                 currentClient.ClientChannel = OperationContext.Current.Channel;
                 currentClient.HeartbeatTime = DateTime.Now;
-                Common.ClientListAdd(ssid, currentClient);
+                GlobalData.ClientListAdd(ssid, currentClient);
                 OperationContext.Current.Channel.Closing += new EventHandler(ClientChannel_Closing);
                 OperationContext.Current.Channel.Faulted += Channel_Faulted;
                 return ssid;
@@ -69,7 +69,7 @@ namespace LeagueGoServer
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;
-            Common.ClientListDelete(info.SessionID);
+            GlobalData.ClientListDelete(info.SessionID);
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace LeagueGoServer
         {
             //Console.WriteLine("服务器：client请求getallgame " + DateTime.Now.ToString("mm-ss-fff"));
             string sessionID = OperationContext.Current.SessionId;
-            ClientInfo client = Common.ClientListGet(sessionID);
+            ClientInfo client = GlobalData.ClientListGet(sessionID);
             //Console.WriteLine("服务器：发送给client  allgame " + DateTime.Now.ToString("mm-ss-fff"));
-            client.ClientCallback.DistributeAllGameInfo(Common.GameList.Values.ToArray());
+            client.ClientCallback.DistributeAllGameInfo(GlobalData.GameList.Values.ToArray());
             //Console.WriteLine("服务器：发送给client  allgame完成 " + DateTime.Now.ToString("mm-ss-fff"));
         }
 
@@ -96,7 +96,7 @@ namespace LeagueGoServer
             //2、添加游戏列表
             //3、给所有client发送消息
             string sessionID = OperationContext.Current.SessionId;
-            ClientInfo client = Common.ClientListGet(sessionID);
+            ClientInfo client = GlobalData.ClientListGet(sessionID);
             foreach (Player player in players)
             {
                 //除了Internet，其他三个，AI、Realboard、Host的连接都是Host本身的连接
@@ -108,9 +108,9 @@ namespace LeagueGoServer
 
             Game game = new Game() { Name = gameSetting.Name, GameID = sessionID, Players = players, GameSetting = gameSetting };
             game.Init();
-            Common.GameList.TryAdd(sessionID, game);
+            GlobalData.GameList.TryAdd(sessionID, game);
 
-            foreach (ClientInfo c in Common.ClientList.Values)
+            foreach (ClientInfo c in GlobalData.ClientList.Values)
             {
                 //if (c.PlayingState == ClientState.Idel)
                 //{
@@ -133,23 +133,23 @@ namespace LeagueGoServer
         public void ApplyToJoinGame(string gameID, int playerID)
         {
             string sessionID = OperationContext.Current.SessionId;
-            ClientInfo currentClient = Common.ClientListGet(sessionID);
-            if (Common.GameList.ContainsKey(gameID))
+            ClientInfo currentClient = GlobalData.ClientListGet(sessionID);
+            if (GlobalData.GameList.ContainsKey(gameID))
             {
-                lock (Common.GameList[gameID])//???????????????????想要锁住Game对象的状态，是否可以这么用？
+                lock (GlobalData.GameList[gameID])//???????????????????想要锁住Game对象的状态，是否可以这么用？
                 {
-                    if (Common.GameList[gameID].State == GameState.Waiting)
+                    if (GlobalData.GameList[gameID].State == GameState.Waiting)
                     {
-                        Player player = Common.GameList[gameID].Players.FirstOrDefault(p => p.ID == playerID);
+                        Player player = GlobalData.GameList[gameID].Players.FirstOrDefault(p => p.ID == playerID);
                         if (player != null && player.Occupied == false)//后者判断此player位置还未被占用
                         {
                             player.Client = currentClient;
                             player.Occupied = true;
                             player.Name = currentClient.UserName;
                             currentClient.ClientCallback.DistributeApplyGameResult(true, gameID, player.ID);
-                            foreach (var client in Common.ClientList.Values)
+                            foreach (var client in GlobalData.ClientList.Values)
                             {
-                                client.ClientCallback.DistributeGameInfo(GameDistributeType.Update, Common.GameList[gameID]);
+                                client.ClientCallback.DistributeGameInfo(GameDistributeType.Update, GlobalData.GameList[gameID]);
                             }
                             return;
                         }
@@ -166,11 +166,11 @@ namespace LeagueGoServer
         public void GameStart()
         {
             string sessionID = OperationContext.Current.SessionId;
-            ClientInfo currentClient = Common.ClientListGet(sessionID);
-            Game game = Common.GameList[sessionID];
+            ClientInfo currentClient = GlobalData.ClientListGet(sessionID);
+            Game game = GlobalData.GameList[sessionID];
             game.NextPlayer = game.GetBlackPlayers()[0];
             //Host和其他的internet玩家分开发送
-            foreach (var player in Common.GameList[sessionID].Players)
+            foreach (var player in GlobalData.GameList[sessionID].Players)
             {
                 if (player.Client != null && player.Client != currentClient)
                 {
@@ -192,8 +192,8 @@ namespace LeagueGoServer
         {
             //Console.WriteLine("         服务端：收到move");
             string sessionID = OperationContext.Current.SessionId;
-            ClientInfo currentClient = Common.ClientListGet(sessionID);
-            Game game = Common.GameList[gameID];
+            ClientInfo currentClient = GlobalData.ClientListGet(sessionID);
+            Game game = GlobalData.GameList[gameID];
             if (game.NextPlayer.Client != currentClient || game.StepNum != stepNum)
             {
                 //不是应该提交的client提交了数据，错误。 TODO:记录日志
@@ -226,7 +226,7 @@ namespace LeagueGoServer
             ClientInfo info = GetClientInfo((ICallback)sender);
             if (info == null)
                 return;
-            Common.ClientListDelete(info.SessionID);
+            GlobalData.ClientListDelete(info.SessionID);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace LeagueGoServer
         /// </summary>
         private ClientInfo GetClientInfo(ICallback callBack)
         {
-            foreach (var info in Common.ClientList)
+            foreach (var info in GlobalData.ClientList)
             {
                 if (info.Value.ClientCallback == callBack)
                     return info.Value;

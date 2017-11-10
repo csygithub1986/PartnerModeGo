@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace LeagueGoServer
 {
-    public class Common
+    public class GlobalData
     {
-        static Common()
+        static GlobalData()
         {
-            Player p1 = new Player() { Name = "黑1", Color = 2, Type = PlayerType.Host, ID = 1 };
-            Player p2 = new Player() { Name = "黑2", Color = 2, Type = PlayerType.AI, ID = 2 };
-            Player p3 = new Player() { Name = "白1", Color = 1, Type = PlayerType.Internet, ID = 3 };
-            Player p4 = new Player() { Name = "白2", Color = 1, Type = PlayerType.Internet, ID = 4 };
-            GameList.TryAdd("1111", new Game() { Name = "bbb", Players = new Player[] { p1, p2, p3, p4 }, GameSetting = new GameSetting() { BoardSize = 19, Handicap = 4, Komi = 0 } });
+            //Player p1 = new Player() { Name = "黑1", Color = 2, Type = PlayerType.Host, ID = 1 };
+            //Player p2 = new Player() { Name = "黑2", Color = 2, Type = PlayerType.AI, ID = 2 };
+            //Player p3 = new Player() { Name = "白1", Color = 1, Type = PlayerType.Internet, ID = 3 };
+            //Player p4 = new Player() { Name = "白2", Color = 1, Type = PlayerType.Internet, ID = 4 };
+            //GameList.TryAdd("1111", new Game() { Name = "bbb", Players = new Player[] { p1, p2, p3, p4 }, GameSetting = new GameSetting() { BoardSize = 19, Handicap = 4, Komi = 0 } });
 
-            Player p21 = new Player() { Name = "黑21", Color = 2, Type = PlayerType.Host, ID = 1 };
-            Player p22 = new Player() { Name = "黑22", Color = 2, Type = PlayerType.AI, ID = 2 };
-            Player p23 = new Player() { Name = "白21", Color = 1, Type = PlayerType.Internet, ID = 3 };
-            Player p24 = new Player() { Name = "白22", Color = 1, Type = PlayerType.Internet, ID = 4 };
-            GameList.TryAdd("2222", new Game() { Name = "xxxxx", Players = new Player[] { p21, p22, p23, p24 }, GameSetting = new GameSetting() { BoardSize = 15, Handicap = 0, Komi = 6 } });
+            //Player p21 = new Player() { Name = "黑21", Color = 2, Type = PlayerType.Host, ID = 1 };
+            //Player p22 = new Player() { Name = "黑22", Color = 2, Type = PlayerType.AI, ID = 2 };
+            //Player p23 = new Player() { Name = "白21", Color = 1, Type = PlayerType.Internet, ID = 3 };
+            //Player p24 = new Player() { Name = "白22", Color = 1, Type = PlayerType.Internet, ID = 4 };
+            //GameList.TryAdd("2222", new Game() { Name = "xxxxx", Players = new Player[] { p21, p22, p23, p24 }, GameSetting = new GameSetting() { BoardSize = 15, Handicap = 0, Komi = 6 } });
         }
 
         /// <summary>

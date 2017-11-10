@@ -14,6 +14,9 @@ namespace PartnerModeGo
 
         public Position Position { get; set; }
 
+        /// <summary>
+        /// 黑棋胜率，0.0~1.0
+        /// </summary>
         public float BlackWinRate { get; set; }
 
         /// <summary>

@@ -67,15 +67,37 @@ namespace PartnerModeGo
                             DllImport.StartThinking(3 - step.Player.Color);
                             Thread.Sleep(2000); //固定分析2s
                             DllImport.StopThinking();
-                            int x = 0, y = 0;
+
+                            //分析胜率和推荐（一共最多3个推荐）
+                            List<Tuple<Position, float>> recommend = new List<Tuple<Position, float>>();
+                            int x0 = 0, y0 = 0;
                             int count = 0;
-                            float winRate = 0;
-                            DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0);
+                            float winRate0 = 0;
+                            DllImport.GetTopMoveInfo(0, ref x0, ref y0, ref count, ref winRate0, null, 0);
+                            recommend.Add(new Tuple<Position, float>(new Position(x0, y0), step.Player.Color == 1 ? winRate0 : 1 - winRate0));//第一个推荐
+
+
+                            float winRate1 = 0;
+                            int x1 = 0, y1 = 0;
+                            DllImport.GetTopMoveInfo(0, ref x1, ref y1, ref count, ref winRate1, null, 0);
+                            if (!float.IsNaN(winRate1) && winRate1 - winRate0 > -0.05f)//差别不到5%，就采纳
+                            {
+                                recommend.Add(new Tuple<Position, float>(new Position(x1, y1), step.Player.Color == 1 ? winRate1 : 1 - winRate1));//第二个推荐
+                            }
+
+                            float winRate2 = 0;
+                            int x2 = 0, y2 = 0;
+                            DllImport.GetTopMoveInfo(2, ref x2, ref y2, ref count, ref winRate2, null, 0);
+                            if (!float.IsNaN(winRate2) && winRate2 - winRate0 > -0.05f)//差别不到5%，就采纳
+                            {
+                                recommend.Add(new Tuple<Position, float>(new Position(x2, y2), step.Player.Color == 1 ? winRate2 : 1 - winRate2));//第三个推荐
+                            }
+
                             //形势估计
                             int[] territoryStatictics = new int[m_BoardSize * m_BoardSize];
                             DllImport.GetTerritoryStatictics(territoryStatictics);
                             //修改step
-                            step.BlackWinRate = step.Player.Color == 1 ? winRate : 1 - winRate;
+                            step.BlackWinRate = step.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             step.Territory = territoryStatictics;
                             step.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
                         }
@@ -112,44 +134,52 @@ namespace PartnerModeGo
                         DllImport.StartThinking(aiPlayer.Color); //Console.WriteLine("ai StartThinking " + aiPlayer.Color);
                         Thread.Sleep(aiPlayer.TimePerMove * 1000); //Console.WriteLine("ai sleep " + aiPlayer.TimePerMove);
                         DllImport.StopThinking(); //Console.WriteLine("ai stopThink " + aiPlayer.Color);
-                        //Thread.Sleep(500);
+
                         int x = 0, y = 0;
                         bool isPass = false, isResign = false;
                         DllImport.ReadGeneratedMove(ref x, ref y, ref isPass, ref isResign);
 
-                        int count = 0;
-                        float winRate = 0;
-                        DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0);
-
-
-                        #region 测试
-                        //DllImport.GetTopMoveInfo(0, ref x, ref y, ref count, ref winRate, null, 0);
-
-                        //Console.Write("推荐：" + (winRate * 100).ToString("F1") + " , ");
-                        //DllImport.GetTopMoveInfo(1, ref x, ref y, ref count, ref winRate, null, 0);
-                        //Console.Write((winRate * 100).ToString("F1") + " , ");
-                        //DllImport.GetTopMoveInfo(2, ref x, ref y, ref count, ref winRate, null, 0);
-                        //Console.Write((winRate * 100).ToString("F1") + " , ");
-                        //DllImport.GetTopMoveInfo(3, ref x, ref y, ref count, ref winRate, null, 0);
-                        //Console.Write((winRate * 100).ToString("F1") + " , ");
-                        //DllImport.GetTopMoveInfo(4, ref x, ref y, ref count, ref winRate, null, 0);
-                        //Console.WriteLine((winRate * 100).ToString("F1"));
-
-                        #endregion
-
-
-
-                        int[] territoryStatictics = new int[m_BoardSize * m_BoardSize];
-                        DllImport.GetTerritoryStatictics(territoryStatictics);
-
                         if (lastStep != null)
                         {
-                            lastStep.BlackWinRate = lastStep.Player.Color == 1 ? winRate : 1 - winRate;
+                            //分析胜率和推荐（一共最多3个推荐）
+                            int count = 0;
+                            float winRate0 = 0;
+                            int xx = 0, yy = 0;
+                            DllImport.GetTopMoveInfo(0, ref xx, ref yy, ref count, ref winRate0, null, 0);
+                            List<Tuple<Position, float>> recommend = new List<Tuple<Position, float>>();
+                            recommend.Add(new Tuple<Position, float>(new Position(xx, yy), lastStep.Player.Color == 1 ? winRate0 : 1 - winRate0));//第一个推荐
+
+                            float winRate1 = 0;
+                            DllImport.GetTopMoveInfo(1, ref xx, ref yy, ref count, ref winRate1, null, 0);
+                            if (!float.IsNaN(winRate1) && winRate1 - winRate0 > -0.05f)//差别不到5%，就采纳
+                            {
+                                recommend.Add(new Tuple<Position, float>(new Position(xx, yy), lastStep.Player.Color == 1 ? winRate1 : 1 - winRate1));//第二个推荐
+                            }
+
+                            float winRate2 = 0;
+                            DllImport.GetTopMoveInfo(2, ref xx, ref yy, ref count, ref winRate2, null, 0);
+                            if (!float.IsNaN(winRate2) && winRate2 - winRate0 > -0.05f)//差别不到5%，就采纳
+                            {
+                                recommend.Add(new Tuple<Position, float>(new Position(xx, yy), lastStep.Player.Color == 1 ? winRate2 : 1 - winRate2));//第三个推荐
+                            }
+
+                            //地域
+                            int[] territoryStatictics = new int[m_BoardSize * m_BoardSize];
+                            DllImport.GetTerritoryStatictics(territoryStatictics);
+
+
+                            lastStep.BlackWinRate = lastStep.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             lastStep.Territory = territoryStatictics;
                             lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
+                            lastStep.RecommendPoints = recommend;
+
+                            OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color, winRate0, territoryStatictics);
+                        }
+                        else
+                        {
+                            OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color, 0, null);
                         }
 
-                        OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color, winRate, territoryStatictics);
                         //OnWinRate?.Invoke(winRate);
                         //OnTerritoryAnalized?.Invoke(territoryStatictics);
                         OnAiThinking?.Invoke(false);

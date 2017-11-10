@@ -13,36 +13,28 @@ namespace PartnerModeGo
     /// </summary>
     public class Sgf
     {
-        public static string FilePath;
-        private static object O_LockLog = new object();
-
-        //static Sgf()
-        //{
-        //    FilePath = Environment.CurrentDirectory + "/Sgf棋谱/" + ServiceProxy.Instance.Session.UserName + DateTime.Now.ToString("MM-dd HH-mm-ss") + ".sgf";
-        //}
-
-        //public static void WriteSgf(string info)
-        //{
-        //    lock (O_LockLog)
-        //    {
-        //        FileInfo file = new FileInfo(FilePath);
-        //        if (!Directory.Exists(file.DirectoryName))
-        //        {
-        //            Directory.CreateDirectory(file.DirectoryName);
-        //        }
-
-        //        if (!System.IO.File.Exists(FilePath))
-        //        {
-        //            System.IO.FileStream f = System.IO.File.Create(FilePath);
-        //            f.Close();
-        //        }
-        //        System.IO.StreamWriter f2 = new System.IO.StreamWriter(FilePath, true, Encoding.UTF8);
-        //        f2.Write(info);
-        //        f2.Close();
-        //        f2.Dispose();
-        //    }
-        //}
+        /// <summary>
+        /// 计算Multigo等软件中，UI的坐标。与程序中不同的是，纵坐标相反，横坐标跳过i
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static string GetUICoordinate(int x, int y, int boardSize)
+        {
+            char xChar = (char)('a' + x);
+            if (xChar >= 'i')
+            {
+                xChar++;
+            }
+            int yUI = boardSize - y;
+            return "" + xChar + yUI;
+        }
 
 
+
+
+
+        //public static string FilePath;
+        //private static object O_LockLog = new object();
     }
 }
