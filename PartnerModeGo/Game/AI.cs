@@ -20,7 +20,7 @@ namespace PartnerModeGo
         /// <summary>
         /// AI是进入或退出思考状态事件
         /// </summary>
-        public event Action<bool> OnAiThinking;
+        public event Action<bool, float, float> OnAiThinking;
 
         public AI(Game game)
         {
@@ -41,6 +41,10 @@ namespace PartnerModeGo
             DllImport.Initialize(DateTime.Now.Ticks + ".aitemp");
             DllImport.SetBoardSize(m_BoardSize);
             DllImport.SetNumberOfSimulations(30000);//大概1000步1s，最大应该不会超过30秒
+            DllImport.SetKomi((float)m_Game.GameSetting.Komi);
+            //DllImport.SetDCNN(false);
+            //DllImport.SetPriorWeightFactor(500);
+            //DllImport.SetAmafWeightFactor(-10);
 
             StartAnalyse();
         }
@@ -53,7 +57,9 @@ namespace PartnerModeGo
             {
                 while (true)
                 {
-                    OnAiThinking?.Invoke(true);
+                    OnAiThinking?.Invoke(true, 0, 0);
+                    float winR = 0.5f;
+                    float pointLead = 0;
                     lock (m_AnalyseLock)
                     {
                         while (!m_AnalyseQueue.IsEmpty)
@@ -100,9 +106,12 @@ namespace PartnerModeGo
                             step.BlackWinRate = step.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             step.Territory = territoryStatictics;
                             step.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
+
+                            winR = step.BlackWinRate;
+                            pointLead = step.BlackLeadPoints;
                         }
                     }
-                    OnAiThinking?.Invoke(false);
+                    OnAiThinking?.Invoke(false, winR, pointLead);
                     m_AnalyseResetEvent.WaitOne();
                 }
             });
@@ -122,8 +131,9 @@ namespace PartnerModeGo
 
         public void AIThink(Player aiPlayer, Step lastStep)
         {
-            OnAiThinking?.Invoke(true);
-
+            OnAiThinking?.Invoke(true, 0, 0);
+            float winR = 0.5f;
+            float pointLead = 0;
             Task task = Task.Factory.StartNew(() =>
             {
                 lock (m_AnalyseLock)
@@ -173,6 +183,9 @@ namespace PartnerModeGo
                             lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
                             lastStep.RecommendPoints = recommend;
 
+                            winR = lastStep.BlackWinRate;
+                            pointLead = lastStep.BlackLeadPoints;
+
                             OnAIMove?.Invoke(x, y, isPass, isResign, aiPlayer.Color, winRate0, territoryStatictics);
                         }
                         else
@@ -182,7 +195,7 @@ namespace PartnerModeGo
 
                         //OnWinRate?.Invoke(winRate);
                         //OnTerritoryAnalized?.Invoke(territoryStatictics);
-                        OnAiThinking?.Invoke(false);
+                        OnAiThinking?.Invoke(false, winR, pointLead);
                     }
                     catch (Exception ex)
                     {

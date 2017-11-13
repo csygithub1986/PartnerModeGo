@@ -153,6 +153,11 @@ namespace PartnerModeGo
                 Canvas.SetTop(m_LastPlayStone, m_Offset + y * m_GridSize - m_LastPlayStone.Height / 2);
                 m_LastPlayStone.Visibility = Visibility.Visible;
 
+                //播放声音
+                MediaPlayer player = new MediaPlayer();
+                player.Open(new Uri("Sound/move.wav", UriKind.RelativeOrAbsolute));
+                player.Play();
+
                 m_BoardState.Turn = 3 - m_BoardState.Turn;
                 //吃子
                 if (BoardMode == BoardMode.Playing || BoardMode == BoardMode.AutoPlaying)
@@ -218,6 +223,11 @@ namespace PartnerModeGo
                 Canvas.SetLeft(m_LastPlayStone, m_Offset + x * m_GridSize - m_LastPlayStone.Width / 2);
                 Canvas.SetTop(m_LastPlayStone, m_Offset + y * m_GridSize - m_LastPlayStone.Height / 2);
                 m_LastPlayStone.Visibility = Visibility.Visible;
+
+                //播放声音
+                MediaPlayer player = new MediaPlayer();
+                player.Open(new Uri("Sound/move.wav", UriKind.RelativeOrAbsolute));
+                player.Play();
 
                 //检查吃子
                 if (BoardMode == BoardMode.Playing)

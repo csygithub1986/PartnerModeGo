@@ -50,7 +50,7 @@
 
         <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
             <Viewbox>
-                <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing"></local:Board>
+                <local:Board x:Name="m_Board" Visibility="Visible" BoardSize="19" BoardMode="Playing" Margin="5"></local:Board>
             </Viewbox>
         </Border>
 
@@ -58,7 +58,7 @@
             <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="400"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="160"/>
                     <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
 
@@ -83,7 +83,45 @@
                     </ItemsControl>
                 </Grid>
 
-                <GroupBox Header="聊天" Grid.Row="1"></GroupBox>
+                <GroupBox Header="形势估计" Grid.Row="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <CheckBox IsChecked="True" x:Name="cbSituation" Width="100" Height="26" Content="打开" Style="{StaticResource CheckBoxStyle}" HorizontalAlignment="Left"/>
+                      
+                        <Grid Grid.Row="1" Background="#BBDDDDDD" x:Name="gridSituation">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Grid Height="30" Name="rateGrid" Margin="5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*" Name="blackRate"/>
+                                    <ColumnDefinition Width="*" Name="whiteRate"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="胜率：" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                <Grid Background="Black" Grid.Column="1">
+                                    <TextBlock Name="txtBlack" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid Background="White" Grid.Column="2">
+                                    <TextBlock Name="txtWhite" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Grid>
+
+                            <TextBlock x:Name="txtPointLead" Grid.Row="1" Text="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+
+                            <Grid Grid.RowSpan="2" Background="White" x:Name="gridCover" Visibility="Hidden">
+                                <TextBlock Text="正在分析......" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Grid>
+                    
+                    </Grid>
+                </GroupBox>
 
                 <GroupBox Header="功能" Grid.Row="2">
                     <Grid>

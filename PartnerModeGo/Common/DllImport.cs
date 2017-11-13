@@ -85,6 +85,10 @@ namespace PartnerModeGo
         [DllImport(DLLNAME, EntryPoint = "?ZenSetNumberOfThreads@@YAXH@Z", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetNumberOfThreads(int param0);
 
+        /// <summary>
+        /// 不知道干什么的，设到500后，走棋和胜率都判断不正常了
+        /// </summary>
+        /// <param name="param0"></param>
         [DllImport(DLLNAME, EntryPoint = "?ZenSetPriorWeightFactor@@YAXM@Z", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetPriorWeightFactor(float param0);
 

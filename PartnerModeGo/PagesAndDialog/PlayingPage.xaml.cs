@@ -51,6 +51,9 @@ namespace PartnerModeGo
 
             //第一步
             DealNextMove(0, nextPlayerID);
+
+            cbSituation.Checked += cbSituation_Checked;
+            cbSituation.Unchecked += cbSituation_Unchecked;
         }
 
         private void OnAIMove(int x, int y, bool isPass, bool isResign, int color, float winRate, int[] territory)
@@ -99,32 +102,36 @@ namespace PartnerModeGo
                     }
                     return;
                 }
+                if (x == -1 || y == -1)//pass
+                {
+                    if (m_StepHistory.Count > 0 && m_StepHistory.Last().Position.X == -1)//上一步也是pass
+                    {
+                        string winMsg = m_StepHistory.Last().BlackLeadPoints > 0 ? "黑棋胜" : "白棋胜" + Math.Abs(m_StepHistory.Last().BlackLeadPoints) + "目";
+                        MessageBoxResult r = MessageBox.Show("对局结束，" + winMsg, "消息", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (r == MessageBoxResult.Yes)
+                        {
+                            WriteSgf("\r\n" + winMsg);
+                        }
+                        return;
+                    }
+                }
 
-                //如果收到的这步正是我刚才走的，就不需要在处理棋盘UI
+
+
+                //如果收到的这步不是我刚才走的，就需要在处理棋盘UI
                 if ((m_LocalType == LocalType.Host && lastPlayer.Type == PlayerType.Internet) ||
                   (m_LocalType == LocalType.Client && lastPlayerID != VM.SelfPlayer.ID))
                 {
                     if (x == -1 || y == -1)//pass
                     {
                         m_Board.Pass();
-                        if (m_StepHistory.Count > 0 && m_StepHistory.Last().Position.X == -1)//上一步也是pass
-                        {
-                            string winMsg = m_StepHistory.Last().BlackLeadPoints > 0 ? "黑棋胜" : "白棋胜" + Math.Abs(m_StepHistory.Last().BlackLeadPoints) + "目";
-                            MessageBoxResult r = MessageBox.Show("对局结束，" + winMsg, "消息", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                            if (r == MessageBoxResult.Yes)
-                            {
-                                WriteSgf("\r\n" + winMsg);
-                            }
-                            return;
-                        }
                     }
                     else
                     {
-                        //Console.WriteLine("刚才不是自己下，需要处理board和AI");
                         m_Board.Play(x, y);
-                        //m_AI.Play(x, y, lastPlayer.Color);
                     }
                 }
+
 
                 m_AI.Play(x, y, lastPlayer.Color);
 
@@ -293,7 +300,7 @@ namespace PartnerModeGo
                     if (i % 2 == 0)
                     {
                         //如果推荐里面有胜率比当前步数胜率大的
-                        if (m_StepHistory[i].RecommendPoints.Max(p => p.Item2) > m_StepHistory[i].BlackWinRate)
+                        if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Max(p => p.Item2) > m_StepHistory[i].BlackWinRate)
                         {
                             if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -10)
                             {
@@ -351,7 +358,7 @@ namespace PartnerModeGo
                     }
                     else
                     {
-                        if (m_StepHistory[i].RecommendPoints.Min(p => p.Item2) < m_StepHistory[i].BlackWinRate)
+                        if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Min(p => p.Item2) < m_StepHistory[i].BlackWinRate)
                         {
                             if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 10)
                             {
@@ -442,12 +449,25 @@ namespace PartnerModeGo
             f2.Write(sgfStringBuilder.ToString());
             f2.Close();
             f2.Dispose();
+            MessageBox.Show("棋谱保存成功");
         }
 
         #region 按钮事件和状态
-        private void OnAiThinking(bool isThink)
+        private void OnAiThinking(bool isThink, float winRate, float pointLead)
         {
-            Dispatcher.Invoke(() => { btnAnalyse.IsEnabled = !isThink; });
+            Dispatcher.Invoke(() =>
+            {
+                btnAnalyse.IsEnabled = !isThink;
+                if (isThink == false)
+                {
+                    gridCover.Visibility = Visibility.Hidden;
+                    ShowWinRate(winRate, pointLead);
+                }
+                else
+                {
+                    gridCover.Visibility = Visibility.Visible;
+                }
+            });
         }
 
         private void btnAnalyse_Click(object sender, RoutedEventArgs e)
@@ -455,5 +475,24 @@ namespace PartnerModeGo
 
         }
         #endregion
+
+        private void cbSituation_Checked(object sender, RoutedEventArgs e)
+        {
+            gridSituation.Visibility = Visibility.Visible;
+        }
+
+        private void cbSituation_Unchecked(object sender, RoutedEventArgs e)
+        {
+            gridSituation.Visibility = Visibility.Hidden;
+        }
+
+        private void ShowWinRate(float bRate, float pointLead)
+        {
+            blackRate.Width = new GridLength(bRate, GridUnitType.Star);
+            whiteRate.Width = new GridLength(1 - bRate, GridUnitType.Star);
+            txtBlack.Text = (bRate * 100).ToString("F2") + "%";
+            txtWhite.Text = ((1 - bRate) * 100).ToString("F2") + "%";
+            txtPointLead.Text = string.Format("{0}领先：{1}目", pointLead > 0 ? "黑棋" : "白棋", Math.Abs(pointLead).ToString("F1"));
+        }
     }
 }

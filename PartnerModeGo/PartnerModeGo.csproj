@@ -77,6 +77,9 @@
     </ApplicationDefinition>
     <Compile Include="Common\Sgf.cs" />
     <Compile Include="Common\ImageHelper.cs" />
+    <Compile Include="Common\Sound.cs" />
+    <Compile Include="Common\Speech.cs" />
+    <Compile Include="Common\SpeechComLib.cs" />
     <Compile Include="Connected Services\WcfService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -241,6 +244,16 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\WcfService\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="SpeechLib">
+      <Guid>{C866CA3A-32F7-11D2-9602-00C04F8EE628}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
