@@ -10,8 +10,11 @@
         <Grid.Background>
             <ImageBrush ImageSource="/PartnerModeGo;component/Images/board-default.bmp" Stretch="None" TileMode="FlipXY" Viewport="0,0,49.993750240872,49.993750240872" ViewportUnits="Absolute" />
         </Grid.Background>
-
-        <Canvas Name="m_Canvas"  >
-        </Canvas>
+        <Canvas Name="m_Canvas"/>
+        <Border x:Name="border" BorderBrush="ForestGreen" BorderThickness="5" Margin="-2" Visibility="Hidden">
+            <Border.Effect>
+                <BlurEffect Radius="10"/>
+            </Border.Effect>
+        </Border>
     </Grid>
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using PartnerModeGo;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -30,7 +31,7 @@ namespace PartnerModeGo
             Application.Current.Resources.Add("BlackStoneColor", new SolidColorBrush(Properties.Settings.Default.BlackStoneColor));
             Application.Current.Resources.Add("WhiteStoneColor", new SolidColorBrush(Properties.Settings.Default.WhiteStoneColor));
 
-            
+
         }
 
         public void ChangePageTo(UserControl uc)
@@ -56,7 +57,19 @@ namespace PartnerModeGo
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(Environment.CurrentDirectory);
+                FileInfo[] files = dir.GetFiles(".aitemp");
+                for (int i = 0; i < files.Length; i++)
+                {
+                    File.Delete(files[i].FullName);
+                }
+            }
+            catch (Exception)
+            {
 
+            }
         }
     }
 }

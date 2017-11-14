@@ -87,7 +87,25 @@ namespace PartnerModeGo
         public int BoardSize { get; set; }
 
         public BoardMode BoardMode { get; set; }
-        public bool IsHostTurn;   //BoardMode是Playing时，判断是否是鼠标的轮子
+
+        /// <summary>
+        /// BoardMode是Playing时，判断是否是鼠标的轮子
+        /// </summary>
+        public bool IsHostTurn
+        {
+            get { return _IsHostTurn; }
+            set
+            {
+                _IsHostTurn = value;
+                Dispatcher.Invoke(() =>
+                {
+                    border.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+                });
+
+            }
+        }
+        private bool _IsHostTurn;
+
         #endregion
 
         #region 公用方法
@@ -99,10 +117,9 @@ namespace PartnerModeGo
                 for (int y = 0; y < BoardSize; y++)
                 {
                     m_Stones[x, y].Visibility = state[x * BoardSize + y] == 0 ? Visibility.Hidden : Visibility.Visible;
-                m_Stones[x, y].SetResourceReference(Ellipse.FillProperty, m_BoardState.Turn == 2 ? "BlackStoneColor" : "WhiteStoneColor");
+                    m_Stones[x, y].SetResourceReference(Ellipse.FillProperty, m_BoardState.Turn == 2 ? "BlackStoneColor" : "WhiteStoneColor");
                 }
             }
-
         }
 
 

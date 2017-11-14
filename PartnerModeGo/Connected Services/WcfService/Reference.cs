@@ -35,9 +35,6 @@ namespace PartnerModeGo.WcfService {
         private string IpField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool IsBoardRecognizedField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool IsConnectedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -48,6 +45,9 @@ namespace PartnerModeGo.WcfService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool OccupiedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RecognizedStateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int TimePerMoveField;
@@ -118,19 +118,6 @@ namespace PartnerModeGo.WcfService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool IsBoardRecognized {
-            get {
-                return this.IsBoardRecognizedField;
-            }
-            set {
-                if ((this.IsBoardRecognizedField.Equals(value) != true)) {
-                    this.IsBoardRecognizedField = value;
-                    this.RaisePropertyChanged("IsBoardRecognized");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool IsConnected {
             get {
                 return this.IsConnectedField;
@@ -178,6 +165,19 @@ namespace PartnerModeGo.WcfService {
                 if ((this.OccupiedField.Equals(value) != true)) {
                     this.OccupiedField = value;
                     this.RaisePropertyChanged("Occupied");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RecognizedState {
+            get {
+                return this.RecognizedStateField;
+            }
+            set {
+                if ((this.RecognizedStateField.Equals(value) != true)) {
+                    this.RecognizedStateField = value;
+                    this.RaisePropertyChanged("RecognizedState");
                 }
             }
         }

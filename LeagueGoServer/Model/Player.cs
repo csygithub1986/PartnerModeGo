@@ -52,9 +52,9 @@ namespace LeagueGoServer.Model
 
         #region 真实棋盘属性
         /// <summary>
-        /// 是否被识别了
+        /// 棋盘被识别的状态
         /// </summary>
-        public bool IsBoardRecognized { get; set; }
+        public int RecognizedState { get; set; }
         #endregion
 
         #region Lan、RealBoard共同属性

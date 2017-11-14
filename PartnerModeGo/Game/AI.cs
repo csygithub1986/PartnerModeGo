@@ -11,6 +11,9 @@ namespace PartnerModeGo
 {
     public class AI
     {
+        private const int TerritoryThresh = 700;//阈值法阈值
+        private const float BlackTerritoryMistake = 3.2f;//算territory时黑棋会少算3.2，不知道为什么，在这里把它补上
+
         private int m_BoardSize;
         private float m_Komi;
         private Game m_Game;
@@ -105,7 +108,8 @@ namespace PartnerModeGo
                             //修改step
                             step.BlackWinRate = step.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             step.Territory = territoryStatictics;
-                            step.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
+                            step.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi + BlackTerritoryMistake);
+                            step.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
 
                             winR = step.BlackWinRate;
                             pointLead = step.BlackLeadPoints;
@@ -180,8 +184,10 @@ namespace PartnerModeGo
 
                             lastStep.BlackWinRate = lastStep.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             lastStep.Territory = territoryStatictics;
-                            lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi);
                             lastStep.RecommendPoints = recommend;
+                            lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi + BlackTerritoryMistake);
+                            lastStep.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
+                            Console.WriteLine(lastStep.BlackLeadPoints.ToString("F1") + "  ,  " + lastStep.BlackLeadPoints2.ToString("F1"));
 
                             winR = lastStep.BlackWinRate;
                             pointLead = lastStep.BlackLeadPoints;

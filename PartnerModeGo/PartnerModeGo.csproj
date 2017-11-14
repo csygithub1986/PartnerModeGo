@@ -112,11 +112,13 @@
     <Compile Include="PagesAndDialog\SystemSettingDialog.xaml.cs">
       <DependentUpon>SystemSettingDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PagesAndDialog\PreviewWindow.xaml.cs">
+      <DependentUpon>PreviewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Rule\IRule.cs" />
     <Compile Include="Rule\RuleDemo.cs" />
-    <Compile Include="Tcp\CommonDataDefine.cs" />
+    <Compile Include="Tcp\TcpHeaderDefine.cs" />
     <Compile Include="Tcp\TcpServer.cs" />
-    <Compile Include="Tcp\TcpDataHandler.cs" />
     <Compile Include="Wcf\ServiceCallback.cs" />
     <Compile Include="Wcf\ServiceProxy.cs" />
     <Compile Include="WindowProcessing.xaml.cs">
@@ -167,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PagesAndDialog\SystemSettingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagesAndDialog\PreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

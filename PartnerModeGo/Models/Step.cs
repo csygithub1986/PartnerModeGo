@@ -20,9 +20,14 @@ namespace PartnerModeGo
         public float BlackWinRate { get; set; }
 
         /// <summary>
-        /// 黑棋领先的目数
+        /// 黑棋领先的目数（平均法）
         /// </summary>
         public float BlackLeadPoints { get; set; }
+
+        /// <summary>
+        /// 黑棋领先的目数（阈值法）
+        /// </summary>
+        public float BlackLeadPoints2 { get; set; }
 
         public string Comment { get; set; }
 

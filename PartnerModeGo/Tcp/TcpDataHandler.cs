@@ -33,7 +33,7 @@ namespace PartnerModeGo
             //数据格式：命令头+数据总长度+棋谱信息string
             //棋谱信息string格式：aaa=bbb;ccc=ddd;
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.GameStart));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.GameStart));
             int len = gameInfo.Length;
             data.AddRange(BitConverter.GetBytes(len));
             data.AddRange(Encoding.UTF8.GetBytes(gameInfo));
@@ -48,7 +48,7 @@ namespace PartnerModeGo
         public void SendGameOver()
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.GameOver));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.GameOver));
             data.AddRange(BitConverter.GetBytes(0));
             //再加上有效数据量总长度
             data.InsertRange(0, BitConverter.GetBytes(data.Count));
@@ -64,7 +64,7 @@ namespace PartnerModeGo
         public void SendStepData(int x, int y, int color, int[] boardState)
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.ServerStepData));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.ServerStepData));
             data.Add((byte)x);
             data.Add((byte)y);
             data.Add((byte)color);
@@ -78,7 +78,7 @@ namespace PartnerModeGo
         public void SendScan()
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.Scan));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.Scan));
             data.AddRange(BitConverter.GetBytes(0));
             //再加上有效数据量总长度
             data.InsertRange(0, BitConverter.GetBytes(data.Count));
@@ -88,7 +88,7 @@ namespace PartnerModeGo
         public void SendPreviewCommand(bool isPreview)
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(CommonDataDefine.SendPreviewCommand));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.SendPreviewCommand));
             data.AddRange(BitConverter.GetBytes(isPreview));
             //再加上有效数据量总长度
             data.InsertRange(0, BitConverter.GetBytes(data.Count));
@@ -101,7 +101,7 @@ namespace PartnerModeGo
         {
             int index = 0;
             int head = BitConverter.ToInt32(data, index); index += 4;
-            if (head == CommonDataDefine.PhoneStepData)
+            if (head == TcpHeaderDefine.PhoneStepData)
             {
                 int x = data[index]; index++;
                 int y = data[index]; index++;
@@ -114,7 +114,7 @@ namespace PartnerModeGo
                 }
                 WindowReceivePhoneStepData?.Invoke(x, y, color, boardState);
             }
-            else if (head == CommonDataDefine.PreviewData)
+            else if (head == TcpHeaderDefine.PreviewData)
             {
                 //识别成功与否
                 bool isOk = data[index] == 1; index += 1;

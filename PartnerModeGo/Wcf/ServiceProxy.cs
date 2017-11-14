@@ -7,6 +7,7 @@ using System.Net.Security;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 
 namespace PartnerModeGo
@@ -119,11 +120,13 @@ namespace PartnerModeGo
         private void InnerDuplexChannel_Faulted(object sender, EventArgs e)
         {
             //Console.WriteLine("客户端：  InnerDuplexChannel_Faulted " + DateTime.Now.ToString("mm-ss-fff"));
+            MessageBox.Show("服务器断开");
         }
 
         private void InnerDuplexChannel_Closed(object sender, EventArgs e)
         {
             //Console.WriteLine("客户端：  InnerDuplexChannel_Closed " + DateTime.Now.ToString("mm-ss-fff"));
+            MessageBox.Show("服务器断开");
         }
 
         public string Login(object userName)

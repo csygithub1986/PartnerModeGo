@@ -15,50 +15,52 @@ namespace PartnerModeGo
     /// </summary>
     public class TcpServer
     {
+        #region 单例
         private TcpServer() { }
         static TcpServer()
         {
             Instance = new TcpServer();
         }
         public static TcpServer Instance;
+        #endregion
 
-        /// <summary>
-        /// 接受数据事件
-        /// </summary>
-        public event Action<byte[]> HandlerOnDataArrived;
+        #region 属性、字段
+        public bool IsConnected { get; set; }
+
+        private TcpClient client;
+        private BinaryWriter bw;
+        #endregion
+
+        #region 事件
+        ///// <summary>
+        ///// 接受数据事件
+        ///// </summary>
+        //public event Action<byte[]> HandlerOnDataArrived;
 
         /// <summary>
         /// 连接成功
         /// </summary>
-        public event Action<string> WindowOnPhoneConnected;
+        public event Action<bool> PhoneConnectedChanged;
 
-        private TcpClient client;
-        private BinaryWriter bw;
+        public event Action<int, int, int> WindowReceivePhoneStepData;
+        public event Action<byte[], int, int[]> WindowReceivePhonePreviewData;
+        #endregion
 
-        /// <summary>
-        /// 发送数据 TODO：发送之前检查网络状态
-        /// </summary>
-        /// <param name="data"></param>
-        public void SendData(byte[] data)
-        {
-            //bw.Write(data.Length);
-            bw.Write(data);
-            bw.Flush();
-        }
-
+        #region 底层方法
         public void Start()
         {
             Thread thread = new Thread(Listen);
             thread.Start();
         }
 
-        public void Listen()
+        private void Listen()
         {
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("192.168.1.111"), 12121);
+            TcpListener tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 12123);
             tcpListener.Start();
             client = tcpListener.AcceptTcpClient();
-           
-            WindowOnPhoneConnected?.Invoke(client.Client.RemoteEndPoint.ToString());
+
+            IsConnected = true;
+            PhoneConnectedChanged?.Invoke(true);
 
             NetworkStream nStream = client.GetStream();
             bw = new BinaryWriter(nStream);
@@ -66,6 +68,18 @@ namespace PartnerModeGo
             Thread thread = new Thread(ReceiveMessage);
             thread.Start();
         }
+
+        /// <summary>
+        /// 发送数据 TODO：发送之前检查网络状态
+        /// </summary>
+        /// <param name="data"></param>
+        private void SendData(byte[] data)
+        {
+            //bw.Write(data.Length);
+            bw.Write(data);
+            bw.Flush();
+        }
+
 
         /// <summary>
         /// 接受消息  
@@ -97,7 +111,8 @@ namespace PartnerModeGo
                             {
                                 restByteCount = 0;
                                 //添加消息至消息处理类
-                                HandlerOnDataArrived?.Invoke(data);
+                                //HandlerOnDataArrived?.Invoke(data);
+                                AnalysePhoneData(data);
                             }
                             else
                             {
@@ -114,7 +129,8 @@ namespace PartnerModeGo
                         if (actualLen == dataLen)
                         {
                             //添加消息至消息处理类
-                            HandlerOnDataArrived?.Invoke(data);
+                            //HandlerOnDataArrived?.Invoke(data);
+                            AnalysePhoneData(data);
                         }
                         else
                         {
@@ -132,5 +148,109 @@ namespace PartnerModeGo
 
 
         }
+        #endregion
+
+
+        #region PC->Phone 发送数据
+        public void SendScan(int[] state, int color)
+        {
+            List<byte> data = new List<byte>();
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.StartScan));
+            data.AddRange(BitConverter.GetBytes((short)state.Length));
+            data.AddRange(state.Select(p => (byte)p));
+            data.Add((byte)color);
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
+            SendData(data.ToArray());
+        }
+
+
+        /// <summary>
+        /// 结束指令
+        /// </summary>
+        public void SendGameOver(byte[] fileData)
+        {
+            List<byte> data = new List<byte>();
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.GameOver));
+            data.AddRange(BitConverter.GetBytes((short)fileData.Length));
+            data.AddRange(fileData);
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
+            TcpServer.Instance.SendData(data.ToArray());
+        }
+
+        /// <summary>
+        /// 发送新棋步
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="boardState"></param>
+        public void SendStepData(int x, int y, int color)
+        {
+            List<byte> data = new List<byte>();
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.ServerStepData));
+            data.Add((byte)x);
+            data.Add((byte)y);
+            data.Add((byte)color);
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
+            TcpServer.Instance.SendData(data.ToArray());
+        }
+
+
+        public void SendPreviewCommand(bool isPreview)
+        {
+            List<byte> data = new List<byte>();
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.SendPreviewCommand));
+            data.AddRange(BitConverter.GetBytes(isPreview));
+            //再加上有效数据量总长度
+            data.InsertRange(0, BitConverter.GetBytes(data.Count));
+            TcpServer.Instance.SendData(data.ToArray());
+        }
+        #endregion
+
+        #region Phone->PC 接收数据
+        public void AnalysePhoneData(byte[] data)
+        {
+            int index = 0;
+            short head = BitConverter.ToInt16(data, index); index += 2;
+            if (head == TcpHeaderDefine.PhoneStepData)
+            {
+                byte x = data[index]; index++;
+                byte y = data[index]; index++;
+                byte color = data[index]; index++;
+                //int boardLen = BitConverter.ToInt32(data, index); index += 4;
+                //int[] boardState = new int[boardLen];
+                //for (int i = 0; i < boardState.Length; i++)
+                //{
+                //    boardState[i] = data[index]; index++;
+                //}
+                WindowReceivePhoneStepData?.Invoke(x, y, color);
+            }
+            else if (head == TcpHeaderDefine.PhonePreviewData)
+            {
+                //识别成功与否
+                byte state = data[index]; index += 1;
+                //图像
+                int imagelen = BitConverter.ToInt32(data, index); index += 4;
+                //Console.WriteLine("图像大小: " + imagelen);
+                byte[] image = new byte[imagelen];
+                for (int i = 0; i < image.Length; i++)
+                {
+                    image[i] = data[index]; index++;
+                }
+                //解析的棋盘数据
+                short boardLen = BitConverter.ToInt16(data, index); index += 2;
+                int[] boardState = new int[boardLen];
+                for (int i = 0; i < boardState.Length; i++)
+                {
+                    boardState[i] = data[index]; index++;
+                }
+                WindowReceivePhonePreviewData?.Invoke(image, state, boardState);
+            }
+        }
+
+
+        #endregion
     }
 }

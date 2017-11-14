@@ -29,23 +29,9 @@ namespace PartnerModeGo
         public RoomPage()
         {
             InitializeComponent();
-            //if (game != null)
-            //{
-            //    VM = new RoomViewModel(game);
-            //}
-            //else
-            //{
             VM = new RoomViewModel();
-            //}
             DataContext = VM;
             AddEventHandler();
-
-            //Array array = Enum.GetValues(typeof(PlayerType));
-            //PlayerTypes = new PlayerType[array.Length];
-            //for (int i = 0; i < array.Length; i++)
-            //{
-            //    PlayerTypes[i] = (PlayerType)array.GetValue(i);
-            //}
         }
 
         private RoomViewModel VM { get; set; }
@@ -96,6 +82,7 @@ namespace PartnerModeGo
 
         #endregion
 
+        //检查是否都加入了游戏，或realboard已经识别
         private void CheckCanStart()
         {
             Dispatcher.Invoke(() =>
@@ -112,7 +99,7 @@ namespace PartnerModeGo
                     }
                     else if (player.Type == PlayerType.RealBoard)
                     {
-                        if (player.IsBoardRecognized == false)
+                        if (player.RecognizedState != 2)
                         {
                             btnStart.IsEnabled = false;
                             return;
@@ -121,6 +108,44 @@ namespace PartnerModeGo
                 }
                 btnStart.IsEnabled = true;
             });
+
+        }
+
+        //确认设置，发送给服务器
+        private object ConformConfig(object[] arg)
+        {
+            ServiceProxy.Instance.CreateGame(VM.CurrentGame.Players, VM.CurrentGame.GameSetting);
+            //如果有realboard，建立Tcp服务
+            if (VM.CurrentGame.Players.Count(p => p.Type == PlayerType.RealBoard) > 0)
+            {
+                TcpServer.Instance.Start();
+            }
+            return null;
+        }
+
+        //开始游戏发送
+        private object StartGame(object[] arg)
+        {
+            ServiceProxy.Instance.GameStart();
+            return null;
+        }
+
+        #region 界面事件
+        //确认设置
+        private void BtnOk_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.ShowProcessWindowAsync("正在确认棋局......", ConformConfig, null);
+        }
+
+        //开始游戏
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.ShowProcessWindowAsync("正在开始棋局......", StartGame, null);
+        }
+
+        //取消
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
 
         }
 
@@ -141,42 +166,7 @@ namespace PartnerModeGo
                 blackListbox.SelectedItem = null;
             }
         }
-
-        private void BtnOk_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.Instance.ShowProcessWindowAsync("正在确认棋局......", SendGame, null);
-        }
-
-        private object SendGame(object[] arg)
-        {
-            ServiceProxy.Instance.CreateGame(VM.CurrentGame.Players, VM.CurrentGame.GameSetting);
-            return null;
-        }
-
-
-
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.Instance.ShowProcessWindowAsync("正在开始棋局......", StartGame, null);
-
-        }
-
-        private object StartGame(object[] arg)
-        {
-            ServiceProxy.Instance.GameStart();
-            return null;
-        }
-
-        //public PlayerType[] PlayerTypes
-        //{
-        //    get { return (PlayerType[])GetValue(PlayerTypesProperty); }
-        //    set { SetValue(PlayerTypesProperty, value); }
-        //}
-        //public static readonly DependencyProperty PlayerTypesProperty = DependencyProperty.Register("PlayerTypes", typeof(PlayerType[]), typeof(RoomPage), new PropertyMetadata(null));
+        #endregion
 
 
     }
