@@ -109,7 +109,7 @@ namespace PartnerModeGo
                             step.BlackWinRate = step.Player.Color == 1 ? winRate0 : 1 - winRate0;
                             step.Territory = territoryStatictics;
                             step.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi + BlackTerritoryMistake);
-                            step.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
+                            //step.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
 
                             winR = step.BlackWinRate;
                             pointLead = step.BlackLeadPoints;
@@ -186,8 +186,7 @@ namespace PartnerModeGo
                             lastStep.Territory = territoryStatictics;
                             lastStep.RecommendPoints = recommend;
                             lastStep.BlackLeadPoints = (float)(territoryStatictics.Sum() / 1000.0 - m_Komi + BlackTerritoryMistake);
-                            lastStep.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
-                            Console.WriteLine(lastStep.BlackLeadPoints.ToString("F1") + "  ,  " + lastStep.BlackLeadPoints2.ToString("F1"));
+                            //lastStep.BlackLeadPoints2 = territoryStatictics.Count(p => p > TerritoryThresh) - territoryStatictics.Count(p => p < -TerritoryThresh) - m_Komi;
 
                             winR = lastStep.BlackWinRate;
                             pointLead = lastStep.BlackLeadPoints;

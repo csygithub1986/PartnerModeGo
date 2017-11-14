@@ -66,6 +66,7 @@ namespace PartnerModeGo
             });
         }
 
+        //phone链接状态改变时
         private void Instance_PhoneConnectedChanged(bool isConnected)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -84,10 +85,12 @@ namespace PartnerModeGo
             }));
         }
 
+        //收到phone预览数据时
         private void Instance_WindowReceivePhonePreviewData(byte[] imageData, int recognizedState, int[] boardState)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                //显示状态
                 if (recognizedState == 0)
                 {
                     lbState.Content = "未识别";
@@ -103,7 +106,18 @@ namespace PartnerModeGo
                     lbState.Content = "状态正确";
                     lbState.Background = Brushes.ForestGreen;
                 }
+                //显示图像
                 imageOrigin.Source = ImageHelper.ByteArrayToBitmapImage(imageData);
+                //显示棋盘
+                if (recognizedState!=0)
+                {
+                    goBoard.Visibility = Visibility.Visible;
+                    goBoard.SetStones(boardState);
+                }
+                else
+                {
+                    goBoard.Visibility = Visibility.Hidden;
+                }
             }));
 
         }

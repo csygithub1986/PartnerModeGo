@@ -24,10 +24,10 @@ namespace PartnerModeGo
         /// </summary>
         public float BlackLeadPoints { get; set; }
 
-        /// <summary>
-        /// 黑棋领先的目数（阈值法）
-        /// </summary>
-        public float BlackLeadPoints2 { get; set; }
+        ///// <summary>
+        ///// 黑棋领先的目数（阈值法）
+        ///// </summary>
+        //public float BlackLeadPoints2 { get; set; }
 
         public string Comment { get; set; }
 

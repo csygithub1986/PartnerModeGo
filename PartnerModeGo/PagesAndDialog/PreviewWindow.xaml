@@ -22,7 +22,7 @@
         <Image x:Name="imageOrigin" Grid.Row="1" Width="360" Height="360"/>
       
         <Viewbox Margin="5" Grid.Row="1" Grid.Column="1">
-            <local:Board />
+            <local:Board x:Name="goBoard"/>
         </Viewbox>
     </Grid>
 </Window>

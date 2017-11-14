@@ -188,7 +188,7 @@ namespace PartnerModeGo
         public void SendStepData(int x, int y, int color)
         {
             List<byte> data = new List<byte>();
-            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.ServerStepData));
+            data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.HostStepData));
             data.Add((byte)x);
             data.Add((byte)y);
             data.Add((byte)color);

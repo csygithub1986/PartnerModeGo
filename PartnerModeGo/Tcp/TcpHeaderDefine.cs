@@ -22,7 +22,7 @@ namespace PartnerModeGo
         /// 头+x+y+color
         /// 2    1  1    1
         /// </summary>
-        public const short ServerStepData = 0x1002;
+        public const short HostStepData = 0x1002;
 
         /// <summary>
         /// 棋局结束，发送棋谱
