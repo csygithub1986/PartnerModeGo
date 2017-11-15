@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PartnerModeGo"
              xmlns:srv="clr-namespace:PartnerModeGo.WcfService"
-             mc:Ignorable="d"
+             mc:Ignorable="d" Unloaded="UserControl_Unloaded"
              d:DesignHeight="720" d:DesignWidth="1366">
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type srv:Player}" x:Key="PlayerTemplate">

@@ -74,9 +74,18 @@ namespace PartnerModeGo
                     return Brushes.White;
                 }
             }
-            if (parameter.ToString() == "IsConnected" || parameter.ToString() == "IsBoardRecognized")
+            if (parameter.ToString() == "RecognizedState")
             {
-                return (bool)value ? Brushes.Green : Brushes.Red;
+                return ((RecognizeState)(int)value).ToString();
+            }
+            if (parameter.ToString() == "RecognizedStateBg")
+            {
+                int state = (int)value;
+                if (state == 0)
+                    return Brushes.Red;
+                if (state == 1)
+                    return Brushes.Orange;
+                return Brushes.ForestGreen;
             }
             if (parameter.ToString() == "BlackPlayerVisibility")
             {

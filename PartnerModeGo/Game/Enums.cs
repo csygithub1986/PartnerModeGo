@@ -13,4 +13,9 @@ namespace PartnerModeGo
     {
         Host, Client
     }
+
+    public enum RecognizeState
+    {
+        未识别, 状态不正确, 状态正确
+    }
 }

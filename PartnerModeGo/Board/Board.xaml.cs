@@ -267,17 +267,17 @@ namespace PartnerModeGo
             e.Handled = true;
         }
 
-        public void InitGame()
-        {
-            m_BoardState = new BoardState(BoardSize);
-            for (int i = 0; i < BoardSize; i++)
-            {
-                for (int j = 0; j < BoardSize; j++)
-                {
-                    m_Stones[i, j].Visibility = Visibility.Hidden;
-                }
-            }
-        }
+        //public void InitGame()
+        //{
+        //    m_BoardState = new BoardState(BoardSize);
+        //    for (int i = 0; i < BoardSize; i++)
+        //    {
+        //        for (int j = 0; j < BoardSize; j++)
+        //        {
+        //            m_Stones[i, j].Visibility = Visibility.Hidden;
+        //        }
+        //    }
+        //}
 
         private void InitBoard()
         {
@@ -449,6 +449,23 @@ namespace PartnerModeGo
         {
             InitBoard();
             DrawBoard();
+        }
+
+        public int[] GetBoardState1()
+        {
+            int[] state = new int[BoardSize * BoardSize];
+            for (int i = 0; i < BoardSize; i++)
+            {
+                for (int j = 0; j < BoardSize; j++)
+                {
+                    state[i + j * BoardSize] = m_BoardState.State[i, j];
+                }
+            }
+            return state;
+        }
+        public int[,] GetBoardState2()
+        {
+            return m_BoardState.State;
         }
     }
 

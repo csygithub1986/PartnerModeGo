@@ -26,8 +26,8 @@ namespace PartnerModeGo
 
         /// <summary>
         /// 棋局结束，发送棋谱
-        /// 头+文件
-        /// 2    4+n
+        /// 头+文件名+文件
+        /// 2    2+n     4+n
         /// </summary>
         public const short GameOver = 0x1003;
 

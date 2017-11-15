@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:PartnerModeGo"
              xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="PartnerModeGo.RoomPage"
              x:Name="uc"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Unloaded="uc_Unloaded"
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <local:SettingConverter x:Key="SettingConverter"/>
@@ -60,18 +60,20 @@
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel  >
-                            <TextBlock Text="连接状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
-                            <TextBlock Text="识别状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1">
-                            <Rectangle Fill="{Binding IsConnected, ConverterParameter=IsConnected, Converter={StaticResource SettingConverter}}" HorizontalAlignment="Stretch" Height="23" Width="23" Margin="10,10,10,0" VerticalAlignment="Top" />
-                            <Rectangle Fill="{Binding IsBoardRecognized, ConverterParameter=IsBoardRecognized, Converter={StaticResource SettingConverter}}" HorizontalAlignment="Stretch" Height="23" Width="23" Margin="10,10,10,0" VerticalAlignment="Top" />
-                        </StackPanel>
+                        <TextBlock Text="棋盘状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>
+                        <!--<TextBlock Text="识别状态" Padding="0,4" Height="23" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,0"/>-->
+                        <Label Grid.Column="1" Content="{Binding RecognizedState,Converter={StaticResource SettingConverter},ConverterParameter=RecognizedState}" Background="{Binding RecognizedState, ConverterParameter=RecognizedStateBg, Converter={StaticResource SettingConverter}}" HorizontalAlignment="Stretch" Height="23"  Margin="10,10,10,0" VerticalAlignment="Top" />
+                        <Label x:Name="lbUnconnected" Grid.Column="1" Content="未连接" Background="Gray" HorizontalAlignment="Stretch" Height="23" Margin="10,10,10,0" VerticalAlignment="Top" />
+                        <!--<Rectangle Fill="{Binding IsBoardRecognized, ConverterParameter=IsBoardRecognized, Converter={StaticResource SettingConverter}}" HorizontalAlignment="Stretch" Height="23" Width="23" Margin="10,10,10,0" VerticalAlignment="Top" />-->
                     </Grid>
-
                 </Grid>
             </Border>
+            
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsConnected}"  Value="True">
+                    <Setter TargetName="lbUnconnected" Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
 
@@ -117,7 +119,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="2"  Background="#55FFFFFF">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -137,15 +139,15 @@
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                <Button Content="添加" Command="{Binding AddWhitePlayerCommand, ConverterParameter=AddWhite}" FontSize="16" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" Width="75" Height="28"  Grid.Column="1"/>
-                <Button Content="删除" Command="{Binding DeleteWhitePlayerCommand, ConverterParameter=DeleteWhite}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28" Grid.Column="1"/>
-                <ListBox Background="Transparent" SelectionChanged="whiteListBox_SelectionChanged" x:Name="whiteListbox" ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=WhitePlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="20,0" Grid.Column="1" Grid.Row="1"/>
+                    <Button Content="添加" Command="{Binding AddWhitePlayerCommand, ConverterParameter=AddWhite}" FontSize="16" HorizontalAlignment="Left" Margin="72,0,0,0" VerticalAlignment="Center" Width="75" Height="28"  Grid.Column="1"/>
+                    <Button Content="删除" Command="{Binding DeleteWhitePlayerCommand, ConverterParameter=DeleteWhite}" FontSize="16" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Center" Width="75" Height="28" Grid.Column="1"/>
+                    <ListBox Background="Transparent" SelectionChanged="whiteListBox_SelectionChanged" x:Name="whiteListbox" ItemTemplate="{StaticResource PlayerTemplate}" ItemsSource="{Binding Players, ConverterParameter=WhitePlayerVisibility, Converter={StaticResource SettingConverter}}" Margin="20,0" Grid.Column="1" Grid.Row="1"/>
                 </Grid>
 
             </Border>
 
         </Grid>
-        
+
         <!--<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="2"  Background="#22FFFFFF">
             <Grid >
                 <Grid.RowDefinitions>

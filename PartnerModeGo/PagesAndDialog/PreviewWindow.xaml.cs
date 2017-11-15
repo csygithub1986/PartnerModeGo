@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartnerModeGo
 {
@@ -74,7 +65,7 @@ namespace PartnerModeGo
                 if (isConnected)
                 {
                     Task.Factory.StartNew(() => { TcpServer.Instance.SendPreviewCommand(true); });
-                    lbState.Content = "未识别";
+                    lbState.Content = RecognizeState.未识别.ToString();
                     lbState.Background = Brushes.Red;
                 }
                 else
@@ -91,19 +82,17 @@ namespace PartnerModeGo
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 //显示状态
+                lbState.Content = ((RecognizeState)recognizedState).ToString();
                 if (recognizedState == 0)
                 {
-                    lbState.Content = "未识别";
                     lbState.Background = Brushes.Red;
                 }
                 else if (recognizedState == 1)
                 {
-                    lbState.Content = "状态不正确";
                     lbState.Background = Brushes.Orange;
                 }
                 else if (recognizedState == 2)
                 {
-                    lbState.Content = "状态正确";
                     lbState.Background = Brushes.ForestGreen;
                 }
                 //显示图像

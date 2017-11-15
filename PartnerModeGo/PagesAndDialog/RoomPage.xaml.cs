@@ -36,11 +36,58 @@ namespace PartnerModeGo
 
         private RoomViewModel VM { get; set; }
 
+        #region 初始化、注销
+        private void uc_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DeleteEventHandler();
+        }
         private void AddEventHandler()
         {
             ServiceProxy.Instance.DistributeGameInfoCallback = DistributeGameInfoCallback;
             ServiceProxy.Instance.GameStartCallback = GameStartCallback;
+
+            TcpServer.Instance.PhoneConnectedChanged += PhoneConnectedChanged;
+            TcpServer.Instance.WindowReceivePhoneScanState += WindowReceivePhoneScanState;
         }
+
+        private void DeleteEventHandler()
+        {
+            TcpServer.Instance.PhoneConnectedChanged -= PhoneConnectedChanged;
+            TcpServer.Instance.WindowReceivePhoneScanState -= WindowReceivePhoneScanState;
+        }
+
+        #endregion
+
+
+        #region Tcp回调
+        //Phone连接状态改变
+        private void PhoneConnectedChanged(bool isConnected)
+        {
+            foreach (var player in VM.CurrentGame.Players)
+            {
+                if (player.Type == PlayerType.RealBoard)
+                {
+                    player.IsConnected = isConnected;
+                    if (isConnected == false)
+                    {
+                        player.RecognizedState = 0;
+                    }
+                }
+            }
+        }
+
+        private void WindowReceivePhoneScanState(int state)
+        {
+            foreach (var player in VM.CurrentGame.Players)
+            {
+                if (player.Type == PlayerType.RealBoard)
+                {
+                    player.RecognizedState = state;
+                }
+            }
+        }
+
+        #endregion
 
         #region 服务器回调函数
         private void DistributeGameInfoCallback(GameDistributeType type, Game game)
@@ -99,7 +146,7 @@ namespace PartnerModeGo
                     }
                     else if (player.Type == PlayerType.RealBoard)
                     {
-                        if (player.RecognizedState != 2)
+                        if (player.IsConnected == false || player.RecognizedState != 2)
                         {
                             btnStart.IsEnabled = false;
                             return;
@@ -166,6 +213,7 @@ namespace PartnerModeGo
                 blackListbox.SelectedItem = null;
             }
         }
+
         #endregion
 
 

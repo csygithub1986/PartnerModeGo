@@ -44,6 +44,8 @@ namespace PartnerModeGo
 
         public event Action<int, int, int> WindowReceivePhoneStepData;
         public event Action<byte[], int, int[]> WindowReceivePhonePreviewData;
+        public event Action<int> WindowReceivePhoneScanState;
+
         #endregion
 
         #region 底层方法
@@ -168,11 +170,13 @@ namespace PartnerModeGo
         /// <summary>
         /// 结束指令
         /// </summary>
-        public void SendGameOver(byte[] fileData)
+        public void SendGameOver(byte[] fileNameBytes, byte[] fileData)
         {
             List<byte> data = new List<byte>();
             data.AddRange(BitConverter.GetBytes(TcpHeaderDefine.GameOver));
-            data.AddRange(BitConverter.GetBytes((short)fileData.Length));
+            data.AddRange(BitConverter.GetBytes((short)fileNameBytes.Length));
+            data.AddRange(fileNameBytes);
+            data.AddRange(BitConverter.GetBytes(fileData.Length));
             data.AddRange(fileData);
             //再加上有效数据量总长度
             data.InsertRange(0, BitConverter.GetBytes(data.Count));
@@ -229,7 +233,7 @@ namespace PartnerModeGo
             }
             else if (head == TcpHeaderDefine.PhonePreviewData)
             {
-                //识别成功与否
+                //识别状态
                 byte state = data[index]; index += 1;
                 //图像
                 int imagelen = BitConverter.ToInt32(data, index); index += 4;
@@ -247,6 +251,12 @@ namespace PartnerModeGo
                     boardState[i] = data[index]; index++;
                 }
                 WindowReceivePhonePreviewData?.Invoke(image, state, boardState);
+            }
+            else if (head == TcpHeaderDefine.PhoneScanState)
+            {
+                //识别状态
+                byte state = data[index];
+                WindowReceivePhoneScanState?.Invoke(state);
             }
         }
 
