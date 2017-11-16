@@ -8,7 +8,7 @@ namespace PartnerModeGo
 {
     public class DllImport
     {
-        const string DLLNAME = "Zen.dll";
+        const string DLLNAME = "PartnerModeGo.dll";
 
         [DllImport(DLLNAME, EntryPoint = "?ZenAddStone@@YA_NHHH@Z", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool AddStone(int param0, int param1, int param2);
