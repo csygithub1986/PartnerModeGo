@@ -12,7 +12,7 @@ namespace PartnerModeGo
     public class AI
     {
         private const int TerritoryThresh = 700;//阈值法阈值
-        private const float BlackTerritoryMistake = 3.2f;//算territory时黑棋会少算3.2，不知道为什么，在这里把它补上
+        private const float BlackTerritoryMistake = 0f;//算territory时黑棋会少算3.2，不知道为什么，在这里把它补上
 
         private int m_BoardSize;
         private float m_Komi;
