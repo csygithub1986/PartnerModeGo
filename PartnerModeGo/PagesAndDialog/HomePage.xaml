@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="91,44,0,0" TextWrapping="Wrap" Text="big" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="txtUserName" HorizontalAlignment="Left" Height="23" Margin="91,44,0,0" TextWrapping="Wrap" Text="名字" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <TextBox x:Name="txtIP" HorizontalAlignment="Left" Height="23" Margin="91,82,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Margin="20,48,0,0" TextWrapping="Wrap" Text="昵称" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="20,86,0,0" TextWrapping="Wrap" Text="服务IP" VerticalAlignment="Top"/>

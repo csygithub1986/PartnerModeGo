@@ -260,209 +260,206 @@ namespace PartnerModeGo
                 }
             }
 
-            Task.Factory.StartNew(() =>
+            //头
+            StringBuilder sgfStringBuilder = new StringBuilder();
+            sgfStringBuilder.Append("(;PB[");
+            for (int i = 0; i < VM.BlackPlayers.Length; i++)
             {
-                //头
-                StringBuilder sgfStringBuilder = new StringBuilder();
-                sgfStringBuilder.Append("(;PB[");
-                for (int i = 0; i < VM.BlackPlayers.Length; i++)
-                {
-                    sgfStringBuilder.Append(VM.BlackPlayers[i].Name);
-                    if (i != VM.BlackPlayers.Length - 1)
-                        sgfStringBuilder.Append("+");
-                }
-                sgfStringBuilder.Append("]PW[");
-                for (int i = 0; i < VM.WhitePlayers.Length; i++)
-                {
-                    sgfStringBuilder.Append(VM.WhitePlayers[i].Name);
-                    if (i != VM.WhitePlayers.Length - 1)
-                        sgfStringBuilder.Append("+");
-                }
+                sgfStringBuilder.Append(VM.BlackPlayers[i].Name);
+                if (i != VM.BlackPlayers.Length - 1)
+                    sgfStringBuilder.Append("+");
+            }
+            sgfStringBuilder.Append("]PW[");
+            for (int i = 0; i < VM.WhitePlayers.Length; i++)
+            {
+                sgfStringBuilder.Append(VM.WhitePlayers[i].Name);
+                if (i != VM.WhitePlayers.Length - 1)
+                    sgfStringBuilder.Append("+");
+            }
+            sgfStringBuilder.Append("]");
+            //记录棋谱
+            for (int i = 0; i < m_StepHistory.Count; i++)
+            {
+                if (m_StepHistory[i].Position.X == -1 || m_StepHistory[i].Position.Y == -1)
+                    sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[]");
+                else
+                    sgfStringBuilder.Append(";" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
+                sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name);
+                sgfStringBuilder.Append("  \r\n黑棋胜率：" + (m_StepHistory[i].BlackWinRate * 100).ToString("F1") + "%  ");
+                sgfStringBuilder.Append("\r\n" + (m_StepHistory[i].BlackLeadPoints > 0 ? "黑棋" : "白棋") + "领先 " + (Math.Abs(m_StepHistory[i].BlackLeadPoints)).ToString("F1") + " 目  ");
                 sgfStringBuilder.Append("]");
-                //记录棋谱
-                for (int i = 0; i < m_StepHistory.Count; i++)
+
+                #region 记录坏棋
+                //记录： 疑问手（胜率下滑5%+目亏损>=0） 坏棋（胜率下滑10%+目亏损5）特坏棋（胜率下滑15%+目亏损10）
+                //好棋（胜率上升5%+目提高5）
+                //写注释要注意UI界面纵坐标相反，横坐标跳过i
+                if (i > 0)
                 {
-                    if (m_StepHistory[i].Position.X == -1 || m_StepHistory[i].Position.Y == -1)
-                        sgfStringBuilder.Append(";[" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[]");
-                    else
-                        sgfStringBuilder.Append(";" + (m_StepHistory[i].Player.Color == 2 ? "B" : "W") + "[" + (char)('a' + m_StepHistory[i].Position.X) + (char)('a' + m_StepHistory[i].Position.Y) + "]");
-                    sgfStringBuilder.Append("C[落子者：" + m_StepHistory[i].Player.Name);
-                    sgfStringBuilder.Append("  \r\n黑棋胜率：" + (m_StepHistory[i].BlackWinRate * 100).ToString("F1") + "%  ");
-                    sgfStringBuilder.Append("\r\n" + (m_StepHistory[i].BlackLeadPoints > 0 ? "黑棋" : "白棋") + "领先 " + (Math.Abs(m_StepHistory[i].BlackLeadPoints)).ToString("F1") + " 目  ");
-                    sgfStringBuilder.Append("]");
-
-                    #region 记录坏棋
-                    //记录： 疑问手（胜率下滑5%+目亏损>=0） 坏棋（胜率下滑10%+目亏损5）特坏棋（胜率下滑15%+目亏损10）
-                    //好棋（胜率上升5%+目提高5）
-                    //写注释要注意UI界面纵坐标相反，横坐标跳过i
-                    if (i > 0)
+                    //i是偶数时，记录的是黑棋下完以后，黑棋的胜率。如果下降说明黑棋下得差；如果上升，说明黑棋下的好
+                    //i是奇数时，记录的是白棋下完以后，黑棋的胜率。如果下降，说明白棋下得好；如果上升，说明白棋下得差。
+                    if (i % 2 == 0)
                     {
-                        //i是偶数时，记录的是黑棋下完以后，黑棋的胜率。如果下降说明黑棋下得差；如果上升，说明黑棋下的好
-                        //i是奇数时，记录的是白棋下完以后，黑棋的胜率。如果下降，说明白棋下得好；如果上升，说明白棋下得差。
-                        if (i % 2 == 0)
+                        //如果推荐里面有胜率比当前步数胜率大的
+                        if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Max(p => p.Item2) > m_StepHistory[i].BlackWinRate)
                         {
-                            //如果推荐里面有胜率比当前步数胜率大的
-                            if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Max(p => p.Item2) > m_StepHistory[i].BlackWinRate)
+                            if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -10)
                             {
-                                if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -10)
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是大恶手，应该走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
                                 {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是大恶手，应该走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
                                     {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
                                     }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("BM[2]");
                                 }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.1 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -5)
-                                {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是坏棋，建议走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
-                                    {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
-                                    }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("BM[1]");
-                                }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints <= 0)
-                                {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是疑问手，建议走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
-                                    {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
-                                    }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("DO[]");
-                                }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 5)
-                                {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是好棋]");
-                                    sgfStringBuilder.Append("TE[]");
-                                }
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("BM[2]");
                             }
-
-                        }
-                        else
-                        {
-                            if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Min(p => p.Item2) < m_StepHistory[i].BlackWinRate)
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.1 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -5)
                             {
-                                if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 10)
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是坏棋，建议走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
                                 {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是大恶手，应该走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
                                     {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
                                     }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("BM[2]");
                                 }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.1 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 5)
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("BM[1]");
+                            }
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints <= 0)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是疑问手，建议走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
                                 {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是坏棋，建议走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 > m_StepHistory[i].BlackWinRate)
                                     {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
                                     }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("BM[1]");
                                 }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints >= 0)
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("DO[]");
+                            }
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 5)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是好棋]");
+                                sgfStringBuilder.Append("TE[]");
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (m_StepHistory[i].RecommendPoints != null && m_StepHistory[i].RecommendPoints.Count > 0 && m_StepHistory[i].RecommendPoints.Min(p => p.Item2) < m_StepHistory[i].BlackWinRate)
+                        {
+                            if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.15 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 10)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是大恶手，应该走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
                                 {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是疑问手，建议走");
-                                    for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
                                     {
-                                        if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
-                                        {
-                                            sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
-                                            sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
-                                        }
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
                                     }
-                                    sgfStringBuilder.Append("]");
-                                    sgfStringBuilder.Append("DO[]");
                                 }
-                                else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -5)
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("BM[2]");
+                            }
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.1 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints > 5)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是坏棋，建议走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
                                 {
-                                    sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                                    sgfStringBuilder.Append("\r\n这一步是好棋]");
-                                    sgfStringBuilder.Append("TE[]");
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
+                                    {
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
+                                    }
                                 }
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("BM[1]");
+                            }
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate > 0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints >= 0)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是疑问手，建议走");
+                                for (int j = 0; j < m_StepHistory[i].RecommendPoints.Count; j++)
+                                {
+                                    if (m_StepHistory[i].RecommendPoints[j].Item2 < m_StepHistory[i].BlackWinRate)
+                                    {
+                                        sgfStringBuilder.Append("(" + Sgf.GetUICoordinate(m_StepHistory[i].RecommendPoints[j].Item1.X, m_StepHistory[i].RecommendPoints[j].Item1.Y, VM.Game.GameSetting.BoardSize));
+                                        sgfStringBuilder.Append("，黑棋胜率：" + (m_StepHistory[i].RecommendPoints[j].Item2 * 100).ToString("F1") + "%)  ");
+                                    }
+                                }
+                                sgfStringBuilder.Append("]");
+                                sgfStringBuilder.Append("DO[]");
+                            }
+                            else if (m_StepHistory[i].BlackWinRate - m_StepHistory[i - 1].BlackWinRate < -0.05 && m_StepHistory[i].BlackLeadPoints - m_StepHistory[i - 1].BlackLeadPoints < -5)
+                            {
+                                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+                                sgfStringBuilder.Append("\r\n这一步是好棋]");
+                                sgfStringBuilder.Append("TE[]");
                             }
                         }
                     }
-                    #endregion
+                }
+                #endregion
 
-                    //用于debug分析
+                //用于debug分析
 #if DEBUG
-                    sgfStringBuilder.Append("\r\n Debug [\t" + (m_StepHistory[i].BlackWinRate * 100 - 50) + "\t" + m_StepHistory[i].BlackLeadPoints + "\t] \r\n");
+                sgfStringBuilder.Append("\r\n Debug [\t" + (m_StepHistory[i].BlackWinRate * 100 - 50) + "\t" + m_StepHistory[i].BlackLeadPoints + "\t] \r\n");
 #endif
-                    //territory
-                    //1、不能记录完整territory，不然棋谱文件会达到几百k，一般棋谱文件只有几k
-                    //2、可以考虑只记录简化的territory，一个点用012表示，目前不做
-                    //3、可以考虑记录领先目数
-                }
-                //末尾
-                sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
-                sgfStringBuilder.Append(lastComment + "]");
-                sgfStringBuilder.Append(")");
+                //territory
+                //1、不能记录完整territory，不然棋谱文件会达到几百k，一般棋谱文件只有几k
+                //2、可以考虑只记录简化的territory，一个点用012表示，目前不做
+                //3、可以考虑记录领先目数
+            }
+            //末尾
+            sgfStringBuilder.Remove(sgfStringBuilder.Length - 1, 1);
+            sgfStringBuilder.Append(lastComment + "]");
+            sgfStringBuilder.Append(")");
 
-                //Sgf.WriteSgf(sgfStringBuilder.ToString());
-
-
-                FileInfo file = new FileInfo(fileName);
-                if (!Directory.Exists(file.DirectoryName))
-                {
-                    Directory.CreateDirectory(file.DirectoryName);
-                }
-
-                if (!System.IO.File.Exists(saveFileDialog.FileName))
-                {
-                    System.IO.FileStream f = System.IO.File.Create(saveFileDialog.FileName);
-                    f.Close();
-                }
-                //只有保存棋谱用gb2312，内部传输和debug日志都用utf-8
-                System.IO.StreamWriter f2 = new System.IO.StreamWriter(saveFileDialog.FileName, true, Encoding.GetEncoding("gb2312"));
-                f2.Write(sgfStringBuilder.ToString());
-                f2.Close();
-                f2.Dispose();
+            //Sgf.WriteSgf(sgfStringBuilder.ToString());
 
 
-                if (TcpServer.Instance.IsConnected)
-                {
-                    //file.Name
-                    byte[] fileNameBytes = Encoding.UTF8.GetBytes(file.Name);
-                    byte[] fileContentBytes = Encoding.UTF8.GetBytes(sgfStringBuilder.ToString());
-                    TcpServer.Instance.SendGameOver(fileNameBytes, fileContentBytes);
-                }
+            FileInfo file = new FileInfo(fileName);
+            if (!Directory.Exists(file.DirectoryName))
+            {
+                Directory.CreateDirectory(file.DirectoryName);
+            }
 
-                MessageBox.Show("棋谱保存成功");
-            });
+            if (!System.IO.File.Exists(saveFileDialog.FileName))
+            {
+                System.IO.FileStream f = System.IO.File.Create(saveFileDialog.FileName);
+                f.Close();
+            }
+            //只有保存棋谱用gb2312，内部传输和debug日志都用utf-8
+            System.IO.StreamWriter f2 = new System.IO.StreamWriter(saveFileDialog.FileName, true, Encoding.GetEncoding("gb2312"));
+            f2.Write(sgfStringBuilder.ToString());
+            f2.Close();
+            f2.Dispose();
+
+
+            if (TcpServer.Instance.IsConnected)
+            {
+                //file.Name
+                byte[] fileNameBytes = Encoding.UTF8.GetBytes(file.Name);
+                byte[] fileContentBytes = Encoding.UTF8.GetBytes(sgfStringBuilder.ToString());
+                TcpServer.Instance.SendGameOver(fileNameBytes, fileContentBytes);
+            }
+
+            MessageBox.Show("棋谱保存成功");
         }
 
         #region 按钮事件和状态
